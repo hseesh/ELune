@@ -1,0 +1,93 @@
+<idea-plugin>
+  <id>com.yatoufang.hse.code.generate</id>
+  <name>Lune</name>
+  <version>1.04</version>
+  <vendor email="gong-huang@qq.com" url="https://github.com/hseesh">gonghuang</vendor>
+
+  <description><![CDATA[
+   <p>
+    <b>Automatically generate Documentation for JAVA Web API</b><br/>
+    <b>Http Test Client</b>
+</p>
+<br/>
+<p>
+    <b>
+        <a href="https://github.com/hseesh/Xdoc">GitHub</a> |
+        <a href="https://github.com/hseesh/Xdoc/issues">Issues</a> |
+    </b>
+</p>
+<br/>
+<p><b>how to use :</b>
+<ul>
+    <li>Http test
+        <ul>
+            <li>select method's name and use keyboard shortcuts alt + M for a specify method(must be a Java method)</li>
+            <li>select other place and use keyboard shortcuts alt + M for a empty http request</li>
+        </ul>
+    </li>
+
+    <li>Generate interface documentation for Java class
+        <ul>
+            <li>selected file-> right-click -> new -> Api Document</li>
+            <li>or use keyboard shortcuts alt + G</li>
+        </ul>
+    </li>
+    <li>Generate interface documentation for a specify Java method
+        <ul>
+            <li>select method's name and use keyboard shortcuts alt + G</li>
+        </ul>
+    </li>
+
+    <li>Custom Your MarkDown Template
+        <ul>
+            <li>File -> setting -> tools -> Document Generator Settings</li>
+        </ul>
+    </li>
+</ul>
+</p>
+<br/>
+<p>
+    ]]></description>
+
+  <change-notes>
+    <![CDATA[
+        Known bug fix<br/>
+        Http test support<br/>
+    ]]>
+  </change-notes>
+
+
+  <idea-version since-build="183.0"/>
+
+  <depends>com.intellij.modules.platform</depends>
+  <depends config-file="depends.xml" optional="true">com.intellij.java</depends>
+  <depends config-file="module.xml" optional="true">com.intellij.modules.java</depends>
+
+
+  <extensions defaultExtensionNs="com.intellij">
+
+    <applicationConfigurable displayName="Totas Settings"
+                             id="com.yatoufang.config.AppSettingsConfigurable"
+                             instance="com.yatoufang.config.AppSettingsConfigurable" parentId="tools"/>
+
+    <applicationService serviceImplementation="com.yatoufang.config.AppSettingsState"/>
+    <applicationService serviceImplementation="com.yatoufang.config.VariableTemplateState"/>
+    <applicationService serviceImplementation="com.yatoufang.config.CodeTemplateState"/>
+
+    <toolWindow id="com.yatoufang.http"
+                anchor="bottom"
+                canCloseContents="true"
+                factoryClass="com.yatoufang.config.ConsoleWindowFactory"/>
+
+    <postStartupActivity implementation="com.yatoufang.action.StartUpAction"/>
+
+    <dom.fileDescription implementation="com.yatoufang.config.XmlDescription"/>
+  </extensions>
+
+  <actions>
+    <action id="com.yatoufang.code_generator" class="com.yatoufang.action.CodeGeneratorAction" text="CodeGeneratorAction">
+      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>
+    </action>
+  </actions>
+
+</idea-plugin>
