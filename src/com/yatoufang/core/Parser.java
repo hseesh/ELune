@@ -14,7 +14,7 @@ import com.yatoufang.entity.Method;
 import com.yatoufang.entity.ReferenceBox;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyService;
-import com.yatoufang.templet.SpringAnnotation;
+import com.yatoufang.templet.Annotations;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -41,7 +41,7 @@ public class Parser {
 
             @Override
             public void visitDocComment(PsiDocComment comment) {
-                method.setDescription(Psi.getMethodDescription(comment));
+                method.setDescription(Psi.getDescription(comment));
                 PsiDocTag[] tags = comment.getTags();
                 for (PsiDocTag tag : tags) {
                     switch (tag.getName()) {
@@ -64,11 +64,11 @@ public class Parser {
 
             @Override
             public void visitAnnotation(PsiAnnotation annotation) {
-                if (annotation.hasQualifiedName(SpringAnnotation.REQUESTMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.POSTMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.GETMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.DELETEMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.PUTMAPPING)) {
+                if (annotation.hasQualifiedName(Annotations.REQUESTMAPPING)
+                        || annotation.hasQualifiedName(Annotations.POSTMAPPING)
+                        || annotation.hasQualifiedName(Annotations.GETMAPPING)
+                        || annotation.hasQualifiedName(Annotations.DELETEMAPPING)
+                        || annotation.hasQualifiedName(Annotations.PUTMAPPING)) {
                     String methodUrl = Psi.getMethodRequestUrl(annotation);
                     methodUrl = methodUrl.startsWith("/") ? methodUrl : "/" + methodUrl;
                     method.setUrl(classUrl + methodUrl);
@@ -163,11 +163,11 @@ public class Parser {
 
             @Override
             public void visitAnnotation(PsiAnnotation annotation) {
-                if (annotation.hasQualifiedName(SpringAnnotation.REQUESTMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.POSTMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.GETMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.DELETEMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.PUTMAPPING)) {
+                if (annotation.hasQualifiedName(Annotations.REQUESTMAPPING)
+                        || annotation.hasQualifiedName(Annotations.POSTMAPPING)
+                        || annotation.hasQualifiedName(Annotations.GETMAPPING)
+                        || annotation.hasQualifiedName(Annotations.DELETEMAPPING)
+                        || annotation.hasQualifiedName(Annotations.PUTMAPPING)) {
                     String methodUrl = Psi.getMethodRequestUrl(annotation);
                     methodUrl = methodUrl.startsWith("/") ? methodUrl : "/" + methodUrl;
                     httpState.setShortUrl(classUrl + methodUrl);

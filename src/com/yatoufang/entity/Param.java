@@ -71,7 +71,7 @@ public class Param {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name.replace("\"","");
     }
 
     public PsiType getType() {
@@ -98,6 +98,7 @@ public class Param {
 
     public void setDescription(String description) {
         this.description = description;
+        this.defaultValue = "";
     }
 
     public String getValue() {
@@ -124,16 +125,4 @@ public class Param {
         this.required = required;
     }
 
-    @Override
-    public String toString() {
-        return "Param{" +
-                "name='" + name + '\'' +
-                ", alias='" + alias + '\'' +
-                ", type=" + type +
-                ", typeAlias='" + typeAlias + '\'' +
-                ", required=" + required +
-                ", defaultValue='" + defaultValue + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }

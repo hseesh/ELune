@@ -12,7 +12,7 @@ import com.yatoufang.core.Parser;
 import com.yatoufang.core.Psi;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyService;
-import com.yatoufang.templet.SpringAnnotation;
+import com.yatoufang.templet.Annotations;
 import com.yatoufang.ui.ExecuteDialog;
 
 import java.awt.*;
@@ -41,9 +41,9 @@ public class HttpRequestAction extends AnAction {
         if (data instanceof PsiMethod) {
             String classUrl = "";
             for (PsiClass psiClass : file.getClasses()) {
-                if (psiClass.hasAnnotation(SpringAnnotation.RESTCONTROLLER) || psiClass.hasAnnotation(SpringAnnotation.CONTROLLER)) {
-                    PsiAnnotation classAnnotation = psiClass.getAnnotation(SpringAnnotation.REQUESTMAPPING);
-                    classAnnotation = classAnnotation == null ? psiClass.getAnnotation(SpringAnnotation.CONTROLLER) : classAnnotation;
+                if (psiClass.hasAnnotation(Annotations.RESTCONTROLLER) || psiClass.hasAnnotation(Annotations.CONTROLLER)) {
+                    PsiAnnotation classAnnotation = psiClass.getAnnotation(Annotations.REQUESTMAPPING);
+                    classAnnotation = classAnnotation == null ? psiClass.getAnnotation(Annotations.CONTROLLER) : classAnnotation;
                     classUrl = Psi.getClassUrl(classAnnotation);
                 }
                 PsiMethod psiMethod = (PsiMethod) data;

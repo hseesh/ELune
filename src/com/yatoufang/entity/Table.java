@@ -1,6 +1,7 @@
 package com.yatoufang.entity;
 
 
+import java.util.List;
 
 /**
  * @author GongHuang（hse）
@@ -10,5 +11,47 @@ public class Table {
 
     private String name;
 
+    private String comment;
 
+    private List<Field> fields;
+
+    public Table(String trim) {
+        this.name = trim.replace("\"","");
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public List<Field> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<Field> fields) {
+        this.fields = fields;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("CREATE TABLE IF NOT EXISTS ").append(this.name).append("(\n");
+        for (int i = 0; i < this.fields.size(); i++) {
+            builder.append("    ").append(this.fields.get(i).toString()).append(i != this.fields.size() - 1 ? "," : "").append("\n");
+        }
+        builder.append(")ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='").append(this.comment).append("';");
+        return builder.toString();
+    }
 }

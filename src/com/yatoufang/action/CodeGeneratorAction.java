@@ -19,7 +19,7 @@ import com.yatoufang.entity.TemplateMethod;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyService;
 import com.yatoufang.templet.ProjectSearchScope;
-import com.yatoufang.templet.SpringAnnotation;
+import com.yatoufang.templet.Annotations;
 import com.yatoufang.ui.CodeGeneratorDialog;
 import com.yatoufang.xml.Mapper;
 import com.yatoufang.xml.Result;
@@ -67,7 +67,7 @@ public class CodeGeneratorAction extends AnAction {
 
         PsiClass[] classes = file.getClasses();
         for (PsiClass aClass : classes) {
-            if (aClass.hasAnnotation(SpringAnnotation.SERVICE)) {
+            if (aClass.hasAnnotation(Annotations.SERVICE)) {
                 services.add(aClass.getName());
                 searchAll(mapperFiles, formObject, formFields, superFormFields, aClass, services, daoObjects);
             } else {
@@ -111,7 +111,7 @@ public class CodeGeneratorAction extends AnAction {
 
     private void searchAll(List<DomFileElement<Mapper>> mapperFiles, ArrayList<String> formObject, ArrayList<Param> formFields,
                            ArrayList<Param> superFormFields, PsiClass targetService, ArrayList<String> services, ArrayList<String> daoObjects) {
-        if (targetService != null && targetService.hasAnnotation(SpringAnnotation.SERVICE)) {
+        if (targetService != null && targetService.hasAnnotation(Annotations.SERVICE)) {
             services.add(targetService.getName());
             PsiField[] serviceFields = targetService.getFields();
             for (PsiField serviceField : serviceFields) {

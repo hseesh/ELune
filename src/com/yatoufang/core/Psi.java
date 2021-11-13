@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiUtil;
 import com.yatoufang.entity.Param;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectSearchScope;
-import com.yatoufang.templet.SpringAnnotation;
+import com.yatoufang.templet.Annotations;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public class Psi {
             System.out.println("param = " + param);
             PsiAnnotation[] parameterAnnotations = parameter.getAnnotations();
             for (PsiAnnotation psiAnnotation : parameterAnnotations) {
-                if (psiAnnotation.hasQualifiedName(SpringAnnotation.REQUESTPARAM)) {
+                if (psiAnnotation.hasQualifiedName(Annotations.REQUESTPARAM)) {
                     PsiAnnotationMemberValue value = psiAnnotation.findAttributeValue("value");
                     PsiAnnotationMemberValue required = psiAnnotation.findAttributeValue("required");
                     PsiAnnotationMemberValue defaultValue = psiAnnotation.findAttributeValue("defaultValue");
@@ -82,10 +82,10 @@ public class Psi {
                             }
                         }
                     }
-                } else if (psiAnnotation.hasQualifiedName(SpringAnnotation.REQUESTBODY)) {
+                } else if (psiAnnotation.hasQualifiedName(Annotations.REQUESTBODY)) {
                     PsiAnnotationMemberValue required = psiAnnotation.findAttributeValue("required");
                     param.setRequired(Boolean.valueOf(required != null ? required.getText() : null));
-                } else if (psiAnnotation.hasQualifiedName(SpringAnnotation.PATHVARIABLE)) {
+                } else if (psiAnnotation.hasQualifiedName(Annotations.PATHVARIABLE)) {
                     PsiAnnotationMemberValue value = psiAnnotation.findAttributeValue("value");
                     PsiAnnotationMemberValue required = psiAnnotation.findAttributeValue("required");
                     if (required != null) {
@@ -106,7 +106,7 @@ public class Psi {
         PsiParameter[] parameters = list.getParameters();
         for (PsiParameter parameter : parameters) {
             Param httpParam = new Param(parameter.getName(), parameter.getType());
-            PsiAnnotation annotation = parameter.getAnnotation(SpringAnnotation.REQUESTMAPPING);
+            PsiAnnotation annotation = parameter.getAnnotation(Annotations.REQUESTMAPPING);
             if (annotation != null) {
                 PsiAnnotationMemberValue defaultValue = annotation.findAttributeValue("defaultValue");
                 if (defaultValue != null) {
@@ -124,7 +124,7 @@ public class Psi {
         for (PsiParameter parameter : parameters) {
             PsiAnnotation[] annotations = parameter.getAnnotations();
             for (PsiAnnotation annotation : annotations) {
-                if (annotation.hasQualifiedName(SpringAnnotation.REQUESTBODY)) {
+                if (annotation.hasQualifiedName(Annotations.REQUESTBODY)) {
                     return "JSON";
                 }
             }
@@ -342,7 +342,7 @@ public class Psi {
     }
 
 
-    public static String getMethodDescription(PsiDocComment comment) {
+    public static String getDescription(PsiDocComment comment) {
         if (comment != null) {
             PsiElement[] descriptionElements = comment.getDescriptionElements();
             StringBuilder methodDescription = new StringBuilder();
@@ -361,19 +361,19 @@ public class Psi {
         String type = "";
         if (methodAnnotation != null) {
             switch (methodAnnotation) {
-                case SpringAnnotation.REQUESTMAPPING:
+                case Annotations.REQUESTMAPPING:
                     PsiAnnotationMemberValue requestMethod = annotation.findAttributeValue("method");
                     if (requestMethod != null) {
                         type = requestMethod.getText();
                     }
                     break;
-                case SpringAnnotation.POSTMAPPING:
+                case Annotations.POSTMAPPING:
                     type = "POST";
                     break;
-                case SpringAnnotation.DELETEMAPPING:
+                case Annotations.DELETEMAPPING:
                     type = "DELETE";
                     break;
-                case SpringAnnotation.PUTMAPPING:
+                case Annotations.PUTMAPPING:
                     type = "PUT";
                     break;
                 default:

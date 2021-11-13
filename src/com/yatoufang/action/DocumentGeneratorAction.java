@@ -42,9 +42,9 @@ public class DocumentGeneratorAction extends AnAction {
         String classUrl = "";
         if (data instanceof PsiMethod) {
             for (PsiClass psiClass : file.getClasses()) {
-                if (psiClass.hasAnnotation(SpringAnnotation.RESTCONTROLLER) || psiClass.hasAnnotation(SpringAnnotation.CONTROLLER)) {
-                    PsiAnnotation classAnnotation = psiClass.getAnnotation(SpringAnnotation.REQUESTMAPPING);
-                    classAnnotation = classAnnotation == null ? psiClass.getAnnotation(SpringAnnotation.CONTROLLER) : classAnnotation;
+                if (psiClass.hasAnnotation(Annotations.RESTCONTROLLER) || psiClass.hasAnnotation(Annotations.CONTROLLER)) {
+                    PsiAnnotation classAnnotation = psiClass.getAnnotation(Annotations.REQUESTMAPPING);
+                    classAnnotation = classAnnotation == null ? psiClass.getAnnotation(Annotations.CONTROLLER) : classAnnotation;
                     classUrl = Psi.getClassUrl(classAnnotation);
                 }
                 PsiMethod psiMethod = (PsiMethod) data;
@@ -97,9 +97,9 @@ public class DocumentGeneratorAction extends AnAction {
         } else {
             for (PsiClass psiClass : file.getClasses()) {
                 // remove following ifStatement for parsing all methods
-                if (psiClass.hasAnnotation(SpringAnnotation.RESTCONTROLLER) || psiClass.hasAnnotation(SpringAnnotation.CONTROLLER)) {
-                    PsiAnnotation classAnnotation = psiClass.getAnnotation(SpringAnnotation.REQUESTMAPPING);
-                    classAnnotation = classAnnotation == null ? psiClass.getAnnotation(SpringAnnotation.CONTROLLER) : classAnnotation;
+                if (psiClass.hasAnnotation(Annotations.RESTCONTROLLER) || psiClass.hasAnnotation(Annotations.CONTROLLER)) {
+                    PsiAnnotation classAnnotation = psiClass.getAnnotation(Annotations.REQUESTMAPPING);
+                    classAnnotation = classAnnotation == null ? psiClass.getAnnotation(Annotations.CONTROLLER) : classAnnotation;
                     classUrl = Psi.getClassUrl(classAnnotation);
                     ArrayList<Method> methods = action(psiClass, baseUrl, classUrl);
                     int methodIndex = 1;
@@ -154,11 +154,11 @@ public class DocumentGeneratorAction extends AnAction {
         for (PsiMethod psiMethod : allMethods) {
             PsiAnnotation[] annotations = psiMethod.getAnnotations();
             for (PsiAnnotation annotation : annotations) {
-                if (annotation.hasQualifiedName(SpringAnnotation.REQUESTMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.POSTMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.GETMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.PUTMAPPING)
-                        || annotation.hasQualifiedName(SpringAnnotation.DELETEMAPPING)) {
+                if (annotation.hasQualifiedName(Annotations.REQUESTMAPPING)
+                        || annotation.hasQualifiedName(Annotations.POSTMAPPING)
+                        || annotation.hasQualifiedName(Annotations.GETMAPPING)
+                        || annotation.hasQualifiedName(Annotations.PUTMAPPING)
+                        || annotation.hasQualifiedName(Annotations.DELETEMAPPING)) {
                     methodArrayList.add(new Parser().action(psiMethod, baseUrl, classUrl));
                     break;
                 }

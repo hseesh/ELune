@@ -4,7 +4,7 @@ package com.yatoufang.templet;
  * @author hse
  * @Date: 2021/1/20
  */
-public class SpringAnnotation {
+public class Annotations {
 
     public static final String RESTCONTROLLER = "org.springframework.web.bind.annotation.RestController";
 
@@ -27,4 +27,17 @@ public class SpringAnnotation {
     public static final String PATHVARIABLE = "org.springframework.web.bind.annotation.PathVariable";
 
     public static final String SERVICE = "org.springframework.stereotype.Service";
+
+    public static final String CMD = "cn.daxiang.framework.router.annotation.Cmd";
+
+    public static final String TABLE = "cn.daxiang.framework.database.annotation.Table";
+
+    public static final String COLUMN = "cn.daxiang.framework.database.annotation.Column";
+
+    public static final String MODULE_NAME = "cn.daxiang.shared.ModuleName";
+
+    public static final String CONFIG_KEY = "cn.daxiang.shared.GlobalConfigKey";
+
+
+
 }
