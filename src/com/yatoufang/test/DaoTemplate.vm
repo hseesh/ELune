@@ -1,0 +1,29 @@
+
+import org.springframework.stereotype.Repository;
+
+#ImportPackage(${model})
+
+/**
+ * $!{comment} DAO层
+ * @author $!{email}
+ * @date ${NOW}
+ * Created by CodeGen .
+ */
+@Repository
+public class ${model}Dao {
+
+    /**
+    * 创建对象
+    */
+    public Boolean create(${model} #LowerCase(${model})){
+        return Boolean.TRUE;
+    }
+
+    /**
+    * 查询对象
+    */
+    public ${model} findById(Long id){
+        return new ${model}();
+    }
+
+}
