@@ -1,0 +1,26 @@
+package cn.daxiang.lyltd.gameserver.module(${table.name})
+
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpCase()};
+/**
+ * ${comment}
+ * @author $!{email}
+ * @since ${NOW}
+ */
+public interface ${table.name}Dao {
+
+    /**
+    * 创建${table.comment}
+    */
+    public ${table.name} create(${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)});
+
+    /**
+    * 获取${table.comment}
+    */
+    public ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}(Long id);
+
+    /**
+    * 删除${table.comment}
+    */
+    public void delete${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}(long actorId, Collection<Long> ${table.name}Ids, OperationType operationType);
+
+}

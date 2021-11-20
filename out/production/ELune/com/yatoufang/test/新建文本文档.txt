@@ -1,0 +1,2 @@
+     DbPsiFacade facade = DbPsiFacade.getInstance(project);
+        List<DbDataSource> dataSources = facade.getDataSources();

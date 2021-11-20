@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+ ~
+ ~ @author $!{email}
+ ~ @date ${NOW}
+ ~ Created by CodeGen .
+-->
+
+<mapper namespace="${model}">
+    <resultMap id="${model}Map" type="${model}">
+        <id property="id" column="id"/>
+    #foreach($item in $fields)
+        <result property="${item.field}" column="${item.column}"/>
+    #end
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <sql id="table_name">
+        ${table}
+    </sql>
+
+    <sql id="columns_all">
+        id,
+        <include refid="columns_exclude_id"/>
+    </sql>
+
+    <sql id="columns_exclude_id">
+        #foreach($item in $fields)`${item.column}`, #end
+        created_at, updated_at
+    </sql>
+
+    <sql id="values_exclude_id">
+        #foreach($item in $fields)#{${item.field}}, #end
+        now(), now()
+    </sql>
+
+    <sql id="criteria">
+        <where>
+        #foreach($item in $fields)
+            <if test="${item.field} != null">AND `${item.column}` = #{${item.field}}</if>
+        #end
+            <if test="createdAt != null">AND <![CDATA[created_at >= #{createdAt}]]> </if>
+            <if test="updatedAt != null">AND <![CDATA[updated_at < #{updatedAt}]]> </if>
+        </where>
+    </sql>
+
+    <insert id="create" parameterType="${model}" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO <include refid="table_name"/>
+        (<include refid="columns_exclude_id"/>)
+        VALUES
+        (<include refid="values_exclude_id"/>)
+    </insert>
+
+    <insert id="creates" parameterType="${model}" useGeneratedKeys="true">
+        INSERT INTO <include refid="table_name"/>
+        (<include refid="columns_exclude_id"/>)
+        VALUES
+        <foreach collection="list" item="i" index="index" separator="," >
+            (#foreach($item in $fields)#{i.${item.field}}, #end
+            now(), now())
+        </foreach>
+    </insert>
+
+    <select id="findById" parameterType="long" resultMap="${model}Map">
+        SELECT <include refid="columns_all"/>
+        FROM <include refid="table_name"/>
+        WHERE id = #{id} LIMIT 1
+    </select>
+
+    <select id="findByIds" parameterType="list" resultMap="${model}Map">
+        SELECT <include refid="columns_all"/>
+        FROM <include refid="table_name"/>
+        WHERE id IN
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <update id="update" parameterType="${model}">
+        UPDATE <include refid="table_name"/>
+        <set>
+        #foreach($item in $fields)
+            <if test="${item.field} != null">`${item.column}` = #{${item.field}},</if>
+        #end
+            updated_at = now()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        DELETE FROM <include refid="table_name"/>
+        WHERE id = #{id}
+    </delete>
+    
+    <select id="count" parameterType="map" resultType="long">
+        SELECT COUNT(1)
+        FROM <include refid="table_name"/>
+        <include refid="criteria"/>
+    </select>
+
+    <select id="paging" parameterType="map" resultMap="${model}Map">
+        SELECT <include refid="columns_all"/>
+        FROM <include refid="table_name"/>
+        <include refid="criteria"/>
+        ORDER BY `id` DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="list" parameterType="map" resultMap="${model}Map">
+        SELECT <include refid="columns_all"/>
+        FROM <include refid="table_name"/>
+        <include refid="criteria"/>
+        ORDER BY `id` DESC
+    </select>
+
+</mapper>
