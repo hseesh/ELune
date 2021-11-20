@@ -1,21 +1,27 @@
 package com.yatoufang.action;
 
-import com.intellij.lang.jvm.annotation.JvmAnnotationAttribute;
-import com.intellij.lang.jvm.annotation.JvmAnnotationAttributeValue;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.psi.*;
+import com.intellij.psi.util.PsiUtil;
+import com.yatoufang.core.ConsoleCenter;
 import com.yatoufang.core.Psi;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.NotifyService;
 import org.apache.commons.compress.utils.Lists;
-import org.jetbrains.annotations.NotNull;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.log.NullLogChute;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author hse
@@ -47,6 +53,8 @@ public class TableScannerAction extends AnAction {
             PsiField[] allFields = aClass.getAllFields();
             List<Field> tableField  = Lists.newArrayList();
 
+            PsiMethod[] methods = aClass.getMethods();
+
             for (PsiField classField : allFields) {
                 PsiAnnotation classFieldAnnotation = classField.getAnnotation(Annotations.COLUMN);
                 if (classFieldAnnotation == null) {
@@ -58,6 +66,7 @@ public class TableScannerAction extends AnAction {
                 PsiAnnotationMemberValue typeAlias = classFieldAnnotation.findAttributeValue("alias");
                 if(primaryKey != null ) {
                     field.setPrimaryKey(primaryKey.getText());
+                    table.setPrimaryKey(field);
                 }else if(foreignKey != null){
                     field.setForeignKey(foreignKey.getText());
                 }
@@ -91,12 +100,55 @@ public class TableScannerAction extends AnAction {
             tableField.add(new Field("updateTime","timestamp"));
             table.setFields(tableField);
             table.setComment(Psi.getDescription(aClass.getDocComment()));
-            System.out.println(table.toString());
+            ConsoleCenter instance = ConsoleCenter.getInstance();
+            instance.printHead("\nThe file scan  completed successfully\n");
+            instance.printInfo(table.toString());
 
+            //instance.print(test());
         }
 
+    }
 
-//        JBPopupFactory instance = JBPopupFactory.getInstance();
+    private String getChineseCharacter(String value) {
+        if(value.length() < 6){
+            return value;
+        }
+        StringBuilder builder = new StringBuilder();
+        for (char c : value.toCharArray()) {
+            if(c > 97 + 26){
+                builder.append(c);
+            }else{
+                break;
+            }
+        }
+        return builder.toString();
+    }
+
+    private String test(){
+        // 初始化模板引擎
+        VelocityEngine velocityEngine = new VelocityEngine();
+        velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
+        velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
+        velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, new NullLogChute());
+        velocityEngine.init();
+        VelocityContext context = new VelocityContext();
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("DaoTemplate.vm");
+        InputStreamReader inputStreamReader = new InputStreamReader(resourceAsStream);
+
+
+        // 设置变量
+        VelocityContext ctx = new VelocityContext();
+        Table ido = new Table("ido");
+        ido.setComment("神像");
+        ctx.put("table", ido);
+        StringWriter writer = new StringWriter();
+        velocityEngine.evaluate(context, writer, "ERROR", inputStreamReader);
+        return writer.toString();
+    }
+
+}
+
+    //        JBPopupFactory instance = JBPopupFactory.getInstance();
 //        ExecuteDialog executeDialog = new ExecuteDialog(methods);
 //        instance.createComponentPopupBuilder(executeDialog.getContent(), null)
 //                .setTitle("My POST")
@@ -109,34 +161,5 @@ public class TableScannerAction extends AnAction {
 //                .setDimensionServiceKey(null, "com.yatoufang.http.popup", true)
 //                .createPopup()
 //                .showInFocusCenter();
-    }
+//https://intellij-support.jetbrains.com/hc/en-us/community/posts/360000649839-Generete-annotation-and-methods-code-in-method-in-already-existing-java-file-
 
-    private String getChineseCharacter(String value) {
-        if(value.length() < 6){
-            return value;
-        }
-        StringBuilder builder = new StringBuilder("");
-        for (char c : value.toCharArray()) {
-            if(c > 97 + 26){
-                builder.append(c);
-            }else{
-                break;
-            }
-        }
-        return builder.toString();
-    }
-
-    public static void main(String[] args) {
-        String s = "临时属性资质key:SpriteAttributeType,value:属性资质";
-        StringBuilder builder = new StringBuilder("");
-        for (char c : s.toCharArray()) {
-            if(c > 97 + 26){
-                builder.append(c);
-            }else{
-                break;
-            }
-        }
-        System.out.println(builder.toString());
-    }
-
-}

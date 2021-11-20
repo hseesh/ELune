@@ -74,7 +74,7 @@
     <applicationService serviceImplementation="com.yatoufang.config.VariableTemplateState"/>
     <applicationService serviceImplementation="com.yatoufang.config.CodeTemplateState"/>
 
-    <toolWindow id="com.yatoufang.http"
+    <toolWindow id="ELune"
                 anchor="bottom"
                 canCloseContents="true"
                 factoryClass="com.yatoufang.config.ConsoleWindowFactory"/>

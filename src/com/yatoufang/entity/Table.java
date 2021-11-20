@@ -15,10 +15,30 @@ public class Table {
 
     private List<Field> fields;
 
+    private Field primaryKey;
+
+    private String valueOf;
+
     public Table(String trim) {
         this.name = trim.replace("\"","");
     }
 
+
+    public Field getPrimaryKey() {
+        return primaryKey;
+    }
+
+    public void setPrimaryKey(Field primaryKey) {
+        this.primaryKey = primaryKey;
+    }
+
+    public String getValueOf() {
+        return valueOf;
+    }
+
+    public void setValueOf(String valueOf) {
+        this.valueOf = valueOf;
+    }
 
     public String getName() {
         return name;

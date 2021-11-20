@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ConsoleWindowFactory implements ToolWindowFactory {
 
-
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
     }
