@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 
 /**
  * @author hse
@@ -42,7 +43,7 @@ public class TableScannerAction extends AnAction {
             return;
         }
         String resultStr = getResult();
-        if(resultStr.length() > 0){
+        if (resultStr.length() > 0) {
             System.out.println(resultStr);
             return;
         }
@@ -139,10 +140,15 @@ public class TableScannerAction extends AnAction {
 
         VelocityEngine velocityEngine = new VelocityEngine();
 
-        velocityEngine.init();
-
-        Velocity.init();
-
+        Thread currentThread = Thread.currentThread();
+        ClassLoader temp = Thread.currentThread().getContextClassLoader();
+        try {
+            currentThread.setContextClassLoader(getClass().getClassLoader());
+            velocityEngine.setProperty("runtime.log.logsystem.class", NullLogChute.class.getName());
+            velocityEngine.init();
+        } finally {
+            currentThread.setContextClassLoader(temp);
+        }
         /* lets make a Context and put data into it */
 
         VelocityContext context = new VelocityContext();

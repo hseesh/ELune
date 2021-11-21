@@ -339,38 +339,38 @@ public class CodeGeneratorDialog {
 
     private String getResult(TemplateMethod method) {
 
-        VelocityEngine velocityEngine = new VelocityEngine();
-
-        velocityEngine.init();
-
-        Velocity.init();
-
-        /* lets make a Context and put data into it */
-
-        VelocityContext context = new VelocityContext();
-
-        context.put("requestMethod", method.getRequestMethod());
-        context.put("methodName", method.getName());
-        context.put("accessAuthority", method.getAccessAuthority());
-        context.put("returnType", method.getReturnType());
-        context.put("contentType", method.getContentType());
-        context.put("params", method.getParams());
-        context.put("entity", method.getEntity());
-        context.put("service", method.getService());
-        context.put("dao", method.getDao());
-        context.put("selectedEntity",method.getSelectedEntity());
-        context.put("selectedService",method.getSelectedService());
-        context.put("selectedDao",method.getSelectedDao());
-
-
-
-        /* lets make our own string to render */
-
-        StringWriter stringWriter = new StringWriter();
-        if(method.getCodeTemplate() != null && method.getCodeTemplate().length() > 0){
-            Velocity.evaluate(context, stringWriter, "myLog", method.getCodeTemplate());
-            return stringWriter.toString();
-        }
+//        VelocityEngine velocityEngine = new VelocityEngine();
+//
+//        velocityEngine.init();
+//
+//        Velocity.init();
+//
+//        /* lets make a Context and put data into it */
+//
+//        VelocityContext context = new VelocityContext();
+//
+//        context.put("requestMethod", method.getRequestMethod());
+//        context.put("methodName", method.getName());
+//        context.put("accessAuthority", method.getAccessAuthority());
+//        context.put("returnType", method.getReturnType());
+//        context.put("contentType", method.getContentType());
+//        context.put("params", method.getParams());
+//        context.put("entity", method.getEntity());
+//        context.put("service", method.getService());
+//        context.put("dao", method.getDao());
+//        context.put("selectedEntity",method.getSelectedEntity());
+//        context.put("selectedService",method.getSelectedService());
+//        context.put("selectedDao",method.getSelectedDao());
+//
+//
+//
+//        /* lets make our own string to render */
+//
+//        StringWriter stringWriter = new StringWriter();
+//        if(method.getCodeTemplate() != null && method.getCodeTemplate().length() > 0){
+//            Velocity.evaluate(context, stringWriter, "myLog", method.getCodeTemplate());
+//            return stringWriter.toString();
+//        }
         return "";
     }
 

@@ -1,8 +1,8 @@
-package cn.daxiang.lyltd.gameserver.module(${table.name})
+package cn.daxiang.lyltd.gameserver.module${table.name}
 
 import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpCase()};
 /**
- * ${comment}
+ * ${table.comment}
  * @author $!{email}
  * @since ${NOW}
  */
