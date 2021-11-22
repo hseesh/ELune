@@ -1,0 +1,45 @@
+package cn.daxiang.lyltd.gameserver.module.${table.name}.dao.impl;
+
+import cn.daxiang.framework.database.SingleEntity;
+import cn.daxiang.framework.database.dao.SingleEntityDaoImpl;
+import cn.daxiang.framework.identity.IdentiyKey;
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()};
+import cn.daxiang.lyltd.gameserver.module.${table.name}.dao.Idol${table.name.substring(0, 1).toUpperCase()};
+import org.springframework.stereotype.Component;
+
+/**
+ * ${comment}
+ * @author $!{email}
+ * @since ${NOW}
+ */
+@Comment
+public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DaoImpl extends SingleEntityDaoImpl implements ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao{
+
+    @Override
+    protected Class<? extends SingleEntity<?>> forClass() {
+        return ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.class;
+    }
+
+    @Override
+    protected void initMaxId() {
+    }
+
+    @Override
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, long targetId) {
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = this.getMultiEnity(actorId, IdentiyKey.build(targetId));
+        return entity;
+    }
+
+    @Override
+    public Pet create create ${table.valuOf} {
+        long entityId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf${table.valuOf};
+        this.updateQueue(entity);
+        return entity;
+    }
+
+    @Override
+    public boolean isExist(long actorId) {
+        return this.get(IdentiyKey.build(actorId)) == null;
+    }
+}

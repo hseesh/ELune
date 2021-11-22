@@ -66,13 +66,6 @@
 
   <extensions defaultExtensionNs="com.intellij">
 
-    <applicationConfigurable displayName="Totas Settings"
-                             id="com.yatoufang.config.AppSettingsConfigurable"
-                             instance="com.yatoufang.config.AppSettingsConfigurable" parentId="tools"/>
-
-    <applicationService serviceImplementation="com.yatoufang.config.AppSettingsState"/>
-    <applicationService serviceImplementation="com.yatoufang.config.VariableTemplateState"/>
-    <applicationService serviceImplementation="com.yatoufang.config.CodeTemplateState"/>
 
     <toolWindow id="ELune"
                 anchor="bottom"
@@ -85,10 +78,6 @@
   </extensions>
 
   <actions>
-    <action id="com.yatoufang.code_generator" class="com.yatoufang.action.CodeGeneratorAction" text="CodeGeneratorAction">
-      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>
-    </action>
-
     <action id="com.yatoufang.code.generator.scanner" class="com.yatoufang.action.TableScannerAction" text="Scanner">
       <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>
     </action>
