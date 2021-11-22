@@ -2,6 +2,7 @@ package com.yatoufang.test.dao;
 
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.action.TableScannerAction;
+import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -32,6 +33,8 @@ public class Test {
 
         Table ido = new Table("ido");
         ido.setComment("神像");
+        ido.setPrimaryKey(new Field("idoId"));
+        ido.setValueOf("(String name, String alias, String typeAlias)");
         context.put("table", ido);
 
 
@@ -39,7 +42,9 @@ public class Test {
 
         String text = "";
         try {
-            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/DaoTemplate.vm")));
+            //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/DaoTemplate.vm")));
+            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/MultiDaoImplTemplate.vm")));
+            //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/SingleDaoImplTemplate.vm")));
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }

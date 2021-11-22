@@ -64,6 +64,7 @@ public class Table {
         this.fields = fields;
     }
 
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

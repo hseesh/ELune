@@ -6,10 +6,10 @@ import cn.daxiang.framework.identity.IdentiyKey;
 import cn.daxiang.lyltd.gameserver.core.GameConfig;
 import cn.daxiang.lyltd.gameserver.core.database.IdGenerator;
 import cn.daxiang.lyltd.gameserver.core.database.UniqueId;
-import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpCase()};
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()};
 import cn.daxiang.lyltd.gameserver.core.oss.GameOssLogger;
 import cn.daxiang.lyltd.gameserver.core.oss.type.OperationType;
-import cn.daxiang.lyltd.gameserver.module.pet.dao.${table.name.substring(0, 1).toUpCase()}Dao;
+import cn.daxiang.lyltd.gameserver.module.pet.dao.${table.name.substring(0, 1).toUpperCase()}Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,19 +19,19 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * ${comment}
+ * ${table.comment}
  * @author $!{email}
  * @since ${NOW}
  */
 @Comment
-public class ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}DaoImpl extends MultiEntityDaoImpl implements ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}Dao{
+public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DaoImpl extends MultiEntityDaoImpl implements ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao{
 
     @Autowired
     private IdGenerator idGenerator;
 
     @Override
     protected Class<? extends MultiEntity<?>> forClass() {
-        return ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}.class;
+        return ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.class;
     }
 
     @Override
@@ -47,31 +47,31 @@ public class ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}D
     }
 
     @Override
-    public Collection<${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}> get${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}List(long actorId) {
-        Map<IdentiyKey, ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}> map = this.getByFk(actorId);
+    public Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}> get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}List(long actorId) {
+        Map<IdentiyKey, ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}> map = this.getByFk(actorId);
         return map.values();
     }
 
     @Override
-    public ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}(long actorId, long targetId) {
-        ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)} result = this.getMultiEnity(actorId, IdentiyKey.build(targetId));
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, long targetId) {
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} result = this.getMultiEnity(actorId, IdentiyKey.build(targetId));
         return result;
     }
 
     @Override
-    public Pet create${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}(long actorId, int configId, int level, int aptitude, Map<Integer, Integer> attributeAptitudeMap) {
-        long petId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
-        Pet pet = Pet.valueOf(actorId, petId, configId, level, aptitude, attributeAptitudeMap);
-        this.updateQueue(pet);
-        return pet;
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.valuOf}{
+        long entityId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf${table.valuOf};
+        this.updateQueue(entity);
+        return entity;
     }
 
     @Override
-    public void delete${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}(long actorId, Collection<Long> targetIds, OperationType operationType) {
+    public void delete${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, Collection<Long> targetIds, OperationType operationType) {
         for (Long id : targetIds) {
-            ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)} result = this.getPet(actorId, id);
-            GameOssLogger.goodsDecrease(actorId, operationType, RewardType.${table.name.toUpCase()}, result.getPetId(), pet.getConfigId(), 1, 1);
-            this.delete(pet);
+            ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = this.get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(actorId, id);
+            GameOssLogger.goodsDecrease(actorId, operationType, RewardType.${table.name.toUpperCase()}, entity.get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Id(), entity.getConfigId(), 1, 1);
+            this.delete(entity);
         }
     }
 }

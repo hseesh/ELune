@@ -5,29 +5,23 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiUtil;
 import com.yatoufang.core.ConsoleCenter;
 import com.yatoufang.core.Psi;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
-import com.yatoufang.entity.TemplateMethod;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.NotifyService;
+import com.yatoufang.templet.ProjectKey;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.NullLogChute;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Objects;
-import java.util.Properties;
 
 /**
  * @author hse
@@ -43,10 +37,7 @@ public class TableScannerAction extends AnAction {
             return;
         }
         String resultStr = getResult();
-        if (resultStr.length() > 0) {
-            System.out.println(resultStr);
-            return;
-        }
+
         PsiClass[] classes = file.getClasses();
         if (classes.length == 0) return;
         for (PsiClass aClass : classes) {
@@ -65,6 +56,11 @@ public class TableScannerAction extends AnAction {
             List<Field> tableField = Lists.newArrayList();
 
             PsiMethod[] methods = aClass.getMethods();
+            for (PsiMethod method : methods) {
+                if(ProjectKey.VALUE_OF.equals(method.getName())){
+                    table.setValueOf(method.getParameterList().getText());
+                }
+            }
 
             for (PsiField classField : allFields) {
                 PsiAnnotation classFieldAnnotation = classField.getAnnotation(Annotations.COLUMN);

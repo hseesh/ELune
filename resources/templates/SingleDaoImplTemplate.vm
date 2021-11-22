@@ -3,8 +3,8 @@ package cn.daxiang.lyltd.gameserver.module.${table.name}.dao.impl;
 import cn.daxiang.framework.database.SingleEntity;
 import cn.daxiang.framework.database.dao.SingleEntityDaoImpl;
 import cn.daxiang.framework.identity.IdentiyKey;
-import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpCase()};
-import cn.daxiang.lyltd.gameserver.module.${table.name}.dao.Idol${table.name.substring(0, 1).toUpCase()};
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()};
+import cn.daxiang.lyltd.gameserver.module.${table.name}.dao.Idol${table.name.substring(0, 1).toUpperCase()};
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
  * @since ${NOW}
  */
 @Comment
-public class ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}DaoImpl extends SingleEntityDaoImpl implements ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}Dao{
+public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DaoImpl extends SingleEntityDaoImpl implements ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao{
 
     @Override
     protected Class<? extends SingleEntity<?>> forClass() {
-        return ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}.class;
+        return ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.class;
     }
 
     @Override
@@ -25,17 +25,17 @@ public class ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}D
     }
 
     @Override
-    public ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}(long actorId, long targetId) {
-        ${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)} result = this.getMultiEnity(actorId, IdentiyKey.build(targetId));
-        return result;
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, long targetId) {
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = this.getMultiEnity(actorId, IdentiyKey.build(targetId));
+        return entity;
     }
 
     @Override
-    public Pet create${table.name.substring(0, 1).toUpCase()}${table.name.substring(1)}(long actorId, int configId, int level, int aptitude, Map<Integer, Integer> attributeAptitudeMap) {
-        long petId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
-        Pet pet = Pet.valueOf(actorId, petId, configId, level, aptitude, attributeAptitudeMap);
-        this.updateQueue(pet);
-        return pet;
+    public Pet create create ${table.valuOf} {
+        long entityId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf${table.valuOf};
+        this.updateQueue(entity);
+        return entity;
     }
 
     @Override
