@@ -8,7 +8,7 @@ import cn.daxiang.lyltd.gameserver.module.${table.name}.dao.Idol${table.name.sub
 import org.springframework.stereotype.Component;
 
 /**
- * ${comment}
+ * ${table.comment}
  * @author $!{email}
  * @since ${NOW}
  */
@@ -31,9 +31,9 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
     }
 
     @Override
-    public Pet create create ${table.valuOf} {
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.valueOf} {
         long entityId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf${table.valuOf};
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf${table.valueOf};
         this.updateQueue(entity);
         return entity;
     }
