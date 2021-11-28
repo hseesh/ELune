@@ -13,7 +13,7 @@ import com.intellij.util.Query;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomService;
 import com.intellij.util.xml.GenericAttributeValue;
-import com.yatoufang.core.Psi;
+import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.entity.Param;
 import com.yatoufang.entity.TemplateMethod;
 import com.yatoufang.templet.Application;
@@ -77,7 +77,7 @@ public class CodeGeneratorAction extends AnAction {
                     if (Application.isBasicType(type.getPresentableText())) {
                         continue;
                     }
-                    PsiClass targetClass = Psi.findClass(type.getCanonicalText(), searchScope);
+                    PsiClass targetClass = PSIUtil.findClass(type.getCanonicalText(), searchScope);
                     if (targetClass != null && targetClass.isInterface()) {
                         Query<PsiClass> searchService = ClassInheritorsSearch.search(targetClass, searchScope, true);
                         PsiClass targetService = searchService.findFirst();
@@ -92,8 +92,8 @@ public class CodeGeneratorAction extends AnAction {
         method.setEntity(formObject);
         method.setService(services);
         method.setDao(daoObjects);
-        formFields = Psi.removeDuplicates(formFields);
-        superFormFields = Psi.removeDuplicates(superFormFields);
+        formFields = PSIUtil.removeDuplicates(formFields);
+        superFormFields = PSIUtil.removeDuplicates(superFormFields);
         JBPopupFactory instance = JBPopupFactory.getInstance();
         CodeGeneratorDialog dialog = new CodeGeneratorDialog(method, formObject, formFields, superFormFields, file);
 
@@ -129,14 +129,14 @@ public class CodeGeneratorAction extends AnAction {
                         for (ResultMap resultMap : resultMaps) {
                             GenericAttributeValue<String> mapType = resultMap.getType();
                             if (mapType != null) {
-                                PsiClass finalTarget = Psi.findClass(mapType.getValue());
+                                PsiClass finalTarget = PSIUtil.findClass(mapType.getValue());
                                 if (finalTarget != null) {
                                     formObject.add(finalTarget.getName());
                                     if (hasAdded) {
                                         daoObjects.add(serviceField.getName());
                                         hasAdded = false;
                                     }
-                                    Psi.getClassFields(finalTarget, formFields, superFormFields, false, serviceField.getType());
+                                    PSIUtil.getClassFields(finalTarget, formFields, superFormFields, false, serviceField.getType());
                                     if (formFields.size() == 0 && superFormFields.size() == 0) {
                                         loadFields(formFields, resultMap.getTableId(), resultMap.getColumnInfo());
                                     } else {

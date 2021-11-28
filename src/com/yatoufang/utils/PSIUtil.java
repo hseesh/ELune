@@ -1,4 +1,4 @@
-package com.yatoufang.core;
+package com.yatoufang.utils;
 
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.*;
@@ -44,7 +44,7 @@ import java.util.List;
  * @author hse
  * @date : 2021/1/15 0003
  */
-public class Psi {
+public class PSIUtil {
 
 
     /**
@@ -193,7 +193,7 @@ public class Psi {
             return;
         }
 
-        PsiClass entity = PsiUtil.resolveClassInClassTypeOnly(param.getType());
+        PsiClass entity = com.intellij.psi.util.PsiUtil.resolveClassInClassTypeOnly(param.getType());
         if (entity != null) {
             PsiClass superClass = entity.getSuperClass();
             loadFields(superClass, list, param.getType());
@@ -201,7 +201,7 @@ public class Psi {
         } else {
             if (param.getType().getPresentableText().indexOf("[]") > 0) {
                 PsiType deepComponentType = param.getType().getDeepComponentType();
-                entity = PsiUtil.resolveClassInClassTypeOnly(deepComponentType);
+                entity = com.intellij.psi.util.PsiUtil.resolveClassInClassTypeOnly(deepComponentType);
                 if (entity != null) {
                     PsiClass superClass = entity.getSuperClass();
                     loadFields(superClass, list, param.getType());
@@ -399,10 +399,10 @@ public class Psi {
 
 
     public static PsiType getSuperType(PsiType psiType) {
-        PsiType result = PsiUtil.extractIterableTypeParameter(psiType, true);
+        PsiType result = com.intellij.psi.util.PsiUtil.extractIterableTypeParameter(psiType, true);
         while (result != null) {
             psiType = result;
-            result = PsiUtil.extractIterableTypeParameter(psiType, true);
+            result = com.intellij.psi.util.PsiUtil.extractIterableTypeParameter(psiType, true);
         }
         return psiType;
     }

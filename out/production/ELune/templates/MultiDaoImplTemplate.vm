@@ -3,13 +3,14 @@ package cn.daxiang.lyltd.gameserver.module.${table.name}.dao.impl;
 import cn.daxiang.framework.database.MultiEntity;
 import cn.daxiang.framework.database.dao.MultiEntityDaoImpl;
 import cn.daxiang.framework.identity.IdentiyKey;
+import cn.daxiang.shared.reward.RewardType;
 import cn.daxiang.lyltd.gameserver.core.GameConfig;
 import cn.daxiang.lyltd.gameserver.core.database.IdGenerator;
 import cn.daxiang.lyltd.gameserver.core.database.UniqueId;
-import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()};
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
 import cn.daxiang.lyltd.gameserver.core.oss.GameOssLogger;
 import cn.daxiang.lyltd.gameserver.core.oss.type.OperationType;
-import cn.daxiang.lyltd.gameserver.module.pet.dao.${table.name.substring(0, 1).toUpperCase()}Dao;
+import cn.daxiang.lyltd.gameserver.module.pet.dao.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +21,10 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * ${table.comment}
- * @author $!{email}
- * @since ${NOW}
+ * @author $!{author}
+ * @since ${now}
  */
-@Comment
+@Component
 public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DaoImpl extends MultiEntityDaoImpl implements ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao{
 
     @Autowired

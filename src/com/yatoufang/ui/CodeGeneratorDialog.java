@@ -3,22 +3,17 @@ package com.yatoufang.ui;
 
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.testFramework.PsiTestUtil;
 import com.intellij.ui.EditorTextField;
 import com.yatoufang.config.CodeTemplateState;
 import com.yatoufang.config.VariableTemplateState;
-import com.yatoufang.core.Psi;
+import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.entity.Param;
 import com.yatoufang.entity.TemplateMethod;
 import com.yatoufang.templet.Application;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.app.VelocityEngine;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -238,7 +233,7 @@ public class CodeGeneratorDialog {
                     PsiMethod psiMethod = factory.createMethodFromText(editor.getText(), null);
                     CodeStyleManager instance = CodeStyleManager.getInstance(Application.project);
                     PsiElement reformat = instance.reformat(psiMethod);
-                    Psi.replace(originElement, reformat);
+                    PSIUtil.replace(originElement, reformat);
                     //PsiTestUtil.checkFileStructure(psiFile);
                     //Psi.delete(method.getDeleteElement());
                 }

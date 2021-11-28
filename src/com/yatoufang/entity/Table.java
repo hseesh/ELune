@@ -1,6 +1,8 @@
 package com.yatoufang.entity;
 
 
+import com.yatoufang.templet.DBQueueType;
+
 import java.util.List;
 
 /**
@@ -19,10 +21,33 @@ public class Table {
 
     private String valueOf;
 
-    public Table(String trim) {
-        this.name = trim.replace("\"","");
+    private DBQueueType dbQueueType;
+
+    private boolean multiEntity;
+
+    public Table(String name, String type) {
+        this.name = name.replace("\"","");
+        type = type.substring(type.indexOf("."));
+        switch (type){
+            case "NONE":
+                this.dbQueueType = DBQueueType.NONE;
+                break;
+            case "DEFAULT":
+                this.dbQueueType = DBQueueType.DEFAULT;
+                break;
+            default:
+                this.dbQueueType = DBQueueType.IMPORTANT;
+                break;
+        }
     }
 
+    public boolean isMultiEntity() {
+        return multiEntity;
+    }
+
+    public void setMultiEntity(boolean multiEntity) {
+        this.multiEntity = multiEntity;
+    }
 
     public Field getPrimaryKey() {
         return primaryKey;
@@ -64,6 +89,13 @@ public class Table {
         this.fields = fields;
     }
 
+    public DBQueueType getDbQueueType() {
+        return dbQueueType;
+    }
+
+    public void setDbQueueType(DBQueueType dbQueueType) {
+        this.dbQueueType = dbQueueType;
+    }
 
     @Override
     public String toString() {
@@ -72,7 +104,7 @@ public class Table {
         for (int i = 0; i < this.fields.size(); i++) {
             builder.append("    ").append(this.fields.get(i).toString()).append(i != this.fields.size() - 1 ? "," : "").append("\n");
         }
-        builder.append(")ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='").append(this.comment).append("';");
+        builder.append(")ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='").append(this.comment).append("';\n");
         return builder.toString();
     }
 }

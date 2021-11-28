@@ -32,5 +32,7 @@ public interface Annotations {
 
     String COLUMN = "cn.daxiang.framework.database.annotation.Column";
 
+    String CMD = "cn.daxiang.framework.router.annotation.Cmd";
+
 
 }

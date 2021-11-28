@@ -8,13 +8,13 @@ import com.google.gson.stream.JsonWriter;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
-import com.intellij.psi.util.PsiUtil;
 import com.yatoufang.entity.HttpState;
 import com.yatoufang.entity.Method;
 import com.yatoufang.entity.ReferenceBox;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyService;
 import com.yatoufang.templet.Annotations;
+import com.yatoufang.utils.PSIUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -41,15 +41,15 @@ public class Parser {
 
             @Override
             public void visitDocComment(PsiDocComment comment) {
-                method.setDescription(Psi.getDescription(comment));
+                method.setDescription(PSIUtil.getDescription(comment));
                 PsiDocTag[] tags = comment.getTags();
                 for (PsiDocTag tag : tags) {
                     switch (tag.getName()) {
                         case "param":
-                            Psi.getParameterDescription(tag, paramDesc);
+                            PSIUtil.getParameterDescription(tag, paramDesc);
                             break;
                         case "return":
-                            method.setReturnDescription(Psi.getParameterDescription(tag));
+                            method.setReturnDescription(PSIUtil.getParameterDescription(tag));
                             break;
                         default:
                             break;
@@ -59,7 +59,7 @@ public class Parser {
 
             @Override
             public void visitParameterList(PsiParameterList list) {
-                method.setParams(Psi.getParamList(list));
+                method.setParams(PSIUtil.getParamList(list));
             }
 
             @Override
@@ -69,10 +69,10 @@ public class Parser {
                         || annotation.hasQualifiedName(Annotations.GETMAPPING)
                         || annotation.hasQualifiedName(Annotations.DELETEMAPPING)
                         || annotation.hasQualifiedName(Annotations.PUTMAPPING)) {
-                    String methodUrl = Psi.getMethodRequestUrl(annotation);
+                    String methodUrl = PSIUtil.getMethodRequestUrl(annotation);
                     methodUrl = methodUrl.startsWith("/") ? methodUrl : "/" + methodUrl;
                     method.setUrl(classUrl + methodUrl);
-                    method.setRequestMethod(Psi.getMethodRequestType(annotation));
+                    method.setRequestMethod(PSIUtil.getMethodRequestType(annotation));
                 }
             }
 
@@ -155,9 +155,9 @@ public class Parser {
             public void visitParameterList(PsiParameterList list) {
                 //unknown bugs for JavaRecursiveElementWalkingVisitor, this code fragment should be call only once instead of twice or more with using other params
                 if (httpState.getParams() == null) {
-                    httpState.setParams(Psi.getParamArray(list));
+                    httpState.setParams(PSIUtil.getParamArray(list));
                 }
-                httpState.setBodyType(Psi.getContentType(list));
+                httpState.setBodyType(PSIUtil.getContentType(list));
             }
 
 
@@ -168,10 +168,10 @@ public class Parser {
                         || annotation.hasQualifiedName(Annotations.GETMAPPING)
                         || annotation.hasQualifiedName(Annotations.DELETEMAPPING)
                         || annotation.hasQualifiedName(Annotations.PUTMAPPING)) {
-                    String methodUrl = Psi.getMethodRequestUrl(annotation);
+                    String methodUrl = PSIUtil.getMethodRequestUrl(annotation);
                     methodUrl = methodUrl.startsWith("/") ? methodUrl : "/" + methodUrl;
                     httpState.setShortUrl(classUrl + methodUrl);
-                    httpState.setMethod(Psi.getMethodRequestType(annotation));
+                    httpState.setMethod(PSIUtil.getMethodRequestType(annotation));
                 }
             }
 
@@ -200,7 +200,7 @@ public class Parser {
      * @return ResponseExample
      */
     private String getResponseExample(PsiType psiType, ReferenceBox example) {
-        psiType = Psi.getSuperType(psiType);
+        psiType = PSIUtil.getSuperType(psiType);
 
         String defaultValue = getDefaultValue(psiType.getPresentableText());
         if ("com.yatoufang.hse".equals(defaultValue)) {
@@ -239,13 +239,13 @@ public class Parser {
      * @throws IOException JsonWriter nested exception
      */
     private void buildJson(PsiType psiType, JsonWriter writer, ReferenceBox example, boolean isSingleValue, int recursionDeep) throws IOException {
-        psiType = Psi.getSuperType(psiType);
+        psiType = PSIUtil.getSuperType(psiType);
 
         String defaultValue = getDefaultValue(psiType.getPresentableText());
         if (!"com.yatoufang.hse".equals(defaultValue)) {
             writer.value(defaultValue);
         } else {
-            PsiClass entity = PsiUtil.resolveClassInClassTypeOnly(psiType);
+            PsiClass entity = com.intellij.psi.util.PsiUtil.resolveClassInClassTypeOnly(psiType);
             if (entity != null) {
                 String targetClass = entity.getQualifiedName();
                 if (targetClass != null && targetClass.startsWith(Application.basePackage)) {
@@ -253,7 +253,7 @@ public class Parser {
                     ArrayList<PsiField> classFields = new ArrayList<>();
                     for (PsiField field : fields) {
 
-                        if (psiType.getCanonicalText().equals(Psi.getSuperType(field.getType()).getCanonicalText())) {
+                        if (psiType.getCanonicalText().equals(PSIUtil.getSuperType(field.getType()).getCanonicalText())) {
                             if (++recursionDeep > 1) {
                                 continue;
                             }

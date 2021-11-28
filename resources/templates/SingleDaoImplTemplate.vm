@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 /**
  * ${table.comment}
- * @author $!{email}
- * @since ${NOW}
+ * @author $!{author}
+ * @since ${now}
  */
-@Comment
+@Component
 public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DaoImpl extends SingleEntityDaoImpl implements ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao{
 
     @Override

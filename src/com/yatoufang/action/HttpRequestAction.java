@@ -9,7 +9,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.psi.*;
 import com.yatoufang.entity.HttpState;
 import com.yatoufang.core.Parser;
-import com.yatoufang.core.Psi;
+import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyService;
 import com.yatoufang.templet.Annotations;
@@ -44,7 +44,7 @@ public class HttpRequestAction extends AnAction {
                 if (psiClass.hasAnnotation(Annotations.RESTCONTROLLER) || psiClass.hasAnnotation(Annotations.CONTROLLER)) {
                     PsiAnnotation classAnnotation = psiClass.getAnnotation(Annotations.REQUESTMAPPING);
                     classAnnotation = classAnnotation == null ? psiClass.getAnnotation(Annotations.CONTROLLER) : classAnnotation;
-                    classUrl = Psi.getClassUrl(classAnnotation);
+                    classUrl = PSIUtil.getClassUrl(classAnnotation);
                 }
                 PsiMethod psiMethod = (PsiMethod) data;
                 HttpState httpState = new Parser().action(psiMethod, classUrl);

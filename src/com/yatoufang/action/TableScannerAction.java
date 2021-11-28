@@ -1,27 +1,30 @@
 package com.yatoufang.action;
 
+import com.google.common.collect.Maps;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.yatoufang.core.ConsoleCenter;
-import com.yatoufang.core.Psi;
+import com.yatoufang.core.ConsoleService;
+import com.yatoufang.core.VelocityService;
+import com.yatoufang.utils.ExceptionUtil;
+import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.NotifyService;
 import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.log.NullLogChute;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Locale;
 
 /**
  * @author hse
@@ -36,84 +39,157 @@ public class TableScannerAction extends AnAction {
             NotifyService.notifyWarning("No File Selected");
             return;
         }
-        String resultStr = getResult();
+
+        String rootPath = getRootPath(file);
+        System.out.println("rootPath = " + rootPath);
+
 
         PsiClass[] classes = file.getClasses();
-        if (classes.length == 0) return;
         for (PsiClass aClass : classes) {
-
-            PsiAnnotation annotation = aClass.getAnnotation(Annotations.TABLE);
-            if (annotation == null) {
-                NotifyService.notifyWarning("No Table Selected");
-                return;
+            Table table = getTable(aClass);
+            if (table == null) {
+                continue;
             }
-            PsiAnnotationMemberValue name = annotation.findAttributeValue("name");
-            if (name == null) {
-                return;
+            printResult(table);
+            if (rootPath == null || rootPath.isEmpty()) {
+                continue;
             }
-            Table table = new Table(name.getText());
-            PsiField[] allFields = aClass.getAllFields();
-            List<Field> tableField = Lists.newArrayList();
-
-            PsiMethod[] methods = aClass.getMethods();
-            for (PsiMethod method : methods) {
-                if(ProjectKey.VALUE_OF.equals(method.getName())){
-                    table.setValueOf(method.getParameterList().getText());
-                }
-            }
-
-            for (PsiField classField : allFields) {
-                PsiAnnotation classFieldAnnotation = classField.getAnnotation(Annotations.COLUMN);
-                if (classFieldAnnotation == null) {
-                    continue;
-                }
-                Field field = new Field(classField.getName());
-                PsiAnnotationMemberValue primaryKey = classFieldAnnotation.findAttributeValue("pk");
-                PsiAnnotationMemberValue foreignKey = classFieldAnnotation.findAttributeValue("fk");
-                PsiAnnotationMemberValue typeAlias = classFieldAnnotation.findAttributeValue("alias");
-                if (primaryKey != null) {
-                    field.setPrimaryKey(primaryKey.getText());
-                    table.setPrimaryKey(field);
-                } else if (foreignKey != null) {
-                    field.setForeignKey(foreignKey.getText());
-                }
-                if (typeAlias != null && !"\"\"".equals(typeAlias.getText())) {
-                    field.setName(typeAlias.getText());
-                    field.setDescription(getChineseCharacter(Psi.getDescription(classField.getDocComment())));
-                    field.setTypeAlias("TEXT");
-                    tableField.add(field);
-                    continue;
-                }
-
-                switch (classField.getType().getPresentableText()) {
-                    case "long":
-                    case "Long":
-                        field.setTypeAlias("BIGINT(20)");
-                        break;
-                    case "int":
-                    case "Integer":
-                        field.setTypeAlias("INT(8)");
-                        break;
-                    case "String":
-                        field.setTypeAlias("VARCHAR(1000)");
-                        break;
-                    default:
-                        field.setTypeAlias("TEXT");
-                        break;
-                }
-                field.setDescription(Psi.getDescription(classField.getDocComment()));
-                tableField.add(field);
-            }
-            tableField.add(new Field("updateTime", "timestamp"));
-            table.setFields(tableField);
-            table.setComment(Psi.getDescription(aClass.getDocComment()));
-            ConsoleCenter instance = ConsoleCenter.getInstance();
-            instance.printHead("\nThe file scan  completed successfully\n");
-            instance.printInfo(table.toString());
-
-            //instance.print(test());
+            generateCode(rootPath, table);
         }
+    }
 
+    private void generateCode(String rootPath, Table table) {
+        String moduleName = table.getName();
+        HashMap<String, File> fileMap = Maps.newHashMap();
+        String targetPath = buildPath(rootPath, moduleName.toUpperCase(Locale.ROOT));
+        ConsoleService consoleService = ConsoleService.getInstance();
+        VelocityService velocityService = VelocityService.getInstance();
+        File daoFile = new File(buildPath(targetPath, ProjectKey.DAO, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.JAVA)));
+        File daoImplFile = new File(buildPath(targetPath, ProjectKey.DAO, ProjectKey.IMPL, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.IMPL, ProjectKey.JAVA)));
+        if (table.isMultiEntity()) {
+            fileMap.put(ProjectKey.MULTI_ENTITY_TEMPLATE, daoFile);
+            fileMap.put(ProjectKey.MULTI_ENTITY_IMPL_TEMPLATE, daoImplFile);
+        }else {
+            fileMap.put(ProjectKey.SINGLE_ENTITY_TEMPLATE, daoFile);
+            fileMap.put(ProjectKey.SINGLE_ENTITY_IMPL_TEMPLATE, daoImplFile);
+        }
+        fileMap.forEach((fileName, file) -> {
+            try {
+                FileUtil.writeToFile(file, velocityService.execute(fileName, table));
+                consoleService.print(file.getCanonicalPath() + " created successfully\n");
+            } catch (IOException e) {
+                consoleService.printError(ExceptionUtil.getExceptionInfo(e));
+            }
+        });
+    }
+
+    private String buildPath(String rootPath, String... args) {
+        StringBuilder builder = new StringBuilder(rootPath);
+        for (String arg : args) {
+            builder.append("\\").append(arg);
+        }
+        return builder.toString();
+    }
+
+    @Nullable
+    private String getRootPath(PsiJavaFile file) {
+        VirtualFile virtualFile = file.getVirtualFile();
+        VirtualFile parent = virtualFile.getParent().getParent().getParent();
+        if (parent.getCanonicalPath() == null || !parent.getCanonicalPath().endsWith(ProjectKey.CORE)) {
+            return null;
+        }
+        VirtualFile root = parent.getParent();
+        String rootPath = root.getCanonicalPath();
+        if (rootPath == null || rootPath.isEmpty()) {
+            return null;
+        }
+        return rootPath;
+    }
+
+    @Nullable
+    private Table getTable(PsiClass aClass) {
+        PsiAnnotation annotation = aClass.getAnnotation(Annotations.TABLE);
+        if (annotation == null) {
+            NotifyService.notifyWarning("No Table Selected");
+            return null;
+        }
+        PsiAnnotationMemberValue name = annotation.findAttributeValue("name");
+        PsiAnnotationMemberValue type = annotation.findAttributeValue("type");
+        if (name == null || type == null) {
+            return null;
+        }
+        Table table = new Table(name.getText(), type.getText());
+        PsiField[] allFields = aClass.getAllFields();
+        List<Field> tableField = Lists.newArrayList();
+        PsiClassType[] extendsListTypes = aClass.getExtendsListTypes();
+        for (PsiClassType extendsListType : extendsListTypes) {
+            table.setMultiEntity(ProjectKey.MULTI_ENTITY.equals(extendsListType.getClassName()));
+        }
+        PsiMethod[] methods = aClass.getMethods();
+        for (PsiMethod method : methods) {
+            if (ProjectKey.VALUE_OF.equals(method.getName())) {
+                table.setValueOf(method.getParameterList().getText());
+            }
+        }
+        for (PsiField classField : allFields) {
+            PsiAnnotation classFieldAnnotation = classField.getAnnotation(Annotations.COLUMN);
+            if (classFieldAnnotation == null) {
+                continue;
+            }
+            Field field = new Field(classField.getName());
+            PsiAnnotationMemberValue primaryKey = classFieldAnnotation.findAttributeValue("pk");
+            PsiAnnotationMemberValue foreignKey = classFieldAnnotation.findAttributeValue("fk");
+            PsiAnnotationMemberValue typeAlias = classFieldAnnotation.findAttributeValue("alias");
+            if (primaryKey != null) {
+                field.setPrimaryKey(primaryKey.getText());
+                table.setPrimaryKey(field);
+            } else if (foreignKey != null) {
+                field.setForeignKey(foreignKey.getText());
+            }
+            if (typeAlias != null && !"\"\"".equals(typeAlias.getText())) {
+                field.setName(typeAlias.getText());
+                field.setDescription(getChineseCharacter(PSIUtil.getDescription(classField.getDocComment())));
+                field.setTypeAlias("TEXT");
+                tableField.add(field);
+                continue;
+            }
+            switch (classField.getType().getPresentableText()) {
+                case "long":
+                case "Long":
+                    field.setTypeAlias("BIGINT(20)");
+                    break;
+                case "int":
+                case "Integer":
+                    field.setTypeAlias("INT(8)");
+                    break;
+                case "String":
+                    field.setTypeAlias("VARCHAR(1000)");
+                    break;
+                default:
+                    field.setTypeAlias("TEXT");
+                    break;
+            }
+            field.setDescription(PSIUtil.getDescription(classField.getDocComment()));
+            tableField.add(field);
+        }
+        tableField.add(new Field("updateTime", "timestamp"));
+        table.setFields(tableField);
+        table.setComment(PSIUtil.getDescription(aClass.getDocComment()));
+        return table;
+    }
+
+    private void printResult(Table table) {
+        ConsoleService instance = ConsoleService.getInstance();
+        instance.printHead("File scanning process completed successfully");
+        if (table.getComment().isEmpty()) {
+            instance.printError("No comments fund in table : " + table.getName());
+        }
+        for (Field field : table.getFields()) {
+            if (field.getDescription().isEmpty()) {
+                instance.printError("No comments fund for field: " + field.getName());
+            }
+        }
+        instance.printInfo(table.toString());
     }
 
     private String getChineseCharacter(String value) {
@@ -122,7 +198,7 @@ public class TableScannerAction extends AnAction {
         }
         StringBuilder builder = new StringBuilder();
         for (char c : value.toCharArray()) {
-            if (c > 97 + 26) {
+            if (c > 123) {
                 builder.append(c);
             } else {
                 break;
@@ -131,43 +207,6 @@ public class TableScannerAction extends AnAction {
         return builder.toString();
     }
 
-
-    private String getResult() {
-
-        VelocityEngine velocityEngine = new VelocityEngine();
-
-        Thread currentThread = Thread.currentThread();
-        ClassLoader temp = Thread.currentThread().getContextClassLoader();
-        try {
-            currentThread.setContextClassLoader(getClass().getClassLoader());
-            velocityEngine.setProperty("runtime.log.logsystem.class", NullLogChute.class.getName());
-            velocityEngine.init();
-        } finally {
-            currentThread.setContextClassLoader(temp);
-        }
-        /* lets make a Context and put data into it */
-
-        VelocityContext context = new VelocityContext();
-
-
-        Table ido = new Table("ido");
-        ido.setComment("神像");
-        context.put("table", ido);
-
-
-        StringWriter stringWriter = new StringWriter();
-
-        String text = "";
-        try {
-            text = FileUtil.loadTextAndClose(Objects.requireNonNull(TableScannerAction.class.getResourceAsStream("/templates/DaoTemplate.vm")));
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-
-        Velocity.evaluate(context, stringWriter, "myLog", text);
-        return stringWriter.toString();
-
-    }
 
 }
 
