@@ -20,7 +20,6 @@ public class ${model} implements Serializable {
      */
     private Long id;
     #foreach($item in $fields)
-
     /**
      * ${item.comment}
      */

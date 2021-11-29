@@ -1,0 +1,41 @@
+package META
+
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
+
+import java.util.Map;
+
+/**
+ * 神宠显示对象
+ *
+ * @author ${author}
+ * @since ${now}
+ */
+public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO {
+
+
+
+    #foreach($item in $table.fields)
+    /**
+    * ${item.description}
+    */
+    private ${item.alias} ${item.name};
+    #end
+
+
+    public static PetVO valueOf(${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity) {
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO vo = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO();
+        vo.petId = pet.getPetId();
+        vo.configId = pet.getConfigId();
+        vo.level = pet.getLevel();
+        vo.starLevel = pet.getStarLevel();
+        vo.aptitude = pet.getAptitude();
+        vo.tempAptitude = pet.getTempAptitude();
+        vo.tempAttributeAptitudeMap = pet.getTempAttributeAptitudeMap();
+        vo.attributeAptitudes = pet.getAttributeAptitudeMap();
+        vo.luck = pet.getLuck();
+        vo.advanceExp = pet.getAdvanceExp();
+        vo.advanceLevel = pet.getAdvanceLevel();
+        return vo;
+    }
+
+}

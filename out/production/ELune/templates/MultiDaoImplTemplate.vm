@@ -60,7 +60,7 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
     }
 
     @Override
-    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.valueOf}{
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}${table.valueOf}{
         long entityId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
         ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf${table.valueOf};
         this.updateQueue(entity);

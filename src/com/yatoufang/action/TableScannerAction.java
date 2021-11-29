@@ -61,11 +61,18 @@ public class TableScannerAction extends AnAction {
     private void generateCode(String rootPath, Table table) {
         String moduleName = table.getName();
         HashMap<String, File> fileMap = Maps.newHashMap();
-        String targetPath = buildPath(rootPath, moduleName.toUpperCase(Locale.ROOT));
+        String targetPath = StringUtil.buildPath(rootPath, moduleName.toUpperCase(Locale.ROOT));
         ConsoleService consoleService = ConsoleService.getInstance();
         VelocityService velocityService = VelocityService.getInstance();
-        File daoFile = new File(buildPath(targetPath, ProjectKey.DAO, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.JAVA)));
-        File daoImplFile = new File(buildPath(targetPath, ProjectKey.DAO, ProjectKey.IMPL, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.IMPL, ProjectKey.JAVA)));
+        File entityCmdFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKey.CMD,  ProjectKey.JAVA)));
+        File entityHandlerFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKey.HANDLER,  ProjectKey.JAVA)));
+        File daoFile = new File(StringUtil.buildPath(targetPath, ProjectKey.DAO, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.JAVA)));
+        File voFile = new File(StringUtil.buildPath(targetPath, ProjectKey.MODEL, ProjectKey.IMPL, StringUtil.toUpper(table.getName(), ProjectKey.VO,  ProjectKey.JAVA)));
+        File entityResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.RESPONSE,  ProjectKey.JAVA)));
+        File helperFile = new File(StringUtil.buildPath(targetPath, ProjectKey.HELPER, StringUtil.toUpper(table.getName(), ProjectKey.PUSH,ProjectKey.HELPER, ProjectKey.JAVA)));
+        File daoImplFile = new File(StringUtil.buildPath(targetPath, ProjectKey.DAO, ProjectKey.IMPL, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.IMPL, ProjectKey.JAVA)));
+        File entityDeleteResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.DELETE,ProjectKey.RESPONSE,  ProjectKey.JAVA)));
+        File entityRewardResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.REWARD,ProjectKey.RESPONSE,  ProjectKey.JAVA)));
         if (table.isMultiEntity()) {
             fileMap.put(ProjectKey.MULTI_ENTITY_TEMPLATE, daoFile);
             fileMap.put(ProjectKey.MULTI_ENTITY_IMPL_TEMPLATE, daoImplFile);
@@ -73,6 +80,13 @@ public class TableScannerAction extends AnAction {
             fileMap.put(ProjectKey.SINGLE_ENTITY_TEMPLATE, daoFile);
             fileMap.put(ProjectKey.SINGLE_ENTITY_IMPL_TEMPLATE, daoImplFile);
         }
+        fileMap.put(ProjectKey.ENTITY_VO_TEMPLATE,voFile);
+        fileMap.put(ProjectKey.PUSH_HELP_TEMPLATE,helperFile);
+        fileMap.put(ProjectKey.ENTITY_CMD_TEMPLATE,entityCmdFile);
+        fileMap.put(ProjectKey.ENTITY_HANDLER_TEMPLATE,entityHandlerFile);
+        fileMap.put(ProjectKey.ENTITY_RESPONSE_TEMPLATE,entityResponseFile);
+        fileMap.put(ProjectKey.ENTITY_REWARD_RESPONSE_TEMPLATE,entityRewardResponseFile);
+        fileMap.put(ProjectKey.ENTITY_DELETE_RESPONSE_TEMPLATE,entityDeleteResponseFile);
         fileMap.forEach((fileName, file) -> {
             try {
                 FileUtil.writeToFile(file, velocityService.execute(fileName, table));
@@ -83,13 +97,7 @@ public class TableScannerAction extends AnAction {
         });
     }
 
-    private String buildPath(String rootPath, String... args) {
-        StringBuilder builder = new StringBuilder(rootPath);
-        for (String arg : args) {
-            builder.append("\\").append(arg);
-        }
-        return builder.toString();
-    }
+
 
     @Nullable
     private String getRootPath(PsiJavaFile file) {
@@ -148,8 +156,9 @@ public class TableScannerAction extends AnAction {
             }
             if (typeAlias != null && !"\"\"".equals(typeAlias.getText())) {
                 field.setName(typeAlias.getText());
-                field.setDescription(getChineseCharacter(PSIUtil.getDescription(classField.getDocComment())));
+                field.setDescription(StringUtil.getChineseCharacter(PSIUtil.getDescription(classField.getDocComment())));
                 field.setTypeAlias("TEXT");
+                field.setAlias(classField.getType().getPresentableText());
                 tableField.add(field);
                 continue;
             }
@@ -169,6 +178,7 @@ public class TableScannerAction extends AnAction {
                     field.setTypeAlias("TEXT");
                     break;
             }
+            field.setAlias(classField.getType().getPresentableText());
             field.setDescription(PSIUtil.getDescription(classField.getDocComment()));
             tableField.add(field);
         }
@@ -192,20 +202,7 @@ public class TableScannerAction extends AnAction {
         instance.printInfo(table.toString());
     }
 
-    private String getChineseCharacter(String value) {
-        if (value.length() < 6) {
-            return value;
-        }
-        StringBuilder builder = new StringBuilder();
-        for (char c : value.toCharArray()) {
-            if (c > 123) {
-                builder.append(c);
-            } else {
-                break;
-            }
-        }
-        return builder.toString();
-    }
+
 
 
 }

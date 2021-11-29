@@ -1,0 +1,26 @@
+package cn.daxiang.lyltd.gameserver.module.${table.name}.response;
+
+import cn.daxiang.lyltd.gameserver.module.${table.name}.model.vo.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO;
+
+import java.util.Collection;
+
+/**
+ * ${table.comment}响应
+ *
+ * @author $!{author}
+ * @since ${now}
+ */
+public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response {
+
+    private Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO>  entities;
+
+    public static ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response valueOf(Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO> entities) {
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response response = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response();
+        response.entities = entities;
+        return response;
+    }
+
+    public Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO> get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}s() {
+        return entities;
+    }
+}

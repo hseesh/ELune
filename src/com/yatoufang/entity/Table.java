@@ -2,6 +2,7 @@ package com.yatoufang.entity;
 
 
 import com.yatoufang.templet.DBQueueType;
+import com.yatoufang.utils.StringUtil;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ import java.util.List;
 public class Table {
 
     private String name;
+
+    private String alias;
 
     private String comment;
 
@@ -39,6 +42,7 @@ public class Table {
                 this.dbQueueType = DBQueueType.IMPORTANT;
                 break;
         }
+        this.alias = StringUtil.toUpperCaseWithUnderLine(this.name);
     }
 
     public boolean isMultiEntity() {
@@ -95,6 +99,14 @@ public class Table {
 
     public void setDbQueueType(DBQueueType dbQueueType) {
         this.dbQueueType = dbQueueType;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     @Override

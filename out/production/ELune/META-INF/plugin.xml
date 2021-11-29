@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>com.yatoufang.hse.code.generate</id>
+  <id>com.yatoufang.hse.code.generate.scanner</id>
   <name>Lune</name>
   <version>1.04</version>
   <vendor email="gong-huang@qq.com" url="https://github.com/hseesh">gonghuang</vendor>
@@ -63,6 +63,17 @@
   <depends config-file="depends.xml" optional="true">com.intellij.java</depends>
   <depends config-file="module.xml" optional="true">com.intellij.modules.java</depends>
 
+  <actions>
+    <!--    <action id="com.yatoufang.code.generator.scanner" class="com.yatoufang.action.TableScannerAction" text="Scanner">-->
+    <!--      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>-->
+    <!--    </action>-->
+
+    <action id="com.yatoufang.action.TableScannerAction" class="com.yatoufang.action.TableScannerAction" text="Scanner">
+      <add-to-group group-id="HelpMenu" anchor="after" relative-to-action="About"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="alt M"/>
+    </action>
+  </actions>
+
 
   <extensions defaultExtensionNs="com.intellij">
 
@@ -74,13 +85,6 @@
 
     <postStartupActivity implementation="com.yatoufang.action.StartUpAction"/>
 
-    <dom.fileDescription implementation="com.yatoufang.config.XmlDescription"/>
   </extensions>
-
-  <actions>
-    <action id="com.yatoufang.code.generator.scanner" class="com.yatoufang.action.TableScannerAction" text="Scanner">
-      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>
-    </action>
-  </actions>
 
 </idea-plugin>

@@ -1,0 +1,26 @@
+package cn.daxiang.lyltd.gameserver.module.${table.name}.response;
+
+import cn.daxiang.shared.reward.RewardResult;
+
+/**
+ * ${table.comment}奖励结果响应
+ *
+ * @author CharonWang
+ * @date 2020/6/18
+ */
+public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}RewardResultResponse {
+    /**
+     * 奖励结果
+     */
+    private RewardResult rewardResult;
+
+    public static ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}RewardResultResponse valueOf(RewardResult rewardResult) {
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}RewardResultResponse response = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}RewardResultResponse();
+        response.rewardResult = rewardResult;
+        return response;
+    }
+
+    public RewardResult getRewardResult() {
+        return rewardResult;
+    }
+}

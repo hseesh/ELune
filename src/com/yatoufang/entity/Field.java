@@ -1,5 +1,7 @@
 package com.yatoufang.entity;
 
+import com.yatoufang.utils.StringUtil;
+
 /**
  * @author GongHuang（hse）
  * @since 2021/11/8 13:09
@@ -34,6 +36,14 @@ public class Field extends Param{
 
     public void setForeignKey(String tag) {
         isForeignKey = Boolean.parseBoolean(tag);
+    }
+
+    public String getTypeString(){
+        return "get" + StringUtil.getUpperCaseVariable(this.getAlias());
+    }
+
+    public String setTypeString(){
+        return "set" + StringUtil.getUpperCaseVariable(this.getAlias());
     }
 
     @Override

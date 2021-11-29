@@ -18,9 +18,13 @@ public interface ProjectKey {
 
     String MODULE = "module";
 
+    String MODEL = "model";
+
     String CORE = "core";
 
     String DAO = "dao";
+
+    String VO  = "vO";
 
     String IMPL = "impl";
 
@@ -28,7 +32,13 @@ public interface ProjectKey {
 
     String REQUEST = "request";
 
+    String DELETE = "delete";
+
+    String REWARD = "reward";
+
     String RESPONSE = "response";
+
+    String PUSH = "push";
 
     String JAVA = ".java";
 
@@ -37,4 +47,14 @@ public interface ProjectKey {
     String MULTI_ENTITY_IMPL_TEMPLATE = "/templates/MultiDaoImplTemplate.vm";
     String SINGLE_ENTITY_IMPL_TEMPLATE = "/templates/SingleDaoImplTemplate.vm";
 
+    String PUSH_HELP_TEMPLATE = "/templates/PushHelperTemplate.vm";
+    String ENTITY_VO_TEMPLATE = "/templates/EntityVO.vm";
+    String ENTITY_REWARD_RESPONSE_TEMPLATE = "/templates/EntityRewardResultResponse.vm";
+    String ENTITY_RESPONSE_TEMPLATE = "/templates/EntityResponse.vm";
+    String ENTITY_DELETE_RESPONSE_TEMPLATE = "/templates/EntityDeleteResponse.vm";
+    String ENTITY_CMD_TEMPLATE = "/templates/EntityCmd.vm";
+    String ENTITY_HANDLER_TEMPLATE = "/templates/EntityHandler.vm";
+
+    String CMD = "cmd";
+    String HANDLER = "handler";
 }
