@@ -17,11 +17,11 @@ import java.util.List;
  * @author hse
  * @Date: 2021/2/3
  */
-@State(
-        name = "com.yatoufang.config.VariableTemplate",
-        storages = {@Storage("com.yatoufang.VariableTemplate.xml")}
-)
-public class VariableTemplateState implements PersistentStateComponent<VariableTemplateState> {
+//@State(
+//        name = "com.yatoufang.config.VariableTemplate",
+//        storages = {@Storage("com.yatoufang.VariableTemplate.xml")}
+//)
+public class VariableTemplateState  {
 
     public List<Param> params;
 
@@ -34,13 +34,12 @@ public class VariableTemplateState implements PersistentStateComponent<VariableT
         return service;
     }
 
-    @Nullable
-    @Override
+
     public VariableTemplateState getState() {
         return this;
     }
 
-    @Override
+
     public void loadState(@NotNull VariableTemplateState state) {
         XmlSerializerUtil.copyBean(state, this);
     }

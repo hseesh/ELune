@@ -3,8 +3,8 @@ package cn.daxiang.lyltd.gameserver.module.${table.name}.dao.impl;
 import cn.daxiang.framework.database.SingleEntity;
 import cn.daxiang.framework.database.dao.SingleEntityDaoImpl;
 import cn.daxiang.framework.identity.IdentiyKey;
-import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()};
-import cn.daxiang.lyltd.gameserver.module.${table.name}.dao.Idol${table.name.substring(0, 1).toUpperCase()};
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
+import cn.daxiang.lyltd.gameserver.module.${table.name}.dao.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao;
 import org.springframework.stereotype.Component;
 
 /**
@@ -26,12 +26,13 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
 
     @Override
     public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, long targetId) {
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = this.getMultiEnity(actorId, IdentiyKey.build(targetId));
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}();
+        this.updateQueue(entity);
         return entity;
     }
 
     @Override
-    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.valueOf} {
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}${table.valueOf} {
         long entityId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
         ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf${table.valueOf};
         this.updateQueue(entity);

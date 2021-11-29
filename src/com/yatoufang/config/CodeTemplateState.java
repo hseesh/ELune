@@ -15,11 +15,11 @@ import java.util.HashMap;
  * @author hse
  * @Date: 2021/2/3
  */
-@State(
-        name = "com.yatoufang.config.CodeTemplate",
-        storages = {@Storage("com.yatoufang.CodeTemplate.xml")}
-)
-public class CodeTemplateState implements PersistentStateComponent<CodeTemplateState> {
+//@State(
+//        name = "com.yatoufang.config.CodeTemplate",
+//        storages = {@Storage("com.yatoufang.CodeTemplate.xml")}
+//)
+public class CodeTemplateState{
 
     public HashMap<String, String> codeMap;
 
@@ -34,13 +34,10 @@ public class CodeTemplateState implements PersistentStateComponent<CodeTemplateS
     }
 
 
-    @Nullable
-    @Override
     public CodeTemplateState getState() {
         return this;
     }
 
-    @Override
     public void loadState(@NotNull CodeTemplateState state) {
         XmlSerializerUtil.copyBean(state, this);
     }
