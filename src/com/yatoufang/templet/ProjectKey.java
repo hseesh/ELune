@@ -24,7 +24,7 @@ public interface ProjectKey {
 
     String DAO = "dao";
 
-    String VO  = "vO";
+    String VO = "vO";
 
     String IMPL = "impl";
 
@@ -37,6 +37,7 @@ public interface ProjectKey {
     String REWARD = "reward";
 
     String RESPONSE = "response";
+    String FACADE = "facade";
 
     String PUSH = "push";
 
@@ -54,6 +55,8 @@ public interface ProjectKey {
     String ENTITY_DELETE_RESPONSE_TEMPLATE = "/templates/EntityDeleteResponse.vm";
     String ENTITY_CMD_TEMPLATE = "/templates/EntityCmd.vm";
     String ENTITY_HANDLER_TEMPLATE = "/templates/EntityHandler.vm";
+    String ENTITY_FACADE_TEMPLATE = "/templates/EntityFacadeTemplate.vm";
+    String ENTITY_FACADE_IMPL_TEMPLATE = "/templates/EntityFacadeImplTemplate.vm";
 
     String CMD = "cmd";
     String HANDLER = "handler";

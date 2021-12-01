@@ -67,9 +67,11 @@ public class TableScannerAction extends AnAction {
         File entityCmdFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKey.CMD,  ProjectKey.JAVA)));
         File entityHandlerFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKey.HANDLER,  ProjectKey.JAVA)));
         File daoFile = new File(StringUtil.buildPath(targetPath, ProjectKey.DAO, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.JAVA)));
+        File entityFacadeFile = new File(StringUtil.buildPath(targetPath, ProjectKey.FACADE, StringUtil.toUpper(table.getName(), ProjectKey.FACADE,  ProjectKey.JAVA)));
         File voFile = new File(StringUtil.buildPath(targetPath, ProjectKey.MODEL, ProjectKey.IMPL, StringUtil.toUpper(table.getName(), ProjectKey.VO,  ProjectKey.JAVA)));
         File entityResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.RESPONSE,  ProjectKey.JAVA)));
         File helperFile = new File(StringUtil.buildPath(targetPath, ProjectKey.HELPER, StringUtil.toUpper(table.getName(), ProjectKey.PUSH,ProjectKey.HELPER, ProjectKey.JAVA)));
+        File entityFacadeImplFile = new File(StringUtil.buildPath(targetPath, ProjectKey.FACADE, StringUtil.toUpper(table.getName(), ProjectKey.FACADE, ProjectKey.IMPL, ProjectKey.JAVA)));
         File daoImplFile = new File(StringUtil.buildPath(targetPath, ProjectKey.DAO, ProjectKey.IMPL, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.IMPL, ProjectKey.JAVA)));
         File entityDeleteResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.DELETE,ProjectKey.RESPONSE,  ProjectKey.JAVA)));
         File entityRewardResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.REWARD,ProjectKey.RESPONSE,  ProjectKey.JAVA)));
@@ -83,8 +85,10 @@ public class TableScannerAction extends AnAction {
         fileMap.put(ProjectKey.ENTITY_VO_TEMPLATE,voFile);
         fileMap.put(ProjectKey.PUSH_HELP_TEMPLATE,helperFile);
         fileMap.put(ProjectKey.ENTITY_CMD_TEMPLATE,entityCmdFile);
+        fileMap.put(ProjectKey.ENTITY_FACADE_TEMPLATE,entityFacadeFile);
         fileMap.put(ProjectKey.ENTITY_HANDLER_TEMPLATE,entityHandlerFile);
         fileMap.put(ProjectKey.ENTITY_RESPONSE_TEMPLATE,entityResponseFile);
+        fileMap.put(ProjectKey.ENTITY_FACADE_IMPL_TEMPLATE,entityFacadeImplFile);
         fileMap.put(ProjectKey.ENTITY_REWARD_RESPONSE_TEMPLATE,entityRewardResponseFile);
         fileMap.put(ProjectKey.ENTITY_DELETE_RESPONSE_TEMPLATE,entityDeleteResponseFile);
         fileMap.forEach((fileName, file) -> {

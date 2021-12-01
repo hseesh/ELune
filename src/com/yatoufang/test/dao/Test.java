@@ -3,6 +3,8 @@ package com.yatoufang.test.dao;
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
+import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.utils.DateUtil;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
@@ -27,7 +29,9 @@ public class Test {
         ido.setComment("神像");
         ido.setPrimaryKey(new Field("idoId"));
         ido.setValueOf("(String name, String alias, String typeAlias)");
+        context.put("now", DateUtil.now());
         context.put("table", ido);
+        context.put("author","GongHuang(hse)");
 
 
         StringWriter stringWriter = new StringWriter();
@@ -36,7 +40,7 @@ public class Test {
         try {
             //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/SingleDaoTemplate.vm")));
             //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/MultiDaoImplTemplate.vm")));
-            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/SingleDaoImplTemplate.vm")));
+            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKey.ENTITY_FACADE_IMPL_TEMPLATE)));
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }

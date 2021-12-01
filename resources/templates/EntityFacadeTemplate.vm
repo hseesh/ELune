@@ -1,0 +1,118 @@
+package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.facade;
+
+import cn.daxiang.framework.result.CollectionResult;
+import cn.daxiang.framework.result.Result;
+import cn.daxiang.framework.result.TResult;
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
+import cn.daxiang.lyltd.gameserver.core.oss.type.OperationType;
+import cn.daxiang.shared.reward.RewardObject;
+import cn.daxiang.shared.reward.RewardResult;
+
+import java.util.Collection;
+import java.util.Map;
+
+/**
+ * ${table.comment}
+ *
+ * @author $!{author}
+ * @since ${now}
+ */
+public interface ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Facade {
+
+    /**
+     * 获取${table.comment}列表
+     *
+     * @param actorId
+     * @return
+     */
+    Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}> get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}List(long actorId);
+
+    /**
+     * 获取${table.comment}信息
+     *
+     * @param actorId
+     * @param ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Id
+     * @return
+     */
+    TResult<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}> get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, long ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Id);
+
+    /**
+     * 创建${table.comment}
+     *
+     * @param actorId
+     * @param data
+     * @param operationType
+     * @return
+     */
+    CollectionResult<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}> create${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, Map<Integer, Long> data, OperationType operationType);
+
+    /**
+     * ${table.comment}升级
+     *
+     * @param actorId
+     * @param id
+     * @return
+     */
+    Result ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Level(long actorId, long id);
+
+    /**
+     * ${table.comment}升星
+     *
+     * @param actorId
+     * @param id
+     * @param devourIds
+     * @return
+     */
+    Result ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}StarLevel(long actorId, long id, Collection<Long> devourIds);
+
+
+    /**
+     *  ${table.comment}升阶
+     * @param actorId  角色Id
+     * @param id ${table.comment}Id
+     * @param goods 消耗品
+     * @param ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}s 被吞噬的宠物
+     * @return
+     */
+    Result ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}AdvanceLevel(long actorId, long id, Map<Long, Integer> goods,Collection<Long> ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}s);
+                        
+
+    /**
+     * ${table.comment}熔炼预览
+     *
+     * @param actorId
+     * @param ids
+     * @param fragmentIds
+     * @return
+     */
+    CollectionResult<RewardObject> smeltPreview(long actorId, Collection<Long> ids, Collection<Long> fragmentIds);
+
+    /**
+     * ${table.comment}熔炼
+     *
+     * @param actorId
+     * @param ids
+     * @param fragmentIds
+     * @return
+     */
+    TResult<RewardResult> smelt(long actorId, Collection<Long> ids, Collection<Long> fragmentIds);
+
+    /**
+     * ${table.comment}重生预览
+     *
+     * @param actorId
+     * @param id
+     * @return
+     */
+    CollectionResult<RewardObject> rebirthPreview(long actorId, long id);
+
+    /**
+     * ${table.comment}重生
+     *
+     * @param actorId
+     * @param id
+     * @return
+     */
+    TResult<RewardResult> rebirth(long actorId, long id);
+
+}

@@ -30,17 +30,20 @@ public class Table {
 
     public Table(String name, String type) {
         this.name = name.replace("\"","");
-        type = type.substring(type.indexOf("."));
-        switch (type){
-            case "NONE":
-                this.dbQueueType = DBQueueType.NONE;
-                break;
-            case "DEFAULT":
-                this.dbQueueType = DBQueueType.DEFAULT;
-                break;
-            default:
-                this.dbQueueType = DBQueueType.IMPORTANT;
-                break;
+        int indexOf = type.indexOf(".");
+        if(indexOf >= 0){
+            type = type.substring(indexOf);
+            switch (type){
+                case "NONE":
+                    this.dbQueueType = DBQueueType.NONE;
+                    break;
+                case "DEFAULT":
+                    this.dbQueueType = DBQueueType.DEFAULT;
+                    break;
+                default:
+                    this.dbQueueType = DBQueueType.IMPORTANT;
+                    break;
+            }
         }
         this.alias = StringUtil.toUpperCaseWithUnderLine(this.name);
     }
