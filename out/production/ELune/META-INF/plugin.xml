@@ -1,6 +1,6 @@
 <idea-plugin>
   <id>com.yatoufang.hse.code.generate.scanner</id>
-  <name>Lune</name>
+  <name>ELune</name>
   <version>1.04</version>
   <vendor email="gong-huang@qq.com" url="https://github.com/hseesh">gonghuang</vendor>
 
@@ -64,14 +64,12 @@
   <depends config-file="module.xml" optional="true">com.intellij.modules.java</depends>
 
   <actions>
-    <!--    <action id="com.yatoufang.code.generator.scanner" class="com.yatoufang.action.TableScannerAction" text="Scanner">-->
-    <!--      <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>-->
-    <!--    </action>-->
-
-    <action id="com.yatoufang.action.TableScannerAction" class="com.yatoufang.action.TableScannerAction" text="Scanner">
-      <add-to-group group-id="HelpMenu" anchor="after" relative-to-action="About"/>
-      <keyboard-shortcut keymap="$default" first-keystroke="alt M"/>
-    </action>
+        <action id="com.yatoufang.code.generator.scanner" class="com.yatoufang.action.TableScannerAction" text="Scanner">
+          <add-to-group group-id="EditorPopupMenu" anchor="after" relative-to-action="$Paste"/>
+        </action>
+      <action id="com.yatoufang.hse.Elune.NewTable" class="com.yatoufang.action.NewTableAction" text="New Table">
+          <add-to-group group-id="NewGroup" anchor="last"/>
+      </action>
   </actions>
 
 

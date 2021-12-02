@@ -1,6 +1,7 @@
 package com.yatoufang.entity;
 
 import com.intellij.psi.PsiType;
+import com.yatoufang.utils.StringUtil;
 
 /**
  * @author hse
@@ -16,6 +17,8 @@ public class Param {
     private boolean required;
     private String defaultValue;
     private String description;
+    private String setString;
+    private String getString;
 
 
     public Param(String paramName) {
@@ -23,6 +26,7 @@ public class Param {
         this.description = "";
         this.name = paramName;
         this.alias = paramName;
+        initGetSetString();
     }
 
     public Param(String name, String typeAlias, boolean required, String defaultValue, String description) {
@@ -44,6 +48,19 @@ public class Param {
         this.name = paramName;
         this.type = paramType;
         this.typeAlias = paramType.getPresentableText();
+    }
+
+    public String getSetString() {
+        return setString;
+    }
+
+    public String getGetString() {
+        return getString;
+    }
+
+    private void initGetSetString() {
+        this.getString = "get" + StringUtil.getUpperCaseVariable(this.getAlias());
+        this.setString = "set" + StringUtil.getUpperCaseVariable(this.getAlias());
     }
 
     public String getTypeAlias() {
@@ -71,7 +88,7 @@ public class Param {
     }
 
     public void setName(String name) {
-        this.name = name.replace("\"","");
+        this.name = name.replace("\"", "");
     }
 
     public PsiType getType() {

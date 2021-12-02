@@ -21,7 +21,7 @@ public interface ${table.name.substring(0, 1).toUpperCase()}${table.name.substri
     /**
     * 获取${table.comment}
     */
-    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long id,, long targetId);
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long id, long targetId);
 
     /**
     * 删除${table.comment}·

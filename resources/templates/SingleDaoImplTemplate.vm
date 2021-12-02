@@ -26,17 +26,16 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
 
     @Override
     public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, long targetId) {
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}();
-        this.updateQueue(entity);
-        return entity;
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name} = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}();
+        this.updateQueue(${table.name});
+        return ${table.name};
     }
 
     @Override
-    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}${table.valueOf} {
-        long entityId = this.idGenerator.increment(IdentiyKey.build(this.getClass()));
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf${table.valueOf};
-        this.updateQueue(entity);
-        return entity;
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.valueOf};
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name} = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf(#foreach($item in $table.fields)${item.name}#if($foreach.hasNext),#end#end);
+        this.updateQueue(${table.name});
+        return ${table.name};
     }
 
     @Override

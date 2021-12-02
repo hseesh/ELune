@@ -33,6 +33,7 @@ public interface ProjectKey {
     String REQUEST = "request";
 
     String DELETE = "delete";
+    String RESULT = "result";
 
     String REWARD = "reward";
 
@@ -60,4 +61,6 @@ public interface ProjectKey {
 
     String CMD = "cmd";
     String HANDLER = "handler";
+    String ACTOR_ID = "actorId";
+    String UPDATE_TIME = "updateTime";
 }

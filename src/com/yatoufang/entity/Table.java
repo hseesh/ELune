@@ -24,6 +24,8 @@ public class Table {
 
     private String valueOf;
 
+    private String valueOfAlias;
+
     private DBQueueType dbQueueType;
 
     private boolean multiEntity;
@@ -110,6 +112,10 @@ public class Table {
 
     public void setAlias(String alias) {
         this.alias = alias;
+    }
+
+    public String getValueOfAlias() {
+        return valueOfAlias;
     }
 
     @Override

@@ -40,7 +40,7 @@ public class Test {
         try {
             //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/SingleDaoTemplate.vm")));
             //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/MultiDaoImplTemplate.vm")));
-            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKey.ENTITY_FACADE_IMPL_TEMPLATE)));
+            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKey.SINGLE_ENTITY_IMPL_TEMPLATE)));
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }

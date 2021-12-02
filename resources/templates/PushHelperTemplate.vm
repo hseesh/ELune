@@ -4,7 +4,7 @@ import cn.daxiang.framework.protocal.DataPacket;
 import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
 import cn.daxiang.lyltd.gameserver.core.netty.channel.PlayerChannel;
 import cn.daxiang.lyltd.gameserver.module.${table.name}.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Cmd;
-import cn.daxiang.lyltd.gameserver.module.${table.name}.model.vo.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO;
+import cn.daxiang.lyltd.gameserver.module.${table.name}.model.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO;
 import cn.daxiang.lyltd.gameserver.module.${table.name}.response.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DeleteResponse;
 import cn.daxiang.lyltd.gameserver.module.${table.name}.response.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response;
 import cn.daxiang.shared.ModuleName;
@@ -21,10 +21,10 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
     /**
      * 推送${table.comment}信息
      *
-     * @param entity
+     * @param ${table.name}
      */
-    public static void push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity) {
-        push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(entity.findFkId(), Lists.newArrayList(entity));
+    public static void push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name}) {
+        push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(${table.name}.findFkId(), Lists.newArrayList(${table.name}));
     }
 
     /**
@@ -33,12 +33,12 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
      * @param actorId
      * @param ${table.name}List
      */
-    public static void push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}> entityList) {
-        Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO> entityVOList = Lists.newArrayList();
-        for (${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} entity : entityList) {
-            entityVOList.add(${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO.valueOf(entity));
+    public static void push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}> ${table.name}List) {
+        Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO> ${table.name}VOList = Lists.newArrayList();
+        for (${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name} : ${table.name}List) {
+            ${table.name}VOList.add(${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO.valueOf(${table.name}));
         }
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response response = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response.valueOf(entityVOList);
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response response = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response.valueOf(${table.name}VOList);
         DataPacket packet = DataPacket.valueOf(ModuleName.${table.name.toUpperCase()}, ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Cmd.PUSH_${table.name.toUpperCase()}, response);
         PlayerChannel.push(actorId, packet);
     }
