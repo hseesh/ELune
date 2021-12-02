@@ -1,5 +1,6 @@
 package com.yatoufang.test.dao;
 
+import com.google.common.collect.Lists;
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
@@ -12,6 +13,7 @@ import org.apache.velocity.runtime.log.NullLogChute;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -29,6 +31,13 @@ public class Test {
         ido.setComment("神像");
         ido.setPrimaryKey(new Field("idoId"));
         ido.setValueOf("(String name, String alias, String typeAlias)");
+
+        Field field = new Field("level");
+        field.setAlias("int");
+        ArrayList<Field> objects = new ArrayList<>();
+        objects.add(field);
+        ido.setFields(objects);
+
         context.put("now", DateUtil.now());
         context.put("table", ido);
         context.put("author","GongHuang(hse)");
@@ -40,7 +49,8 @@ public class Test {
         try {
             //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/SingleDaoTemplate.vm")));
             //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/MultiDaoImplTemplate.vm")));
-            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKey.SINGLE_ENTITY_IMPL_TEMPLATE)));
+            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKey.MULTI_TEMPLATE)));
+           // text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKey.SINGLE_ENTITY_IMPL_TEMPLATE)));
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }

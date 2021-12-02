@@ -1,0 +1,59 @@
+package cn.daxiang.lyltd.gameserver.core.database.table;
+
+import cn.daxiang.framework.database.SingleEntity;
+import cn.daxiang.framework.database.annotation.Column;
+import cn.daxiang.framework.database.annotation.DBQueueType;
+import cn.daxiang.framework.database.annotation.Table;
+import cn.daxiang.framework.identity.IdentiyKey;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ *
+ *
+ * @author ${author}
+ * @since ${now}
+ */
+@Table(name = "${table.name}", type = DBQueueType.IMPORTANT)
+public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} extends SingleEntity<Long> {
+
+   /**
+    * 角色ID
+    */
+    @Column(pk = true)
+    private long actorId;
+
+   #foreach($item in $table.fields)/**
+    * ${item.description}
+    */
+    @Column
+    private ${item.alias} ${item.name};
+    #end
+
+
+    public static ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} valueOf${table.valueOf} {
+        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name}  = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}();
+    #foreach($item in $table.fields)
+    ${table.name}.${item.name} = ${table.name}.${item.getString}();
+    #end
+    return ${table.name} ;
+    }
+
+    @Override
+    public IdentiyKey findPkId() {
+        return IdentiyKey.build(actorId);
+    }
+
+    @Override
+    public void setPkId(IdentiyKey pk) {
+        this.actorId = pk.getFirstLongId();
+    }
+
+    @Override
+    public List<IdentiyKey> keyLists() {
+        return Lists.newArrayList(findPkId());
+    }
+}

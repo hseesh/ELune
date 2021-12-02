@@ -128,4 +128,15 @@ public class Table {
         builder.append(")ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='").append(this.comment).append("';\n");
         return builder.toString();
     }
+
+    public void addFields(Field field) {
+        if(field == null){
+            return;
+        }
+        if(fields.contains(field)){
+            fields.remove(field);
+        }else{
+            fields.add(field);
+        }
+    }
 }

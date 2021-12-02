@@ -21,6 +21,9 @@ public interface ProjectKey {
     String MODEL = "model";
 
     String CORE = "core";
+    String GAME_SERVER = "gameserver";
+    String DATABASE = "database";
+    String PROJECT = "lyltd";
 
     String DAO = "dao";
 
@@ -48,6 +51,8 @@ public interface ProjectKey {
     String MULTI_ENTITY_TEMPLATE = "/templates/MultiDaoTemplate.vm";
     String MULTI_ENTITY_IMPL_TEMPLATE = "/templates/MultiDaoImplTemplate.vm";
     String SINGLE_ENTITY_IMPL_TEMPLATE = "/templates/SingleDaoImplTemplate.vm";
+    String SINGLE_TEMPLATE = "/templates/SingleEntityTemplate.vm";
+    String MULTI_TEMPLATE = "/templates/MultiEntityTemplate.vm";
 
     String PUSH_HELP_TEMPLATE = "/templates/PushHelperTemplate.vm";
     String ENTITY_VO_TEMPLATE = "/templates/EntityVO.vm";

@@ -1,28 +1,34 @@
 package com.yatoufang.ui;
 
 
+import com.google.common.collect.Maps;
+import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.psi.JavaPsiFacade;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementFactory;
-import com.intellij.psi.PsiMethod;
-import com.intellij.psi.codeStyle.CodeStyleManager;
+import com.intellij.openapi.ui.ComboBox;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.ui.EditorTextField;
-import com.yatoufang.config.CodeTemplateState;
-import com.yatoufang.config.VariableTemplateState;
+import com.yatoufang.core.ConsoleService;
 import com.yatoufang.core.VelocityService;
+import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Param;
-import com.yatoufang.entity.TemplateMethod;
+import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Application;
-import com.yatoufang.utils.PSIUtil;
+import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.utils.ExceptionUtil;
+import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author hse
@@ -32,33 +38,38 @@ public class TableTemplaterDialog {
 
     private JSplitPane rootPane;
 
+    private ComboBox<String> ketType;
+    private JTextField tableName;
+
     private EditorTextField editor;
 
-    private final List<String> result;
 
     private VelocityService velocityService;
 
+    private Map<String, Field> fieldMap = Maps.newHashMap();
+
+    private Table table;
+
 
     public TableTemplaterDialog(FileType fileType) {
-        result = Lists.newArrayList();
-        ArrayList<String> fields = Lists.newArrayList();
-        fields.add("actorId");
-        fields.add("advanceLevel");
-        fields.add("startLevel");
-        fields.add("level");
-        drawPanel(fields, fileType);
+        initData();
+        drawPanel(fileType);
         velocityService = VelocityService.getInstance();
     }
 
-    private void drawPanel(List<String> formObjects,FileType fileType) {
+    private void drawPanel(FileType fileType) {
 
         rootPane = new JSplitPane();
 
-        editor = new EditorTextField(Application.project, fileType);
+        editor = new EditorTextField(Application.project, JavaClassFileType.INSTANCE);
         editor.setFont(new Font(null, Font.PLAIN, 15));
 
+        String[] listData = new String[]{"Multi Primary Key", "Single Primary Key"};
+        ketType = new ComboBox<>(listData);
 
-        JLabel entityTitle = new JLabel("Current File Objects");
+        tableName = new JTextField();
+        tableName.setSize(new Dimension(50, 100));
+
         JButton execute = new JButton("Execute");
 
         Box content = Box.createVerticalBox();
@@ -71,31 +82,50 @@ public class TableTemplaterDialog {
         JPanel fieldsPanel = new JPanel();
 
 
-        entityPanel.setPreferredSize(new Dimension(300, ((formObjects.size() / 4) + 1) * 50));
+        entityPanel.setPreferredSize(new Dimension(300, ((table.getFields().size() / 4) + 1) * 50));
 
-        ButtonGroup formObjectsGroup = new ButtonGroup();
+        ArrayList<JCheckBox> formObjectsGroup = Lists.newArrayList();
 
         ActionListener actionListener = event -> {
             Object sourceObject = event.getSource();
-            if (sourceObject instanceof JRadioButton) {
-                JRadioButton radioButton = (JRadioButton) sourceObject;
-                String text = radioButton.getText();
-                if(!result.remove(text)){
-                    result.add(text);
-                }
-            } else if (sourceObject instanceof JButton) {
-                JButton button = (JButton) sourceObject;
-                buttonController(button.getText());
+            if (sourceObject instanceof JCheckBox) {
+                JCheckBox checkBox = (JCheckBox) sourceObject;
+                String text = checkBox.getText();
+                table.addFields(fieldMap.get(text));
+            }else if(sourceObject instanceof JButton){
+                saveFile();
             }
+            calc();
         };
 
+        ketType.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                table.setMultiEntity(ketType.getSelectedIndex() == 0);
+            }
+        });
 
-        drawContent(entityPanel, formObjectsGroup, formObjects, actionListener);
+        tableName.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                String text = tableName.getText();
+                if (text.isEmpty()) {
+                    return;
+                }
+                table.setName(text);
+            }
+        });
+
+
+        drawContent(entityPanel, formObjectsGroup, table.getFields(), actionListener);
 
         execute.addActionListener(actionListener);
 
-        entityTitlePanel.add(entityTitle, BorderLayout.CENTER);
-
+        entityTitlePanel.add(tableName);
+        entityTitlePanel.add(ketType);
 
         content.add(entityTitlePanel);
         content.add(entityPanel);
@@ -128,7 +158,7 @@ public class TableTemplaterDialog {
         }
     }
 
-    private void drawContent(JComponent panel, ArrayList<JCheckBox> checkBoxList, List<Param> params, ActionListener listener) {
+    private void drawContent(JComponent panel, ArrayList<JCheckBox> checkBoxList, List<Field> params, ActionListener listener) {
         for (Param param : params) {
             JCheckBox checkBox = new JCheckBox(getParamInfo(param));
             checkBoxList.add(checkBox);
@@ -145,15 +175,26 @@ public class TableTemplaterDialog {
         }
     }
 
-    private void buttonController(String text) {
-        if ("Execute".equals(text)) {
-            execute();
+
+    private void calc() {
+        String result = "";
+        if(table.isMultiEntity()){
+             result = velocityService.execute(ProjectKey.MULTI_TEMPLATE, table);
+        }else{
+            result = velocityService.execute(ProjectKey.SINGLE_TEMPLATE, table);
         }
+        editor.setText(result);
     }
 
-    private void execute() {
-        System.out.println("params = " + result);
-        editor.setText(result.toString());
+    private void saveFile() {
+        ConsoleService consoleService = ConsoleService.getInstance();
+        File tableFile = new File(StringUtil.buildPath("targetPath", ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.REWARD, ProjectKey.RESULT, ProjectKey.RESPONSE, ProjectKey.JAVA)));
+        try {
+            FileUtil.writeToFile(tableFile, editor.getText());
+            consoleService.print(tableFile.getCanonicalPath() + " created successfully\n");
+        } catch (IOException e) {
+            consoleService.printError(ExceptionUtil.getExceptionInfo(e));
+        }
     }
 
 
@@ -161,5 +202,34 @@ public class TableTemplaterDialog {
         return rootPane;
     }
 
+
+    private void initData() {
+        table = new Table("tableName", "");
+        ArrayList<Field> fields = Lists.newArrayList();
+
+        Field configId = new Field("configId");
+        Field level = new Field("level");
+        Field advanceLevel = new Field("advanceLevel");
+        Field startLevel = new Field("startLevel");
+        Field aptitude = new Field("aptitude");
+        Field advanceExp = new Field("advanceExp");
+        Field exp = new Field("exp");
+        exp.setAlias("int");
+        level.setAlias("int");
+        configId.setAlias("int");
+        aptitude.setAlias("int");
+        startLevel.setAlias("int");
+        advanceExp.setAlias("int");
+        advanceLevel.setAlias("int");
+
+        fieldMap.put(exp.getName(), exp);
+        fieldMap.put(level.getName(), level);
+        fieldMap.put(configId.getName(), configId);
+        fieldMap.put(aptitude.getName(), aptitude);
+        fieldMap.put(startLevel.getName(), startLevel);
+        fieldMap.put(advanceExp.getName(), advanceExp);
+        fieldMap.put(advanceLevel.getName(), advanceLevel);
+
+    }
 
 }
