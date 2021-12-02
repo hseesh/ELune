@@ -107,7 +107,7 @@ public class TableTemplaterDialog {
         rightRootPanel.add(editor);
 
         rootPane.setDividerSize(2);
-        rootPane.setDividerLocation(600);
+        rootPane.setDividerLocation(300);
 
         rootPane.setLeftComponent(leftRootPanel);
         rootPane.setRightComponent(rightRootPanel);
