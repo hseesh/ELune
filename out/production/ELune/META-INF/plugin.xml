@@ -8,45 +8,7 @@
    <p>
     <b>Automatically generate Documentation for JAVA Web API</b><br/>
     <b>Http Test Client</b>
-</p>
-<br/>
-<p>
-    <b>
-        <a href="https://github.com/hseesh/Xdoc">GitHub</a> |
-        <a href="https://github.com/hseesh/Xdoc/issues">Issues</a> |
-    </b>
-</p>
-<br/>
-<p><b>how to use :</b>
-<ul>
-    <li>Http test
-        <ul>
-            <li>select method's name and use keyboard shortcuts alt + M for a specify method(must be a Java method)</li>
-            <li>select other place and use keyboard shortcuts alt + M for a empty http request</li>
-        </ul>
-    </li>
-
-    <li>Generate interface documentation for Java class
-        <ul>
-            <li>selected file-> right-click -> new -> Api Document</li>
-            <li>or use keyboard shortcuts alt + G</li>
-        </ul>
-    </li>
-    <li>Generate interface documentation for a specify Java method
-        <ul>
-            <li>select method's name and use keyboard shortcuts alt + G</li>
-        </ul>
-    </li>
-
-    <li>Custom Your MarkDown Template
-        <ul>
-            <li>File -> setting -> tools -> Document Generator Settings</li>
-        </ul>
-    </li>
-</ul>
-</p>
-<br/>
-<p>
+    </p>
     ]]></description>
 
   <change-notes>

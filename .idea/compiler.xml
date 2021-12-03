@@ -2,7 +2,7 @@
 <project version="4">
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="ELune" options="--add-exports com.fasterxml.aalto/com.intellij.openapi.util.io=ALL-UNNAMED --add-exports com.fasterxml.aalto/com.intellij.icons=ALL-UNNAMED" />
+      <module name="ELune" options="--add-exports com.fasterxml.aalto/com.intellij.openapi.util.io=ALL-UNNAMED --add-exports com.fasterxml.aalto/com.intellij.icons=ALL-UNNAMED --add-exports com.fasterxml.aalto/com.intellij.util.ui=ALL-UNNAMED --add-exports com.fasterxml.aalto/com.intellij.ui=ALL-UNNAMED" />
     </option>
   </component>
 </project>

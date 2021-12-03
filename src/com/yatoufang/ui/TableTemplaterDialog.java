@@ -6,7 +6,10 @@ import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.psi.JavaCodeFragmentFactory;
+import com.intellij.psi.PsiExpressionCodeFragment;
 import com.intellij.ui.EditorTextField;
+import com.intellij.ui.components.JBScrollPane;
 import com.yatoufang.core.ConsoleService;
 import com.yatoufang.core.VelocityService;
 import com.yatoufang.entity.Field;
@@ -26,7 +29,9 @@ import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -60,15 +65,12 @@ public class TableTemplaterDialog {
     private void drawPanel(FileType fileType) {
 
         rootPane = new JSplitPane();
-
-        editor = new EditorTextField(Application.project, JavaClassFileType.INSTANCE);
-        editor.setFont(new Font(null, Font.PLAIN, 15));
+        editor.setFont(new Font(null, Font.PLAIN, 14));
 
         String[] listData = new String[]{"Multi Primary Key", "Single Primary Key"};
         ketType = new ComboBox<>(listData);
 
         tableName = new JTextField();
-        tableName.setSize(new Dimension(50, 100));
 
         JButton execute = new JButton("Execute");
 
@@ -76,15 +78,16 @@ public class TableTemplaterDialog {
 
         Box entityTitlePanel = Box.createHorizontalBox();
 
+
         JPanel entityPanel = new JPanel();
         JPanel leftRootPanel = new JPanel(new BorderLayout());
         JPanel rightRootPanel = new JPanel(new BorderLayout());
-        JPanel fieldsPanel = new JPanel();
-
-
-        entityPanel.setPreferredSize(new Dimension(300, ((table.getFields().size() / 4) + 1) * 50));
 
         ArrayList<JCheckBox> formObjectsGroup = Lists.newArrayList();
+
+        entityPanel.setPreferredSize(new Dimension(300, 1000));
+        rootPane.setDividerSize(2);
+        rootPane.setDividerLocation(300);
 
         ActionListener actionListener = event -> {
             Object sourceObject = event.getSource();
@@ -92,15 +95,17 @@ public class TableTemplaterDialog {
                 JCheckBox checkBox = (JCheckBox) sourceObject;
                 String text = checkBox.getText();
                 table.addFields(fieldMap.get(text));
-            }else if(sourceObject instanceof JButton){
+            } else if (sourceObject instanceof JButton) {
                 saveFile();
+                return;
             }
-            calc();
+            calcResult();
         };
 
         ketType.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 table.setMultiEntity(ketType.getSelectedIndex() == 0);
+                calcResult();
             }
         });
 
@@ -116,11 +121,12 @@ public class TableTemplaterDialog {
                     return;
                 }
                 table.setName(text);
+                calcResult();
             }
         });
 
 
-        drawContent(entityPanel, formObjectsGroup, table.getFields(), actionListener);
+        drawContent(entityPanel, formObjectsGroup, fieldMap.values(), actionListener);
 
         execute.addActionListener(actionListener);
 
@@ -129,15 +135,15 @@ public class TableTemplaterDialog {
 
         content.add(entityTitlePanel);
         content.add(entityPanel);
-        content.add(fieldsPanel);
+        content.add(execute, BorderLayout.NORTH);
 
-        leftRootPanel.add(execute, BorderLayout.SOUTH);
         leftRootPanel.add(content);
 
-        rightRootPanel.add(editor);
+        JBScrollPane scrollPane = new JBScrollPane(editor);
 
-        rootPane.setDividerSize(2);
-        rootPane.setDividerLocation(300);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        rightRootPanel.add(scrollPane);
 
         rootPane.setLeftComponent(leftRootPanel);
         rootPane.setRightComponent(rightRootPanel);
@@ -158,7 +164,7 @@ public class TableTemplaterDialog {
         }
     }
 
-    private void drawContent(JComponent panel, ArrayList<JCheckBox> checkBoxList, List<Field> params, ActionListener listener) {
+    private void drawContent(JComponent panel, ArrayList<JCheckBox> checkBoxList, Collection<Field> params, ActionListener listener) {
         for (Param param : params) {
             JCheckBox checkBox = new JCheckBox(getParamInfo(param));
             checkBoxList.add(checkBox);
@@ -176,11 +182,11 @@ public class TableTemplaterDialog {
     }
 
 
-    private void calc() {
+    private void calcResult() {
         String result = "";
-        if(table.isMultiEntity()){
-             result = velocityService.execute(ProjectKey.MULTI_TEMPLATE, table);
-        }else{
+        if (table.isMultiEntity()) {
+            result = velocityService.execute(ProjectKey.MULTI_TEMPLATE, table);
+        } else {
             result = velocityService.execute(ProjectKey.SINGLE_TEMPLATE, table);
         }
         editor.setText(result);
@@ -205,8 +211,7 @@ public class TableTemplaterDialog {
 
     private void initData() {
         table = new Table("tableName", "");
-        ArrayList<Field> fields = Lists.newArrayList();
-
+        table.setFields(new ArrayList<Field>());
         Field configId = new Field("configId");
         Field level = new Field("level");
         Field advanceLevel = new Field("advanceLevel");
@@ -230,6 +235,22 @@ public class TableTemplaterDialog {
         fieldMap.put(advanceExp.getName(), advanceExp);
         fieldMap.put(advanceLevel.getName(), advanceLevel);
 
+        String text = "";
+        try {
+            InputStream resourceAsStream = VelocityService.class.getResourceAsStream(ProjectKey.MULTI_TEMPLATE);
+            if (resourceAsStream == null) {
+                return;
+            }
+            text = FileUtil.loadTextAndClose(resourceAsStream);
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+        //PsiExpressionCodeFragment code = JavaCodeFragmentFactory.createExpressionCodeFragment(text, null, null, true);
+        editor = new EditorTextField();
+        editor.setText(text);
+        editor.setEnabled(true);
+        //editor = new EditorTextField(text);
     }
 
 }
