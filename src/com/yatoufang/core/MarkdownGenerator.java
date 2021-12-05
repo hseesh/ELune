@@ -1,4 +1,4 @@
-package com.yatoufang.templet;
+package com.yatoufang.core;
 /**
  * @Auther: hse
  * @Date: 2021/1/23

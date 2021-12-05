@@ -7,14 +7,14 @@ import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.yatoufang.core.ConsoleService;
-import com.yatoufang.core.VelocityService;
+import com.yatoufang.service.ConsoleService;
+import com.yatoufang.service.VelocityService;
 import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Annotations;
-import com.yatoufang.templet.NotifyService;
+import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.ProjectKey;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
@@ -41,9 +41,6 @@ public class TableScannerAction extends AnAction {
         }
 
         String rootPath = getRootPath(file);
-        System.out.println("rootPath = " + rootPath);
-
-
         PsiClass[] classes = file.getClasses();
         for (PsiClass aClass : classes) {
             Table table = getTable(aClass);

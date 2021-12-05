@@ -11,7 +11,7 @@ import com.yatoufang.entity.HttpState;
 import com.yatoufang.core.Parser;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.templet.Application;
-import com.yatoufang.templet.NotifyService;
+import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.ui.ExecuteDialog;
 

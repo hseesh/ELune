@@ -26,6 +26,8 @@ public class Application {
                     "Collection,Vector,List,ArrayList,LinkedList,Set,HashSet,LinkedHashSet,TreeSet,Map,HashMap,TreeMap,"+
                     "Date,Datetime,Timestamp,Time,LocalDate,LocalDateTime";
 
+    public static String PROJECT_ID = "com.yatoufang.hse.code.generator";
+
 
     public static Project project;
 

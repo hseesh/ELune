@@ -32,6 +32,10 @@
       <action id="com.yatoufang.hse.Elune.NewTable" class="com.yatoufang.action.NewTableAction" text="New Table">
           <add-to-group group-id="NewGroup" anchor="last"/>
       </action>
+      <action id="com.yatoufang.hse.api.document.generator" class="com.yatoufang.action.ApiDocumentAction"
+              text="ApiDocument">
+          <add-to-group group-id="EditMenu" anchor="last"/>
+      </action>
   </actions>
 
 

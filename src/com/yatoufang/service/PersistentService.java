@@ -1,4 +1,4 @@
-package com.yatoufang.core;
+package com.yatoufang.service;
 
 import com.intellij.credentialStore.CredentialAttributes;
 import com.intellij.credentialStore.CredentialAttributesKt;
@@ -8,7 +8,7 @@ import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.FilenameIndex;
 import com.yatoufang.templet.Application;
-import com.yatoufang.templet.ProjectSearchScope;
+import com.yatoufang.config.ProjectSearchScope;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.Properties;
 /**
  * @author hse
  */
-public class PersistentController {
+public class PersistentService {
 
 
     public static void storeHeaders(String value) {

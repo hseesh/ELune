@@ -3,7 +3,7 @@ package com.yatoufang.entity;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.yatoufang.core.PersistentController;
+import com.yatoufang.service.PersistentService;
 import org.apache.http.Header;
 import org.apache.http.cookie.Cookie;
 
@@ -40,11 +40,11 @@ public class HttpState {
     }
 
     public void loadLocalData() {
-        String hostInfo = PersistentController.readYaml(null, true);
+        String hostInfo = PersistentService.readYaml(null, true);
         if (hostInfo != null) {
             setUrl(hostInfo + getShortUrl());
         } else {
-            hostInfo = PersistentController.getHostInfo();
+            hostInfo = PersistentService.getHostInfo();
             if (hostInfo != null) {
                 setUrl(hostInfo + getShortUrl());
             } else {
@@ -52,14 +52,14 @@ public class HttpState {
             }
         }
 
-        String headers = PersistentController.getHeaders();
+        String headers = PersistentService.getHeaders();
         if (headers != null) {
             Gson gson = new Gson();
             Object[][] data = gson.fromJson(headers, Object[][].class);
             setHeads(data);
         }
 
-        String cookies = PersistentController.getCookies();
+        String cookies = PersistentService.getCookies();
         if (cookies != null) {
             Gson gson = new Gson();
 

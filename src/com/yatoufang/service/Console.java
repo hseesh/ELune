@@ -1,4 +1,4 @@
-package com.yatoufang.core;
+package com.yatoufang.service;
 
 /**
  * @author GongHuang（hse）

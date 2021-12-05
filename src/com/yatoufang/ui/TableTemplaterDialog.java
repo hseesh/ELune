@@ -3,15 +3,13 @@ package com.yatoufang.ui;
 
 import com.google.common.collect.Maps;
 import com.intellij.ide.highlighter.JavaClassFileType;
-import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.psi.JavaCodeFragmentFactory;
-import com.intellij.psi.PsiExpressionCodeFragment;
 import com.intellij.ui.EditorTextField;
-import com.intellij.ui.components.JBScrollPane;
-import com.yatoufang.core.ConsoleService;
-import com.yatoufang.core.VelocityService;
+import com.intellij.util.ui.FormBuilder;
+import com.yatoufang.service.ConsoleService;
+import com.yatoufang.service.VelocityService;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
@@ -20,6 +18,7 @@ import com.yatoufang.templet.ProjectKey;
 import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
@@ -49,20 +48,20 @@ public class TableTemplaterDialog {
     private EditorTextField editor;
 
 
-    private VelocityService velocityService;
+    private final VelocityService velocityService;
 
-    private Map<String, Field> fieldMap = Maps.newHashMap();
+    private final Map<String, Field> fieldMap = Maps.newHashMap();
 
     private Table table;
 
 
-    public TableTemplaterDialog(FileType fileType) {
-        initData();
-        drawPanel(fileType);
+    public TableTemplaterDialog(String rootPath, String workSpace) {
+        initData(workSpace);
+        drawPanel(rootPath);
         velocityService = VelocityService.getInstance();
     }
 
-    private void drawPanel(FileType fileType) {
+    private void drawPanel(String rootPath) {
 
         rootPane = new JSplitPane();
         editor.setFont(new Font(null, Font.PLAIN, 14));
@@ -74,29 +73,23 @@ public class TableTemplaterDialog {
 
         JButton execute = new JButton("Execute");
 
-        Box content = Box.createVerticalBox();
+        Box titlePanel = Box.createHorizontalBox();
 
-        Box entityTitlePanel = Box.createHorizontalBox();
-
-
-        JPanel entityPanel = new JPanel();
-        JPanel leftRootPanel = new JPanel(new BorderLayout());
+        JPanel fieldsPanel = new JPanel();
         JPanel rightRootPanel = new JPanel(new BorderLayout());
 
-        ArrayList<JCheckBox> formObjectsGroup = Lists.newArrayList();
+        Collection<JCheckBox> formObjectsGroup = Lists.newArrayList();
 
-        entityPanel.setPreferredSize(new Dimension(300, 1000));
-        rootPane.setDividerSize(2);
-        rootPane.setDividerLocation(300);
+        fieldsPanel.setPreferredSize(new Dimension(300, 900));
 
         ActionListener actionListener = event -> {
             Object sourceObject = event.getSource();
             if (sourceObject instanceof JCheckBox) {
                 JCheckBox checkBox = (JCheckBox) sourceObject;
-                String text = checkBox.getText();
-                table.addFields(fieldMap.get(text));
+                String checkBoxName = checkBox.getName();
+                table.tryAddFields(fieldMap.get(checkBoxName));
             } else if (sourceObject instanceof JButton) {
-                saveFile();
+                saveFile(rootPath);
                 return;
             }
             calcResult();
@@ -105,6 +98,7 @@ public class TableTemplaterDialog {
         ketType.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 table.setMultiEntity(ketType.getSelectedIndex() == 0);
+                refreshData(tableName.getText());
                 calcResult();
             }
         });
@@ -120,34 +114,50 @@ public class TableTemplaterDialog {
                 if (text.isEmpty()) {
                     return;
                 }
-                table.setName(text);
-                calcResult();
+                refreshData(text);
             }
         });
 
 
-        drawContent(entityPanel, formObjectsGroup, fieldMap.values(), actionListener);
+        drawContent(fieldsPanel, formObjectsGroup, fieldMap.values(), actionListener);
+
 
         execute.addActionListener(actionListener);
+        JPanel executeDimension = new JPanel(new BorderLayout());
+        executeDimension.setSize(new Dimension(300, 50));
+        executeDimension.add(execute);
 
-        entityTitlePanel.add(tableName);
-        entityTitlePanel.add(ketType);
+        titlePanel.add(tableName);
+        titlePanel.add(ketType);
 
-        content.add(entityTitlePanel);
-        content.add(entityPanel);
-        content.add(execute, BorderLayout.NORTH);
+        JPanel leftRootPanel = FormBuilder.createFormBuilder()
+                .addComponent(titlePanel)
+                .addComponentFillVertically(fieldsPanel, 1)
+                .addComponent(executeDimension)
+                .getPanel();
 
-        leftRootPanel.add(content);
+        rightRootPanel.add(editor);
 
-        JBScrollPane scrollPane = new JBScrollPane(editor);
-
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-        rightRootPanel.add(scrollPane);
-
+        rootPane.setDividerSize(2);
+        rootPane.setDividerLocation(300);
         rootPane.setLeftComponent(leftRootPanel);
         rootPane.setRightComponent(rightRootPanel);
 
+    }
+
+    private void refreshData(String text) {
+        if (text.isEmpty()) {
+            return;
+        }
+        table.removePrimaryField(table.getName() + "Id");
+        if (table.isMultiEntity()) {
+            Field object = new Field(text + "Id");
+            object.setAlias("long");
+            object.setDescription(object.getName());
+            table.addFields(object);
+        }
+        table.setName(text);
+        calcResult();
     }
 
 
@@ -164,10 +174,11 @@ public class TableTemplaterDialog {
         }
     }
 
-    private void drawContent(JComponent panel, ArrayList<JCheckBox> checkBoxList, Collection<Field> params, ActionListener listener) {
+    private void drawContent(JComponent panel, Collection<JCheckBox> checkBoxList, Collection<Field> params, ActionListener listener) {
         for (Param param : params) {
             JCheckBox checkBox = new JCheckBox(getParamInfo(param));
             checkBoxList.add(checkBox);
+            checkBox.setName(param.getName());
             checkBox.addActionListener(listener);
             panel.add(checkBox);
         }
@@ -184,6 +195,18 @@ public class TableTemplaterDialog {
 
     private void calcResult() {
         String result = "";
+        StringBuilder stringBuilder = new StringBuilder("(");
+        List<Field> fields = table.getFields();
+        for (int i = 0; i < fields.size(); i++) {
+            stringBuilder.append(fields.get(i).getAlias())
+                    .append(" ")
+                    .append(fields.get(i).getName());
+            if (i != fields.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append(")");
+        table.setValueOf(stringBuilder.toString());
         if (table.isMultiEntity()) {
             result = velocityService.execute(ProjectKey.MULTI_TEMPLATE, table);
         } else {
@@ -192,9 +215,9 @@ public class TableTemplaterDialog {
         editor.setText(result);
     }
 
-    private void saveFile() {
+    private void saveFile(String rootBath) {
         ConsoleService consoleService = ConsoleService.getInstance();
-        File tableFile = new File(StringUtil.buildPath("targetPath", ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.REWARD, ProjectKey.RESULT, ProjectKey.RESPONSE, ProjectKey.JAVA)));
+        File tableFile = new File(StringUtil.buildPath(rootBath, ProjectKey.CORE, ProjectKey.DATABASE,ProjectKey.TABLE,StringUtil.toUpper( table.getName(), ProjectKey.JAVA)));
         try {
             FileUtil.writeToFile(tableFile, editor.getText());
             consoleService.print(tableFile.getCanonicalPath() + " created successfully\n");
@@ -209,8 +232,10 @@ public class TableTemplaterDialog {
     }
 
 
-    private void initData() {
+    private void initData(String workSpace) {
         table = new Table("tableName", "");
+        table.setMultiEntity(true);
+        table.setWorkSpace(workSpace);
         table.setFields(new ArrayList<Field>());
         Field configId = new Field("configId");
         Field level = new Field("level");
@@ -219,21 +244,68 @@ public class TableTemplaterDialog {
         Field aptitude = new Field("aptitude");
         Field advanceExp = new Field("advanceExp");
         Field exp = new Field("exp");
+        Field floor = new Field("floor");
+        Field times = new Field("times");
+        Field totalTimes = new Field("totalTimes");
+        Field lastResetTime = new Field("lastResetTime");
+        Field starUpHeroCost = new Field("starUpHeroCost");
+        Field receiveList = new Field("receiveList");
+        Field attributeAptitudeMap = new Field("attributeAptitudeMap");
         exp.setAlias("int");
         level.setAlias("int");
+        floor.setAlias("int");
         configId.setAlias("int");
         aptitude.setAlias("int");
         startLevel.setAlias("int");
         advanceExp.setAlias("int");
+        times.setAlias("int");
+        totalTimes.setAlias("int");
         advanceLevel.setAlias("int");
+        lastResetTime.setAlias("long");
+        receiveList.setAlias("Collection<Long>");
+        starUpHeroCost.setAlias("Collection<RewardObject>");
+        attributeAptitudeMap.setAlias("Map<Integer, Integer>");
 
-        fieldMap.put(exp.getName(), exp);
-        fieldMap.put(level.getName(), level);
+        exp.setDescription("经验");
+        times.setDescription("次数");
+        floor.setDescription("层级");
+        totalTimes.setDescription("总次数");
+        level.setDescription("等级");
+        configId.setDescription("配置ID");
+        aptitude.setDescription("资质");
+        startLevel.setDescription("升星等级");
+        advanceExp.setDescription("进阶经验");
+        advanceLevel.setDescription("进阶等级");
+        lastResetTime.setDescription("最后一次重置时间");
+        starUpHeroCost.setDescription("养成消耗列表");
+        receiveList.setDescription("奖励列表");
+        receiveList.setDescription("奖励列表");
+        attributeAptitudeMap.setDescription("资质属性");
+
+        receiveList.setDefaultValue(" = Lists.newArrayList()");
+        starUpHeroCost.setDefaultValue(" = Lists.newArrayList()");
+        attributeAptitudeMap.setDefaultValue(" = Maps.newHashMap()");
+
         fieldMap.put(configId.getName(), configId);
-        fieldMap.put(aptitude.getName(), aptitude);
-        fieldMap.put(startLevel.getName(), startLevel);
+        fieldMap.put(exp.getName(), exp);
         fieldMap.put(advanceExp.getName(), advanceExp);
+        fieldMap.put(floor.getName(), floor);
+        fieldMap.put(aptitude.getName(), aptitude);
+        fieldMap.put(times.getName(), times);
+        fieldMap.put(totalTimes.getName(), totalTimes);
+        fieldMap.put(lastResetTime.getName(), lastResetTime);
+        fieldMap.put(level.getName(), level);
+        fieldMap.put(startLevel.getName(), startLevel);
         fieldMap.put(advanceLevel.getName(), advanceLevel);
+        fieldMap.put(receiveList.getName(), receiveList);
+        fieldMap.put(starUpHeroCost.getName(), starUpHeroCost);
+        fieldMap.put(attributeAptitudeMap.getName(), attributeAptitudeMap);
+
+
+        Field actorId = new Field("actorId");
+        actorId.setAlias("long");
+        actorId.setDescription("角色ID");
+        table.addFields(actorId);
 
         String text = "";
         try {
@@ -246,11 +318,17 @@ public class TableTemplaterDialog {
             ioException.printStackTrace();
         }
 
-        //PsiExpressionCodeFragment code = JavaCodeFragmentFactory.createExpressionCodeFragment(text, null, null, true);
-        editor = new EditorTextField();
-        editor.setText(text);
-        editor.setEnabled(true);
-        //editor = new EditorTextField(text);
+        editor = new EditorTextField(text, Application.project, JavaClassFileType.INSTANCE) {
+            @NotNull
+            protected EditorEx createEditor() {
+                EditorEx editor = super.createEditor();
+                editor.setVerticalScrollbarVisible(true);
+                editor.setHorizontalScrollbarVisible(true);
+                editor.setOneLineMode(false);
+                return editor;
+            }
+        };
+
     }
 
 }

@@ -24,7 +24,7 @@ public class Table {
 
     private String valueOf;
 
-    private String valueOfAlias;
+    private String workSpace;
 
     private DBQueueType dbQueueType;
 
@@ -114,9 +114,6 @@ public class Table {
         this.alias = alias;
     }
 
-    public String getValueOfAlias() {
-        return valueOfAlias;
-    }
 
     @Override
     public String toString() {
@@ -129,7 +126,7 @@ public class Table {
         return builder.toString();
     }
 
-    public void addFields(Field field) {
+    public void tryAddFields(Field field) {
         if(field == null){
             return;
         }
@@ -139,4 +136,21 @@ public class Table {
             fields.add(field);
         }
     }
+
+    public String getWorkSpace() {
+        return workSpace;
+    }
+
+    public void setWorkSpace(String workSpace) {
+        this.workSpace = workSpace;
+    }
+
+    public void removePrimaryField(String name) {
+        fields.removeIf(e -> e.getName().equals(name));
+    }
+
+    public void addFields(Field object) {
+        fields.add(object);
+    }
+
 }

@@ -12,7 +12,7 @@ import com.yatoufang.entity.HttpState;
 import com.yatoufang.entity.Method;
 import com.yatoufang.entity.ReferenceBox;
 import com.yatoufang.templet.Application;
-import com.yatoufang.templet.NotifyService;
+import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.utils.PSIUtil;
 

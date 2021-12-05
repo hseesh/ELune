@@ -1,16 +1,19 @@
 package com.yatoufang.utils;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.javadoc.PsiDocTagValue;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.util.PsiUtil;
+import com.intellij.psi.search.PsiShortNamesCache;
 import com.yatoufang.entity.Param;
+import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
-import com.yatoufang.templet.ProjectSearchScope;
+import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
+import com.yatoufang.templet.ProjectKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -294,6 +297,15 @@ public class PSIUtil {
         return JavaPsiFacade.getInstance(Application.project).findClass(className, searchScope);
     }
 
+    public static PsiClass[] findClassWithShortName(String name, GlobalSearchScope searchScope){
+        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name,searchScope);
+    }
+
+
+    public static PsiClass[] findClassWithShortName(String name){
+        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name,new ProjectSearchScope());
+    }
+
 
     public static void getParameterDescription(PsiDocTag tag, HashMap<String, String> desc) {
         String paramName = getParamName(tag);
@@ -411,5 +423,53 @@ public class PSIUtil {
         return str.replace("\"", "");
     }
 
+
+    public static String getFieldsValue(String moduleName, String text) {
+        PsiClass psiclass = PSIUtil.findClass(moduleName);
+        if (psiclass == null) {
+            psiclass = PSIUtil.findClass(moduleName, new ProjectSearchScope());
+        }
+        if (psiclass == null) {
+            NotifyService.notifyWarning(moduleName + "not found");
+            return null;
+        }
+        PsiField[] allFields = psiclass.getAllFields();
+        for (PsiField psiField : allFields) {
+            if (psiField.getName().trim().equals(text)) {
+                PsiElement[] elements = psiField.getChildren();
+                for (PsiElement element : elements) {
+                    if (element instanceof PsiLiteralExpression) {
+                        return element.getText();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Integer getElementOffset(String element, PsiClass psiClass){
+        PsiMethod[] methods = psiClass.getMethods();
+        for (PsiMethod method : methods) {
+            PsiAnnotation[] annotations = method.getAnnotations();
+            for (PsiAnnotation annotation : annotations) {
+                if(annotation.hasQualifiedName(ProjectKey.CMD)){
+                    PsiAnnotationMemberValue memberValue = annotation.findAttributeValue("Id");
+                    if (memberValue != null){
+                        String value = memberValue.getText();
+                        if(value != null && value.length() != 0 ){
+                            int index = value.indexOf(".");
+                            if(index > -1){
+                                value = value.substring(index + 1);
+                            }
+                            if(value.equals(element)){
+                                return annotation.getTextOffset();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return 0;
+    }
 
 }

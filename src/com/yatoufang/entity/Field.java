@@ -9,6 +9,7 @@ public class Field extends Param{
 
     public Field(String paramName) {
         super(paramName);
+        this.setDescription("");
     }
 
     public Field(String paramName, String type){

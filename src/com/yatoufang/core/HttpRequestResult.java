@@ -9,8 +9,9 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.yatoufang.entity.HttpState;
 import com.yatoufang.entity.MyCookie;
+import com.yatoufang.service.PersistentService;
 import com.yatoufang.templet.Application;
-import com.yatoufang.templet.NotifyService;
+import com.yatoufang.service.NotifyService;
 import org.apache.http.Header;
 import org.apache.http.cookie.Cookie;
 
@@ -25,11 +26,11 @@ import java.util.List;
  * @author hse
  * @date 2021/3/29 0029
  */
-public class HttpService {
+public class HttpRequestResult {
 
     private final ConsoleView consoleView;
 
-    public HttpService(HttpState httpState) {
+    public HttpRequestResult(HttpState httpState) {
         ToolWindow toolWindow = ToolWindowManager.getInstance(Application.project).getToolWindow("com.yatoufang.http");
         consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(Application.project).getConsole();
         if (toolWindow == null){
@@ -153,14 +154,14 @@ public class HttpService {
      * @param httpState httpState
      */
     private void storeHostInfo(HttpState httpState) {
-        String hostInfo = PersistentController.getHostInfo();
+        String hostInfo = PersistentService.getHostInfo();
         if (hostInfo == null) {
             String url = httpState.getUrl();
             int index = url.indexOf(httpState.getShortUrl());
             if (index > 0) {
                 url = url.substring(0, index);
             }
-            PersistentController.storeHostInfo(url);
+            PersistentService.storeHostInfo(url);
         }
         storeHeads(httpState);
         storeCookies(httpState);
@@ -174,7 +175,7 @@ public class HttpService {
             }
             Gson gson = new Gson();
             String value = gson.toJson(list);
-            PersistentController.storeCookies(value);
+            PersistentService.storeCookies(value);
         }
     }
 
@@ -182,7 +183,7 @@ public class HttpService {
         if (state.getHeads() != null && state.getHeads().length > 0) {
             Gson gson = new Gson();
             String value = gson.toJson(state.getHeads());
-            PersistentController.storeHeaders(value);
+            PersistentService.storeHeaders(value);
         }
     }
 

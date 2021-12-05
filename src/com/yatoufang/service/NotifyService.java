@@ -1,8 +1,9 @@
-package com.yatoufang.templet;
+package com.yatoufang.service;
 
 import com.intellij.notification.NotificationDisplayType;
 import com.intellij.notification.NotificationGroup;
 import com.intellij.notification.NotificationType;
+import com.yatoufang.templet.Application;
 
 /**
  * @author hse

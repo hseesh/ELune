@@ -20,24 +20,18 @@ import java.util.Map;
 @Table(name = "${table.name}", type = DBQueueType.IMPORTANT)
 public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} extends SingleEntity<Long> {
 
-   /**
-    * 角色ID
-    */
-    @Column(pk = true)
-    private long actorId;
-
    #foreach($item in $table.fields)/**
     * ${item.description}
     */
     @Column
-    private ${item.alias} ${item.name};
+    private ${item.alias} ${item.name}${item.defaultValue};
     #end
 
 
     public static ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} valueOf${table.valueOf} {
         ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name}  = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}();
     #foreach($item in $table.fields)
-    ${table.name}.${item.name} = ${table.name}.${item.getString}();
+    ${table.name}.${item.name} = ${item.name};
     #end
     return ${table.name} ;
     }

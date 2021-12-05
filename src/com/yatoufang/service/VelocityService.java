@@ -1,4 +1,4 @@
-package com.yatoufang.core;
+package com.yatoufang.service;
 
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.entity.Table;

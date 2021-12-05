@@ -17,11 +17,14 @@ public interface ProjectKey {
     String VALUE_OF = "valueOf";
 
     String MODULE = "module";
+    String GET_MODULE = "getModule";
 
     String MODEL = "model";
 
     String CORE = "core";
     String GAME_SERVER = "gameserver";
+    String WORLD_SERVER = "worldserver";
+    String BATTLE_SERVER = "battleserver";
     String DATABASE = "database";
     String PROJECT = "lyltd";
 
@@ -68,4 +71,7 @@ public interface ProjectKey {
     String HANDLER = "handler";
     String ACTOR_ID = "actorId";
     String UPDATE_TIME = "updateTime";
+    String TABLE = "table";
+    String GATE_WAY = "cn.daxiang.lyltd.gameserver.core.router.GatewayRouterHandlerImpl";
+    CharSequence GET_VALUE = "getValue";
 }

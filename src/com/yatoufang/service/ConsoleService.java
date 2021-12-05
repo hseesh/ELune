@@ -1,4 +1,4 @@
-package com.yatoufang.core;
+package com.yatoufang.service;
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;

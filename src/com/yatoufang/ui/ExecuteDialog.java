@@ -9,10 +9,10 @@ import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBTabbedPane;
 import com.intellij.ui.table.JBTable;
 import com.yatoufang.entity.HttpState;
-import com.yatoufang.core.HttpService;
+import com.yatoufang.core.HttpRequestResult;
 import com.yatoufang.templet.Application;
-import com.yatoufang.templet.NotifyService;
-import com.yatoufang.core.PersistentController;
+import com.yatoufang.service.NotifyService;
+import com.yatoufang.service.PersistentService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -150,7 +150,7 @@ public class ExecuteDialog extends JComponent {
         requestType.setSelectedIndex(requestIndex);
 
         // logical control
-        execute.addActionListener(e -> new HttpService(httpState));
+        execute.addActionListener(e -> new HttpRequestResult(httpState));
 
         cLearCache.addActionListener(e -> cLearAllCache());
 
@@ -261,7 +261,7 @@ public class ExecuteDialog extends JComponent {
     }
 
     private void cLearAllCache() {
-        PersistentController.clearAll();
+        PersistentService.clearAll();
         NotifyService.notify("All cache cleared");
     }
 
