@@ -3,6 +3,8 @@ package com.yatoufang.utils;
 
 public class StringUtil {
 
+    public static final String EMPTY = "";
+
     public static String buildPath(String rootPath, String... args) {
         StringBuilder builder = new StringBuilder(rootPath);
         for (String arg : args) {

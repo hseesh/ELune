@@ -66,7 +66,7 @@ public class ApiDocumentAction extends AnAction {
                     }
 
                 }else {
-                    tcpMethod.setContent(StringUtil.EMTY);
+                    tcpMethod.setContent(StringUtil.EMPTY);
                 }
 
             }
