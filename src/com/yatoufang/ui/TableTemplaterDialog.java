@@ -14,7 +14,7 @@ import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Application;
-import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
@@ -208,16 +208,16 @@ public class TableTemplaterDialog {
         stringBuilder.append(")");
         table.setValueOf(stringBuilder.toString());
         if (table.isMultiEntity()) {
-            result = velocityService.execute(ProjectKey.MULTI_TEMPLATE, table);
+            result = velocityService.execute(ProjectKeys.MULTI_TEMPLATE, table);
         } else {
-            result = velocityService.execute(ProjectKey.SINGLE_TEMPLATE, table);
+            result = velocityService.execute(ProjectKeys.SINGLE_TEMPLATE, table);
         }
         editor.setText(result);
     }
 
     private void saveFile(String rootBath) {
         ConsoleService consoleService = ConsoleService.getInstance();
-        File tableFile = new File(StringUtil.buildPath(rootBath, ProjectKey.CORE, ProjectKey.DATABASE,ProjectKey.TABLE,StringUtil.toUpper( table.getName(), ProjectKey.JAVA)));
+        File tableFile = new File(StringUtil.buildPath(rootBath, ProjectKeys.CORE, ProjectKeys.DATABASE, ProjectKeys.TABLE,StringUtil.toUpper( table.getName(), ProjectKeys.JAVA)));
         try {
             FileUtil.writeToFile(tableFile, editor.getText());
             consoleService.print(tableFile.getCanonicalPath() + " created successfully\n");
@@ -229,6 +229,11 @@ public class TableTemplaterDialog {
 
     public JComponent getRootPanel() {
         return rootPane;
+    }
+
+
+    public JComponent preferableFocusComponent() {
+        return tableName;
     }
 
 
@@ -309,7 +314,7 @@ public class TableTemplaterDialog {
 
         String text = "";
         try {
-            InputStream resourceAsStream = VelocityService.class.getResourceAsStream(ProjectKey.MULTI_TEMPLATE);
+            InputStream resourceAsStream = VelocityService.class.getResourceAsStream(ProjectKeys.MULTI_TEMPLATE);
             if (resourceAsStream == null) {
                 return;
             }

@@ -214,4 +214,12 @@ public class HttpRequestResult {
         return jsonElement.isJsonObject();
     }
 
+
+    public static void main(String[] args) {
+        GsonBuilder builder = new GsonBuilder();
+        builder.serializeNulls();
+        Gson gson = builder.create();
+
+    }
+
 }

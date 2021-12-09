@@ -19,7 +19,7 @@
   </change-notes>
 
 
-  <idea-version since-build="183.0"/>
+  <idea-version since-build="184.0"/>
 
   <depends>com.intellij.modules.platform</depends>
   <depends config-file="depends.xml" optional="true">com.intellij.java</depends>

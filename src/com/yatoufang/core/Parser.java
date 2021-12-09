@@ -14,7 +14,9 @@ import com.yatoufang.entity.ReferenceBox;
 import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
+import com.yatoufang.templet.SystemKeys;
 import com.yatoufang.utils.PSIUtil;
+import com.yatoufang.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -199,11 +201,11 @@ public class Parser {
      * @param example Reference record for Map
      * @return ResponseExample
      */
-    private String getResponseExample(PsiType psiType, ReferenceBox example) {
+    public String getResponseExample(PsiType psiType, ReferenceBox example) {
         psiType = PSIUtil.getSuperType(psiType);
 
         String defaultValue = getDefaultValue(psiType.getPresentableText());
-        if ("com.yatoufang.hse".equals(defaultValue)) {
+        if (SystemKeys.PACKAGE.equals(defaultValue)) {
             StringWriter stringWriter = new StringWriter();
             JsonWriter writer = new JsonWriter(stringWriter);
             try {
@@ -212,7 +214,7 @@ public class Parser {
                 writer.endObject();
                 String s = stringWriter.toString();
                 JsonObject jsonObject = new JsonParser().parse(s).getAsJsonObject();
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                Gson gson = new GsonBuilder().create();
                 defaultValue = gson.toJson(jsonObject);
                 return defaultValue;
             } catch (IOException e) {
@@ -222,7 +224,7 @@ public class Parser {
         } else {
             return defaultValue;
         }
-        return "";
+        return StringUtil.EMPTY;
     }
 
     /**
@@ -242,13 +244,17 @@ public class Parser {
         psiType = PSIUtil.getSuperType(psiType);
 
         String defaultValue = getDefaultValue(psiType.getPresentableText());
-        if (!"com.yatoufang.hse".equals(defaultValue)) {
+        if (!SystemKeys.PACKAGE.equals(defaultValue)) {
             writer.value(defaultValue);
         } else {
-            PsiClass entity = com.intellij.psi.util.PsiUtil.resolveClassInClassTypeOnly(psiType);
+            PsiClass[] classWithShortName = PSIUtil.findClassWithShortName(psiType.getPresentableText());
+            if(classWithShortName.length <= 0){
+                return;
+            }
+            PsiClass entity = classWithShortName[0];
             if (entity != null) {
                 String targetClass = entity.getQualifiedName();
-                if (targetClass != null && targetClass.startsWith(Application.basePackage)) {
+                if (targetClass != null) {
                     PsiField[] fields = entity.getFields();
                     ArrayList<PsiField> classFields = new ArrayList<>();
                     for (PsiField field : fields) {
@@ -259,7 +265,7 @@ public class Parser {
                             }
                         }
 
-                        if (!"serialVersionUID".equals(field.getName())) {
+                        if (!SystemKeys.SERIAL_UID.equals(field.getName())) {
                             classFields.add(field);
                         }
                     }
@@ -300,6 +306,9 @@ public class Parser {
      * @throws IOException JsonWriter nested exception
      */
     private boolean traversalMapReference(JsonWriter writer, ReferenceBox example) throws IOException {
+        if(example == null){
+            return true;
+        }
         ArrayList<String> mapCase = example.getMapKey();
         if (mapCase != null && mapCase.size() > 0) {
             Iterator<String> keys = mapCase.iterator();
@@ -370,7 +379,7 @@ public class Parser {
                 result = "void";
                 break;
             default:
-                result = "com.yatoufang.hse";
+                result = SystemKeys.PACKAGE;
                 break;
         }
         return result;

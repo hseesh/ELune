@@ -4,7 +4,7 @@ package com.yatoufang.templet;
  * @author GongHuang（hse）
  * @since 2021/11/20 20:48
  */
-public interface ProjectKey {
+public interface ProjectKeys {
 
     String MODULE_NAME = "cn.daxiang.shared.ModuleName";
 

@@ -9,13 +9,14 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.VelocityService;
+import com.yatoufang.templet.SystemKeys;
 import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.service.NotifyService;
-import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
@@ -36,7 +37,7 @@ public class TableScannerAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
-            NotifyService.notifyWarning("No File Selected");
+            NotifyService.notifyWarning(SystemKeys.NO_FILE_SELECTED);
             return;
         }
 
@@ -56,39 +57,39 @@ public class TableScannerAction extends AnAction {
     }
 
     private void generateCode(String rootPath, Table table) {
-        table.getFields().removeIf(k -> k.getName().equals(ProjectKey.UPDATE_TIME));
+        table.getFields().removeIf(k -> k.getName().equals(ProjectKeys.UPDATE_TIME));
         String moduleName = table.getName();
         HashMap<String, File> fileMap = Maps.newHashMap();
-        String targetPath = StringUtil.buildPath(rootPath, ProjectKey.MODULE + "_", moduleName.toUpperCase(Locale.ROOT) );
+        String targetPath = StringUtil.buildPath(rootPath, ProjectKeys.MODULE + "_", moduleName.toUpperCase(Locale.ROOT) );
         ConsoleService consoleService = ConsoleService.getInstance();
         VelocityService velocityService = VelocityService.getInstance();
-        File entityCmdFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKey.CMD, ProjectKey.JAVA)));
-        File entityHandlerFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKey.HANDLER, ProjectKey.JAVA)));
-        File daoFile = new File(StringUtil.buildPath(targetPath, ProjectKey.DAO, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.JAVA)));
-        File voFile = new File(StringUtil.buildPath(targetPath, ProjectKey.MODEL, StringUtil.toUpper(table.getName(), ProjectKey.VO, ProjectKey.JAVA)));
-        File entityFacadeFile = new File(StringUtil.buildPath(targetPath, ProjectKey.FACADE, StringUtil.toUpper(table.getName(), ProjectKey.FACADE, ProjectKey.JAVA)));
-        File entityResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.RESPONSE, ProjectKey.JAVA)));
-        File helperFile = new File(StringUtil.buildPath(targetPath, ProjectKey.HELPER, StringUtil.toUpper(table.getName(), ProjectKey.PUSH, ProjectKey.HELPER, ProjectKey.JAVA)));
-        File entityFacadeImplFile = new File(StringUtil.buildPath(targetPath, ProjectKey.FACADE, StringUtil.toUpper(table.getName(), ProjectKey.FACADE, ProjectKey.IMPL, ProjectKey.JAVA)));
-        File daoImplFile = new File(StringUtil.buildPath(targetPath, ProjectKey.DAO, ProjectKey.IMPL, StringUtil.toUpper(table.getName(), ProjectKey.DAO, ProjectKey.IMPL, ProjectKey.JAVA)));
-        File entityDeleteResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.DELETE, ProjectKey.RESPONSE, ProjectKey.JAVA)));
-        File entityRewardResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKey.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKey.REWARD, ProjectKey.RESULT, ProjectKey.RESPONSE, ProjectKey.JAVA)));
+        File entityCmdFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKeys.CMD, ProjectKeys.JAVA)));
+        File entityHandlerFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKeys.HANDLER, ProjectKeys.JAVA)));
+        File daoFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.DAO, StringUtil.toUpper(table.getName(), ProjectKeys.DAO, ProjectKeys.JAVA)));
+        File voFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.MODEL, StringUtil.toUpper(table.getName(), ProjectKeys.VO, ProjectKeys.JAVA)));
+        File entityFacadeFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.FACADE, StringUtil.toUpper(table.getName(), ProjectKeys.FACADE, ProjectKeys.JAVA)));
+        File entityResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKeys.RESPONSE, ProjectKeys.JAVA)));
+        File helperFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.HELPER, StringUtil.toUpper(table.getName(), ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA)));
+        File entityFacadeImplFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.FACADE, StringUtil.toUpper(table.getName(), ProjectKeys.FACADE, ProjectKeys.IMPL, ProjectKeys.JAVA)));
+        File daoImplFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.DAO, ProjectKeys.IMPL, StringUtil.toUpper(table.getName(), ProjectKeys.DAO, ProjectKeys.IMPL, ProjectKeys.JAVA)));
+        File entityDeleteResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKeys.DELETE, ProjectKeys.RESPONSE, ProjectKeys.JAVA)));
+        File entityRewardResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKeys.REWARD, ProjectKeys.RESULT, ProjectKeys.RESPONSE, ProjectKeys.JAVA)));
         if (table.isMultiEntity()) {
-            fileMap.put(ProjectKey.MULTI_ENTITY_TEMPLATE, daoFile);
-            fileMap.put(ProjectKey.MULTI_ENTITY_IMPL_TEMPLATE, daoImplFile);
+            fileMap.put(ProjectKeys.MULTI_ENTITY_TEMPLATE, daoFile);
+            fileMap.put(ProjectKeys.MULTI_ENTITY_IMPL_TEMPLATE, daoImplFile);
         } else {
-            fileMap.put(ProjectKey.SINGLE_ENTITY_TEMPLATE, daoFile);
-            fileMap.put(ProjectKey.SINGLE_ENTITY_IMPL_TEMPLATE, daoImplFile);
+            fileMap.put(ProjectKeys.SINGLE_ENTITY_TEMPLATE, daoFile);
+            fileMap.put(ProjectKeys.SINGLE_ENTITY_IMPL_TEMPLATE, daoImplFile);
         }
-        fileMap.put(ProjectKey.ENTITY_VO_TEMPLATE, voFile);
-        fileMap.put(ProjectKey.PUSH_HELP_TEMPLATE, helperFile);
-        fileMap.put(ProjectKey.ENTITY_CMD_TEMPLATE, entityCmdFile);
-        fileMap.put(ProjectKey.ENTITY_FACADE_TEMPLATE, entityFacadeFile);
-        fileMap.put(ProjectKey.ENTITY_HANDLER_TEMPLATE, entityHandlerFile);
-        fileMap.put(ProjectKey.ENTITY_RESPONSE_TEMPLATE, entityResponseFile);
-        fileMap.put(ProjectKey.ENTITY_FACADE_IMPL_TEMPLATE, entityFacadeImplFile);
-        fileMap.put(ProjectKey.ENTITY_REWARD_RESPONSE_TEMPLATE, entityRewardResponseFile);
-        fileMap.put(ProjectKey.ENTITY_DELETE_RESPONSE_TEMPLATE, entityDeleteResponseFile);
+        fileMap.put(ProjectKeys.ENTITY_VO_TEMPLATE, voFile);
+        fileMap.put(ProjectKeys.PUSH_HELP_TEMPLATE, helperFile);
+        fileMap.put(ProjectKeys.ENTITY_CMD_TEMPLATE, entityCmdFile);
+        fileMap.put(ProjectKeys.ENTITY_FACADE_TEMPLATE, entityFacadeFile);
+        fileMap.put(ProjectKeys.ENTITY_HANDLER_TEMPLATE, entityHandlerFile);
+        fileMap.put(ProjectKeys.ENTITY_RESPONSE_TEMPLATE, entityResponseFile);
+        fileMap.put(ProjectKeys.ENTITY_FACADE_IMPL_TEMPLATE, entityFacadeImplFile);
+        fileMap.put(ProjectKeys.ENTITY_REWARD_RESPONSE_TEMPLATE, entityRewardResponseFile);
+        fileMap.put(ProjectKeys.ENTITY_DELETE_RESPONSE_TEMPLATE, entityDeleteResponseFile);
         fileMap.forEach((fileName, file) -> {
             try {
                 FileUtil.writeToFile(file, velocityService.execute(fileName, table));
@@ -104,7 +105,7 @@ public class TableScannerAction extends AnAction {
     private String getRootPath(PsiJavaFile file) {
         VirtualFile virtualFile = file.getVirtualFile();
         VirtualFile parent = virtualFile.getParent().getParent().getParent();
-        if (parent.getCanonicalPath() == null || !parent.getCanonicalPath().endsWith(ProjectKey.CORE)) {
+        if (parent.getCanonicalPath() == null || !parent.getCanonicalPath().endsWith(ProjectKeys.CORE)) {
             return null;
         }
         VirtualFile root = parent.getParent();
@@ -119,7 +120,7 @@ public class TableScannerAction extends AnAction {
     private Table getTable(PsiClass aClass) {
         PsiAnnotation annotation = aClass.getAnnotation(Annotations.TABLE);
         if (annotation == null) {
-            NotifyService.notifyWarning("No Table Selected");
+            NotifyService.notifyWarning(SystemKeys.NO_TABLE_SELECTED);
             return null;
         }
         PsiAnnotationMemberValue name = annotation.findAttributeValue("name");
@@ -132,11 +133,11 @@ public class TableScannerAction extends AnAction {
         List<Field> tableField = Lists.newArrayList();
         PsiClassType[] extendsListTypes = aClass.getExtendsListTypes();
         for (PsiClassType extendsListType : extendsListTypes) {
-            table.setMultiEntity(ProjectKey.MULTI_ENTITY.equals(extendsListType.getClassName()));
+            table.setMultiEntity(ProjectKeys.MULTI_ENTITY.equals(extendsListType.getClassName()));
         }
         PsiMethod[] methods = aClass.getMethods();
         for (PsiMethod method : methods) {
-            if (ProjectKey.VALUE_OF.equals(method.getName())) {
+            if (ProjectKeys.VALUE_OF.equals(method.getName())) {
                 table.setValueOf(method.getParameterList().getText());
             }
         }

@@ -5,16 +5,20 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtil;
+import com.yatoufang.core.Parser;
+import com.yatoufang.entity.Param;
 import com.yatoufang.entity.TcpMethod;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
-import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.templet.SystemKeys;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class ApiDocumentAction extends AnAction {
@@ -23,7 +27,7 @@ public class ApiDocumentAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
-            NotifyService.notifyWarning("No File Selected");
+            NotifyService.notifyWarning(SystemKeys.NO_FILE_SELECTED);
             return;
         }
         ArrayList<TcpMethod> methods = Lists.newArrayList();
@@ -31,14 +35,14 @@ public class ApiDocumentAction extends AnAction {
         PsiClass[] classes = file.getClasses();
         for (PsiClass aClass : classes) {
             PsiClass superClass = aClass.getSuperClass();
-            if (superClass == null || !Objects.equals(superClass.getQualifiedName(), ProjectKey.GATE_WAY)) {
+            if (superClass == null || !Objects.equals(superClass.getQualifiedName(), ProjectKeys.GATE_WAY)) {
                 return;
             }
             String methodModule = null;
             for (PsiMethod method : aClass.getMethods()) {
                 PsiAnnotation cmdAnnotation = method.getAnnotation(Annotations.CMD);
                 if (cmdAnnotation == null) {
-                    if (method.getName().equals(ProjectKey.GET_MODULE)) {
+                    if (method.getName().equals(ProjectKeys.GET_MODULE)) {
                         methodModule = getMethodModule(method);
                     }
                     continue;
@@ -58,19 +62,20 @@ public class ApiDocumentAction extends AnAction {
                     continue;
                 }
                 PsiStatement firstStatement = statements[0];
-                if(firstStatement.getText().contains(ProjectKey.GET_VALUE)){
+                if(firstStatement.getText().contains(ProjectKeys.GET_VALUE)){
                     PsiElement firstChild = firstStatement.getFirstChild();
                     if(firstChild instanceof PsiLocalVariable){
                         PsiLocalVariable localVariable = (PsiLocalVariable) firstChild;
-                        PsiType type = localVariable.getType();
+                        String jsonStr = new Parser().getResponseExample(localVariable.getType(), null);
+                        tcpMethod.setContent(jsonStr);
                     }
-
                 }else {
                     tcpMethod.setContent(StringUtil.EMPTY);
                 }
-
+                methods.add(tcpMethod);
             }
         }
+        System.out.println(methods);
     }
 
     @NotNull
@@ -116,7 +121,7 @@ public class ApiDocumentAction extends AnAction {
             if (split.length != 2) {
                 continue;
             }
-            return PSIUtil.getFieldsValue(ProjectKey.MODULE_NAME, split[1]);
+            return PSIUtil.getFieldsValue(ProjectKeys.MODULE_NAME, split[1]);
         }
         return null;
     }

@@ -9,7 +9,8 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
-import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.templet.SystemKeys;
 import com.yatoufang.ui.TableTemplaterDialog;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +22,7 @@ public class NewTableAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         VirtualFile file = e.getData(LangDataKeys.VIRTUAL_FILE);
         if (file == null) {
-            NotifyService.notifyWarning("No File Selected");
+            NotifyService.notifyWarning(SystemKeys.NO_FILE_SELECTED);
             return;
         }
         String rootPath;
@@ -30,22 +31,22 @@ public class NewTableAction extends AnAction {
         if (canonicalPath == null) {
             return;
         }
-        if (canonicalPath.contains(ProjectKey.GAME_SERVER)) {
-            workSpace = ProjectKey.GAME_SERVER;
-            rootPath = getRootPath(canonicalPath, ProjectKey.GAME_SERVER);
-        } else if (canonicalPath.contains(ProjectKey.WORLD_SERVER)) {
-            workSpace = ProjectKey.WORLD_SERVER;
-            rootPath = getRootPath(canonicalPath, ProjectKey.WORLD_SERVER);
-        } else if (canonicalPath.contains(ProjectKey.BATTLE_SERVER)) {
-            workSpace = ProjectKey.BATTLE_SERVER;
-            rootPath = getRootPath(canonicalPath, ProjectKey.BATTLE_SERVER);
+        if (canonicalPath.contains(ProjectKeys.GAME_SERVER)) {
+            workSpace = ProjectKeys.GAME_SERVER;
+            rootPath = getRootPath(canonicalPath, ProjectKeys.GAME_SERVER);
+        } else if (canonicalPath.contains(ProjectKeys.WORLD_SERVER)) {
+            workSpace = ProjectKeys.WORLD_SERVER;
+            rootPath = getRootPath(canonicalPath, ProjectKeys.WORLD_SERVER);
+        } else if (canonicalPath.contains(ProjectKeys.BATTLE_SERVER)) {
+            workSpace = ProjectKeys.BATTLE_SERVER;
+            rootPath = getRootPath(canonicalPath, ProjectKeys.BATTLE_SERVER);
         }else{
-            NotifyService.notifyWarning("No Module Selected");
+            NotifyService.notifyWarning(SystemKeys.NO_MODULE_SELECTED);
             return;
         }
         JBPopupFactory instance = JBPopupFactory.getInstance();
         TableTemplaterDialog dialog = new TableTemplaterDialog(rootPath,workSpace);
-        instance.createComponentPopupBuilder(dialog.getRootPanel(), null)
+        instance.createComponentPopupBuilder(dialog.getRootPanel(), dialog.preferableFocusComponent())
                 .setTitle("My Table")
                 .setMovable(true)
                 .setResizable(true)
@@ -53,7 +54,7 @@ public class NewTableAction extends AnAction {
                 .setCancelButton(new IconButton("Close", AllIcons.Actions.Cancel))
                 .setRequestFocus(true)
                 .setMinSize(new Dimension(1100, 800))
-                .setDimensionServiceKey(null, Application.PROJECT_ID + ProjectKey.TABLE, true)
+                .setDimensionServiceKey(null, Application.PROJECT_ID + ProjectKeys.TABLE, true)
                 .createPopup()
                 .showInFocusCenter();
     }

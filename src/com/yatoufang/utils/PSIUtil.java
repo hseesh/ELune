@@ -1,6 +1,5 @@
 package com.yatoufang.utils;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
@@ -13,7 +12,7 @@ import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
-import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.templet.ProjectKeys;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -246,6 +245,26 @@ public class PSIUtil {
         getClassFields(aClass, result, superResult, true, null);
     }
 
+    public static void getClassFields(PsiClass psiClass, List<Param> result, PsiType originType) {
+        if (psiClass == null) return;
+        PsiField[] fields = psiClass.getFields();
+        for (PsiField field : fields) {
+            if ("serialVersionUID".equals(field.getName())) {
+                continue;
+            }
+            PsiType type = field.getType();
+            type = getSuperType(type);
+            if (Application.isBasicType(type.getPresentableText())) {
+                result.add(new Param(field.getName(), type));
+            }
+            if (originType != null && originType == type) {
+                return;
+            }
+            PsiClass aClass = findClass(type.getCanonicalText());
+            getClassFields(aClass, result, type);
+        }
+    }
+
     public static void delete(PsiElement psiElement) {
         if (psiElement.getContainingFile() == null) {
             psiElement = psiElement.getParent();
@@ -297,13 +316,13 @@ public class PSIUtil {
         return JavaPsiFacade.getInstance(Application.project).findClass(className, searchScope);
     }
 
-    public static PsiClass[] findClassWithShortName(String name, GlobalSearchScope searchScope){
-        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name,searchScope);
+    public static PsiClass[] findClassWithShortName(String name, GlobalSearchScope searchScope) {
+        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, searchScope);
     }
 
 
-    public static PsiClass[] findClassWithShortName(String name){
-        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name,new ProjectSearchScope());
+    public static PsiClass[] findClassWithShortName(String name) {
+        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, new ProjectSearchScope());
     }
 
 
@@ -447,21 +466,21 @@ public class PSIUtil {
         return null;
     }
 
-    public static Integer getElementOffset(String element, PsiClass psiClass){
+    public static Integer getElementOffset(String element, PsiClass psiClass) {
         PsiMethod[] methods = psiClass.getMethods();
         for (PsiMethod method : methods) {
             PsiAnnotation[] annotations = method.getAnnotations();
             for (PsiAnnotation annotation : annotations) {
-                if(annotation.hasQualifiedName(ProjectKey.CMD)){
+                if (annotation.hasQualifiedName(ProjectKeys.CMD)) {
                     PsiAnnotationMemberValue memberValue = annotation.findAttributeValue("Id");
-                    if (memberValue != null){
+                    if (memberValue != null) {
                         String value = memberValue.getText();
-                        if(value != null && value.length() != 0 ){
+                        if (value != null && value.length() != 0) {
                             int index = value.indexOf(".");
-                            if(index > -1){
+                            if (index > -1) {
                                 value = value.substring(index + 1);
                             }
-                            if(value.equals(element)){
+                            if (value.equals(element)) {
                                 return annotation.getTextOffset();
                             }
                         }

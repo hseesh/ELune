@@ -1,10 +1,9 @@
 package com.yatoufang.test.dao;
 
-import com.google.common.collect.Lists;
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
-import com.yatoufang.templet.ProjectKey;
+import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.DateUtil;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -49,7 +48,7 @@ public class Test {
         try {
             //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/SingleDaoTemplate.vm")));
             //text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream("/templates/MultiDaoImplTemplate.vm")));
-            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKey.MULTI_TEMPLATE)));
+            text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKeys.MULTI_TEMPLATE)));
            // text = FileUtil.loadTextAndClose(Objects.requireNonNull(Test.class.getResourceAsStream(ProjectKey.SINGLE_ENTITY_IMPL_TEMPLATE)));
         } catch (IOException ioException) {
             ioException.printStackTrace();
