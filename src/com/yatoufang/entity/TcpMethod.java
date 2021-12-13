@@ -5,7 +5,7 @@ import com.yatoufang.utils.StringUtil;
 public class TcpMethod {
     private String methodName;
 
-    private String Content;
+    private String content;
 
     private String moduleCode;
 
@@ -40,17 +40,17 @@ public class TcpMethod {
     }
 
     public String getContent() {
-        return Content;
+        return content;
     }
 
     public void setContent(String content) {
-        Content = content;
+        this.content = StringUtil.getCustomerJson(content);
     }
 
     @Override
     public String toString() {
-        return "td.ServerDelegate.sendMessage({" +
-                "  moduleCode= " + moduleCode + ", cmdCode= " + cmdCode + (Content.isEmpty() ? StringUtil.EMPTY : ", ") + Content +
+        return "td.ServerDelegate.sendMessage({\n" +
+                "  module : " + moduleCode + ", cmd : " + cmdCode + (content.isEmpty() ? StringUtil.EMPTY : ", ") + content + "\n" +
                 "})";
     }
 }

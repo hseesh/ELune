@@ -17,7 +17,6 @@ import com.yatoufang.entity.ReferenceBox;
 import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
-import com.yatoufang.templet.StringUtil;
 import com.yatoufang.templet.SystemKeys;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
@@ -204,7 +203,6 @@ public class Parser {
         for (int i = 0; i < params.size(); i++) {
             Param param = params.get(i);
             builder.append(param.getName()).append(StringUtil.SPACE).append(StringUtil.COLON).append(StringUtil.SPACE);
-
             if(i != params.size()){
                 builder.append(StringUtil.COMMA);
             }
@@ -224,7 +222,6 @@ public class Parser {
      */
     public String getResponseExample(PsiType psiType, ReferenceBox example) {
         psiType = PSIUtil.getSuperType(psiType);
-
         String defaultValue = getDefaultValue(psiType.getPresentableText());
         if (SystemKeys.PACKAGE.equals(defaultValue)) {
             StringWriter stringWriter = new StringWriter();
@@ -262,14 +259,14 @@ public class Parser {
      * @throws IOException JsonWriter nested exception
      */
     private void buildJson(PsiType psiType, JsonWriter writer, ReferenceBox example, boolean isSingleValue, int recursionDeep) throws IOException {
-        psiType = PSIUtil.getSuperType(psiType);
-
         String defaultValue = getDefaultValue(psiType.getPresentableText());
         if (!SystemKeys.PACKAGE.equals(defaultValue)) {
             writer.value(defaultValue);
         } else {
+            psiType = PSIUtil.getSuperType(psiType);
             PsiClass[] classWithShortName = PSIUtil.findClassWithShortName(psiType.getPresentableText());
             if(classWithShortName.length <= 0){
+                writer.value(StringUtil.EMPTY);
                 return;
             }
             PsiClass entity = classWithShortName[0];
@@ -279,7 +276,6 @@ public class Parser {
                     PsiField[] fields = entity.getFields();
                     ArrayList<PsiField> classFields = new ArrayList<>();
                     for (PsiField field : fields) {
-
                         if (psiType.getCanonicalText().equals(PSIUtil.getSuperType(field.getType()).getCanonicalText())) {
                             if (++recursionDeep > 1) {
                                 continue;
@@ -310,12 +306,12 @@ public class Parser {
                 } else {
                     if (traversalMapReference(writer, example)) {
                         if (!isSingleValue) {
-                            writer.value("");
+                            writer.value(StringUtil.EMPTY);
                         }
                     }
                 }
             } else {
-                writer.value("");
+                writer.value(StringUtil.EMPTY);
             }
         }
     }
@@ -358,19 +354,10 @@ public class Parser {
             type = type.substring(0, index);
         }
         switch (type) {
-            case "List":
-            case "ArrayList":
-            case "Collection":
-                builder.append(StringUtil.LEFT_BRACKET)
-                        .append(StringUtil.SPACE)
-                        .append(StringUtil.SPACE)
-                        .append(StringUtil.RIGHT_BRACKET);
-                break;
             case "Map":
             case "HashMap":
             case "TreeMap":
             case "Hashtable":
-
                 break;
             default:
                 builder.append(StringUtil.SPACE);
@@ -386,6 +373,10 @@ public class Parser {
      */
     private String getDefaultValue(String type) {
         type = type.replace("[]", "");
+        int index = type.indexOf("<");
+        if (index > 0) {
+            type = type.substring(0, index);
+        }
         String result;
         switch (type) {
             case "int":
@@ -423,6 +414,15 @@ public class Parser {
             case "LocalDate":
             case "LocalDateTime":
                 result = "2021-01-01";
+                break;
+            case "List":
+            case "ArrayList":
+            case "Collection":
+                result = StringUtil.LEFT_BRACKET +
+                        StringUtil.DOUBLE_QUOTATION +
+                        StringUtil.COMMA +
+                        StringUtil.DOUBLE_QUOTATION +
+                        StringUtil.RIGHT_BRACKET;
                 break;
             case "Object":
                 result = "Object";

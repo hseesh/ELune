@@ -1,6 +1,10 @@
 package com.yatoufang.utils;
 
 
+import org.apache.commons.compress.utils.Lists;
+
+import java.util.ArrayList;
+
 public class StringUtil {
 
     public static final String EMPTY = "";
@@ -9,6 +13,9 @@ public class StringUtil {
     public static final char SPACE = ' ';
     public static final char LEFT_BRACKET = '[';
     public static final char RIGHT_BRACKET = ']';
+    public static final char LEFT_BRACE = '{';
+    public static final char RIGHT_BRACE = '}';
+    public static final String DOUBLE_QUOTATION = " \"\" ";
 
     public static String buildPath(String rootPath, String... args) {
         StringBuilder builder = new StringBuilder(rootPath);
@@ -52,7 +59,7 @@ public class StringUtil {
             }
             if (chars[i] > 96 && chars[i] < 123) {
                 builder.append(chars[i] -= 32);
-            }else{
+            } else {
                 builder.append(chars[i]);
             }
         }
@@ -72,6 +79,52 @@ public class StringUtil {
             }
         }
         return builder.toString();
+    }
+
+    public static String getCustomerJson(String value) {
+        if (value.isEmpty()) {
+            return value;
+        }
+        StringBuilder builder = new StringBuilder();
+        char[] chars = value.toCharArray();
+        boolean neeedAdd = false;
+        int startIndex = chars.length;
+        ArrayList<Integer> indexes = Lists.newArrayList();
+        for (int i = 0;  i < chars.length; i++) {
+            if(chars[i] == LEFT_BRACE){
+                if(neeedAdd){
+                    builder.append(chars[i]);
+                    neeedAdd = false;
+                }else{
+                    startIndex = nextIndex(startIndex, chars);
+                    indexes.add(startIndex);
+                }
+            }else{
+                if(indexes.contains(i)){
+                    continue;
+                }
+                if(chars[i] == COLON){
+                    neeedAdd = true;
+                }
+                builder.append(chars[i]);
+            }
+        }
+        return builder.toString();
+    }
+
+    private static int nextIndex(int start, char[] chars){
+        for (int i = start - 1; i > 0; i--) {
+            if(chars[i] == RIGHT_BRACE){
+                return i;
+            }
+        }
+        return chars.length;
+    }
+
+    public static void main(String[] args) {
+        String str = "{\"type\":{\"NORMAL\":{\"id\":\"23\"},\"id\":\"100\"}}";
+        System.out.println(getCustomerJson(str));
+        System.out.println(DOUBLE_QUOTATION);
     }
 
 }
