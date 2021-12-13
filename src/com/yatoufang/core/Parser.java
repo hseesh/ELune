@@ -1,5 +1,6 @@
 package com.yatoufang.core;
 
+import com.android.aapt.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -8,15 +9,19 @@ import com.google.gson.stream.JsonWriter;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
+import com.intellij.psi.util.PsiUtil;
 import com.yatoufang.entity.HttpState;
 import com.yatoufang.entity.Method;
+import com.yatoufang.entity.Param;
 import com.yatoufang.entity.ReferenceBox;
 import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
+import com.yatoufang.templet.StringUtil;
 import com.yatoufang.templet.SystemKeys;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
+import org.apache.commons.compress.utils.Lists;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -191,6 +196,22 @@ public class Parser {
         return httpState;
     }
 
+    public String builderJson(PsiType psiType){
+        StringBuilder builder = new StringBuilder();
+        PsiClass aClass = PSIUtil.findClass(psiType.getCanonicalText());
+        ArrayList<Param> params = Lists.newArrayList();
+        PSIUtil.getClassFields(aClass,params,psiType);
+        for (int i = 0; i < params.size(); i++) {
+            Param param = params.get(i);
+            builder.append(param.getName()).append(StringUtil.SPACE).append(StringUtil.COLON).append(StringUtil.SPACE);
+
+            if(i != params.size()){
+                builder.append(StringUtil.COMMA);
+            }
+        }
+        return builder.toString();
+    }
+
 
     /**
      * get Response Example
@@ -324,6 +345,37 @@ public class Parser {
             return false;
         }
         return true;
+    }
+
+    private void getDefaultValue(PsiType psiType, StringBuilder builder) {
+        PsiType result = PsiUtil.extractIterableTypeParameter(psiType, true);
+        if (result != null) {
+            getDefaultValue(result, builder);
+        }
+        String type = psiType.getPresentableText();
+        int index = type.indexOf("<");
+        if (index > 0) {
+            type = type.substring(0, index);
+        }
+        switch (type) {
+            case "List":
+            case "ArrayList":
+            case "Collection":
+                builder.append(StringUtil.LEFT_BRACKET)
+                        .append(StringUtil.SPACE)
+                        .append(StringUtil.SPACE)
+                        .append(StringUtil.RIGHT_BRACKET);
+                break;
+            case "Map":
+            case "HashMap":
+            case "TreeMap":
+            case "Hashtable":
+
+                break;
+            default:
+                builder.append(StringUtil.SPACE);
+                break;
+        }
     }
 
     /**

@@ -4,6 +4,11 @@ package com.yatoufang.utils;
 public class StringUtil {
 
     public static final String EMPTY = "";
+    public static final char COMMA = ',';
+    public static final char COLON = ':';
+    public static final char SPACE = ' ';
+    public static final char LEFT_BRACKET = '[';
+    public static final char RIGHT_BRACKET = ']';
 
     public static String buildPath(String rootPath, String... args) {
         StringBuilder builder = new StringBuilder(rootPath);
