@@ -44,6 +44,13 @@ public class MarkdownGenerator {
         content.append("\n");
     }
 
+    public void addTcpRequestExample(String contents) {
+        content.append("***Request-Example:*** \n");
+        content.append("```json\n");
+        content.append(contents);
+        content.append("\n```");
+    }
+
     public void addResponseExample(String contents) {
         content.append("**Response-Example:** \n");
         content.append("```json\n");
@@ -112,10 +119,10 @@ public class MarkdownGenerator {
 
     public void build(ArrayList<TcpMethod> methods, String fileName) {
         int index = 1;
-        addTitle(fileName, 2);
+        addTitle(fileName, 1);
         for (TcpMethod method : methods) {
             addContent(index++ + "." + method.getMethodName());
-            addResponseExample(method.getContent());
+            addTcpRequestExample(method.toString());
             newLine();
         }
     }

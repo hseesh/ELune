@@ -195,15 +195,15 @@ public class Parser {
         return httpState;
     }
 
-    public String builderJson(PsiType psiType){
+    public String builderJson(PsiType psiType) {
         StringBuilder builder = new StringBuilder();
         PsiClass aClass = PSIUtil.findClass(psiType.getCanonicalText());
         ArrayList<Param> params = Lists.newArrayList();
-        PSIUtil.getClassFields(aClass,params,psiType);
+        PSIUtil.getClassFields(aClass, params, psiType);
         for (int i = 0; i < params.size(); i++) {
             Param param = params.get(i);
             builder.append(param.getName()).append(StringUtil.SPACE).append(StringUtil.COLON).append(StringUtil.SPACE);
-            if(i != params.size()){
+            if (i != params.size()) {
                 builder.append(StringUtil.COMMA);
             }
         }
@@ -222,7 +222,12 @@ public class Parser {
      */
     public String getResponseExample(PsiType psiType, ReferenceBox example) {
         psiType = PSIUtil.getSuperType(psiType);
-        String defaultValue = getDefaultValue(psiType.getPresentableText());
+        String defaultValue = null;
+        try {
+            defaultValue = getDefaultValue(psiType.getPresentableText(),null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (SystemKeys.PACKAGE.equals(defaultValue)) {
             StringWriter stringWriter = new StringWriter();
             JsonWriter writer = new JsonWriter(stringWriter);
@@ -259,13 +264,16 @@ public class Parser {
      * @throws IOException JsonWriter nested exception
      */
     private void buildJson(PsiType psiType, JsonWriter writer, ReferenceBox example, boolean isSingleValue, int recursionDeep) throws IOException {
-        String defaultValue = getDefaultValue(psiType.getPresentableText());
+        String defaultValue = getDefaultValue(psiType.getPresentableText(),writer);
+        if(defaultValue == null){
+            return;
+        }
         if (!SystemKeys.PACKAGE.equals(defaultValue)) {
             writer.value(defaultValue);
         } else {
             psiType = PSIUtil.getSuperType(psiType);
             PsiClass[] classWithShortName = PSIUtil.findClassWithShortName(psiType.getPresentableText());
-            if(classWithShortName.length <= 0){
+            if (classWithShortName.length <= 0) {
                 writer.value(StringUtil.EMPTY);
                 return;
             }
@@ -281,7 +289,6 @@ public class Parser {
                                 continue;
                             }
                         }
-
                         if (!SystemKeys.SERIAL_UID.equals(field.getName())) {
                             classFields.add(field);
                         }
@@ -323,7 +330,7 @@ public class Parser {
      * @throws IOException JsonWriter nested exception
      */
     private boolean traversalMapReference(JsonWriter writer, ReferenceBox example) throws IOException {
-        if(example == null){
+        if (example == null) {
             return true;
         }
         ArrayList<String> mapCase = example.getMapKey();
@@ -371,7 +378,7 @@ public class Parser {
      * @param type basically type
      * @return String
      */
-    private String getDefaultValue(String type) {
+    private String getDefaultValue(String type,JsonWriter writer) throws IOException {
         type = type.replace("[]", "");
         int index = type.indexOf("<");
         if (index > 0) {
@@ -418,12 +425,11 @@ public class Parser {
             case "List":
             case "ArrayList":
             case "Collection":
-                result = StringUtil.LEFT_BRACKET +
-                        StringUtil.DOUBLE_QUOTATION +
-                        StringUtil.COMMA +
-                        StringUtil.DOUBLE_QUOTATION +
-                        StringUtil.RIGHT_BRACKET;
-                break;
+                writer.beginArray();
+                writer.value(" ");
+                writer.value(" ");
+                writer.endArray();
+                return null;
             case "Object":
                 result = "Object";
                 break;

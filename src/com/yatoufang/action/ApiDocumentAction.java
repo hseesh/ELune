@@ -55,11 +55,9 @@ public class ApiDocumentAction extends AnAction {
             fileName = aClass.getQualifiedName();
             break;
         }
-        System.out.println(methods);
         MarkdownGenerator markdownGenerator = new MarkdownGenerator();
-        markdownGenerator.build(methods,fileName);
+        markdownGenerator.build(methods, fileName);
         new ExportDialog(Application.project, markdownGenerator.getContent(), fileName).show();
-
     }
 
     @NotNull
@@ -110,9 +108,9 @@ public class ApiDocumentAction extends AnAction {
         return null;
     }
 
-    private PsiClass parser(PsiMethod method,List<TcpMethod> methods,String methodModule,PsiClass cacheClass){
+    private PsiClass parser(PsiMethod method, List<TcpMethod> methods, String methodModule, PsiClass cacheClass) {
         PsiAnnotation cmdAnnotation = method.getAnnotation(Annotations.CMD);
-        if(cmdAnnotation == null){
+        if (cmdAnnotation == null) {
             return null;
         }
         PsiAnnotationMemberValue idAttribute = cmdAnnotation.findAttributeValue("Id");
@@ -120,27 +118,27 @@ public class ApiDocumentAction extends AnAction {
             return null;
         }
         TcpMethod tcpMethod = new TcpMethod(methodModule);
-        cacheClass  = searchInfo(cacheClass, idAttribute, tcpMethod);
+        cacheClass = searchInfo(cacheClass, idAttribute, tcpMethod);
         PsiCodeBlock body = method.getBody();
-        if (body==null) {
+        if (body == null) {
             return null;
         }
         PsiStatement[] statements = body.getStatements();
-        if(statements.length == 0){
+        if (statements.length == 0) {
             return null;
         }
         PsiStatement firstStatement = statements[0];
-        if(firstStatement.getText().contains(ProjectKeys.GET_VALUE)){
+        if (firstStatement.getText().contains(ProjectKeys.GET_VALUE)) {
             PsiElement firstChild = firstStatement.getFirstChild();
-            if(firstChild instanceof PsiLocalVariable){
+            if (firstChild instanceof PsiLocalVariable) {
                 PsiLocalVariable localVariable = (PsiLocalVariable) firstChild;
                 String jsonStr = new Parser().getResponseExample(localVariable.getType(), null);
                 tcpMethod.setContent(jsonStr);
             }
-        }else {
+        } else {
             tcpMethod.setContent(StringUtil.EMPTY);
         }
         methods.add(tcpMethod);
-        return  cacheClass;
+        return cacheClass;
     }
 }
