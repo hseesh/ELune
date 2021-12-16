@@ -69,7 +69,7 @@ public class ApiDocumentAction extends AnAction {
         new ExportDialog(Application.project, markdownGenerator.getContent(), fileName).show();
     }
 
-    @NotNull
+
     private PsiClass searchInfo(PsiClass cacheClass, PsiAnnotationMemberValue idAttribute, TcpMethod tcpMethod) {
         String text = idAttribute.getText();
         String[] attribute = text.split("\\.");
@@ -81,7 +81,9 @@ public class ApiDocumentAction extends AnAction {
                 }
             }
         }
-        assert cacheClass != null;
+        if (cacheClass == null) {
+            return cacheClass;
+        }
         PsiField field = PSIUtil.getField(cacheClass, attribute[1]);
         if (field == null) {
             return cacheClass;
@@ -112,21 +114,21 @@ public class ApiDocumentAction extends AnAction {
     private PsiClass parser(PsiMethod method, List<TcpMethod> methods, String methodModule, PsiClass cacheClass) {
         PsiAnnotation cmdAnnotation = method.getAnnotation(Annotations.CMD);
         if (cmdAnnotation == null) {
-            return null;
+            return cacheClass;
         }
         PsiAnnotationMemberValue idAttribute = cmdAnnotation.findAttributeValue("Id");
         if (idAttribute == null) {
-            return null;
+            return cacheClass;
         }
         TcpMethod tcpMethod = new TcpMethod(methodModule);
         cacheClass = searchInfo(cacheClass, idAttribute, tcpMethod);
         PsiCodeBlock body = method.getBody();
         if (body == null) {
-            return null;
+            return cacheClass;
         }
         PsiStatement[] statements = body.getStatements();
         if (statements.length == 0) {
-            return null;
+            return cacheClass;
         }
         PsiStatement firstStatement = statements[0];
         if (firstStatement.getText().contains(ProjectKeys.GET_VALUE)) {

@@ -87,14 +87,14 @@ public class StringUtil {
         }
         StringBuilder builder = new StringBuilder();
         char[] chars = value.toCharArray();
-        boolean neeedAdd = false;
+        boolean needAdd = false;
         int startIndex = chars.length;
         ArrayList<Integer> indexes = Lists.newArrayList();
         for (int i = 0;  i < chars.length; i++) {
             if(chars[i] == LEFT_BRACE){
-                if(neeedAdd){
+                if(needAdd){
                     builder.append(chars[i]);
-                    neeedAdd = false;
+                    needAdd = false;
                 }else{
                     startIndex = nextIndex(startIndex, chars);
                     indexes.add(startIndex);
@@ -104,7 +104,7 @@ public class StringUtil {
                     continue;
                 }
                 if(chars[i] == COLON){
-                    neeedAdd = true;
+                    needAdd = true;
                 }
                 builder.append(chars[i]);
             }

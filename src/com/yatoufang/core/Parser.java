@@ -224,7 +224,7 @@ public class Parser {
         psiType = PSIUtil.getSuperType(psiType);
         String defaultValue = null;
         try {
-            defaultValue = getDefaultValue(psiType.getPresentableText(),null);
+            defaultValue = getDefaultValue(psiType.getPresentableText(), null);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -264,62 +264,61 @@ public class Parser {
      * @throws IOException JsonWriter nested exception
      */
     private void buildJson(PsiType psiType, JsonWriter writer, ReferenceBox example, boolean isSingleValue, int recursionDeep) throws IOException {
-        String defaultValue = getDefaultValue(psiType.getPresentableText(),writer);
-        if(defaultValue == null){
+        String defaultValue = getDefaultValue(psiType.getPresentableText(), writer);
+        if (defaultValue == null) {
             return;
         }
         if (!SystemKeys.PACKAGE.equals(defaultValue)) {
             writer.value(defaultValue);
         } else {
             psiType = PSIUtil.getSuperType(psiType);
-            PsiClass[] classWithShortName = PSIUtil.findClassWithShortName(psiType.getPresentableText());
-            if (classWithShortName.length <= 0) {
+            PsiClass aClass = PSIUtil.findClass(psiType.getCanonicalText());
+            if (aClass == null) {
+                if (isSingleValue) {
+                    writer.name(psiType.getPresentableText());
+                }
                 writer.value(StringUtil.EMPTY);
                 return;
             }
-            PsiClass entity = classWithShortName[0];
-            if (entity != null) {
-                String targetClass = entity.getQualifiedName();
-                if (targetClass != null) {
-                    PsiField[] fields = entity.getFields();
-                    ArrayList<PsiField> classFields = new ArrayList<>();
-                    for (PsiField field : fields) {
-                        if (psiType.getCanonicalText().equals(PSIUtil.getSuperType(field.getType()).getCanonicalText())) {
-                            if (++recursionDeep > 1) {
-                                continue;
-                            }
-                        }
-                        if (!SystemKeys.SERIAL_UID.equals(field.getName())) {
-                            classFields.add(field);
+            String targetClass = aClass.getQualifiedName();
+            if (targetClass != null) {
+                PsiField[] fields = aClass.getFields();
+                ArrayList<PsiField> classFields = new ArrayList<>();
+                for (PsiField field : fields) {
+                    if (psiType.getCanonicalText().equals(PSIUtil.getSuperType(field.getType()).getCanonicalText())) {
+                        if (++recursionDeep > 1) {
+                            continue;
                         }
                     }
-                    if (classFields.size() > 0) {
-                        if (isSingleValue) {
-                            for (PsiField psiField : classFields) {
-                                writer.name(psiField.getName());
-                                buildJson(psiField.getType(), writer, example, false, recursionDeep);
-                            }
-                        } else {
-                            writer.beginObject();
-                            for (PsiField psiField : classFields) {
-                                writer.name(psiField.getName());
-                                buildJson(psiField.getType(), writer, example, false, recursionDeep);
-                            }
-                            writer.endObject();
-                        }
-                    } else {
-                        traversalMapReference(writer, example);
-                    }
-                } else {
-                    if (traversalMapReference(writer, example)) {
-                        if (!isSingleValue) {
-                            writer.value(StringUtil.EMPTY);
-                        }
+                    if (!SystemKeys.SERIAL_UID.equals(field.getName())) {
+                        classFields.add(field);
                     }
                 }
+                if (classFields.size() > 0) {
+                    if (isSingleValue) {
+                        for (PsiField psiField : classFields) {
+                            writer.name(psiField.getName());
+                            buildJson(psiField.getType(), writer, example, false, recursionDeep);
+                        }
+                    } else {
+                        writer.beginObject();
+                        for (PsiField psiField : classFields) {
+                            writer.name(psiField.getName());
+                            buildJson(psiField.getType(), writer, example, false, recursionDeep);
+                        }
+                        writer.endObject();
+                    }
+                } else {
+                    traversalMapReference(writer, example);
+                }
             } else {
-                writer.value(StringUtil.EMPTY);
+                if (traversalMapReference(writer, example)) {
+                    if (!isSingleValue) {
+                        writer.value(StringUtil.EMPTY);
+                    }
+                }
             }
+
         }
     }
 
@@ -378,7 +377,7 @@ public class Parser {
      * @param type basically type
      * @return String
      */
-    private String getDefaultValue(String type,JsonWriter writer) throws IOException {
+    private String getDefaultValue(String type, JsonWriter writer) throws IOException {
         type = type.replace("[]", "");
         int index = type.indexOf("<");
         if (index > 0) {
@@ -422,10 +421,12 @@ public class Parser {
             case "LocalDateTime":
                 result = "2021-01-01";
                 break;
+            case "Set":
             case "List":
             case "ArrayList":
             case "Collection":
                 writer.beginArray();
+                writer.value(" ");
                 writer.value(" ");
                 writer.value(" ");
                 writer.endArray();

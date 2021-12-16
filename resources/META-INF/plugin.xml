@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.yatoufang.hse.code.generate.scanner</id>
   <name>ELune</name>
-  <version>1.04</version>
+  <version>1.05</version>
   <vendor email="gong-huang@qq.com" url="https://github.com/hseesh">gonghuang</vendor>
 
   <description><![CDATA[
@@ -27,11 +27,11 @@
 
   <actions>
         <action id="com.yatoufang.code.generator.scanner" class="com.yatoufang.action.TableScannerAction"
-                text="Scanner" icon="/icons/mysql_dark.svg">
+                text="Scanner" icon="/icons/persistenceEntity.svg">
           <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
       <action id="com.yatoufang.hse.Elune.NewTable" class="com.yatoufang.action.NewTableAction"
-              text="New Table"  icon="/icons/java.svg">
+              text="New Table"  icon="/icons/transientDisable.svg">
           <add-to-group group-id="NewGroup" anchor="last"/>
       </action>
       <action id="com.yatoufang.hse.api.document.generator" class="com.yatoufang.action.ApiDocumentAction"

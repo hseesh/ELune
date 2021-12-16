@@ -9,10 +9,12 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
 import com.yatoufang.entity.Param;
 import com.yatoufang.service.NotifyService;
+import com.yatoufang.service.SearchScopeService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.ProjectKeys;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -308,7 +310,16 @@ public class PSIUtil {
 
 
     public static PsiClass findClass(String className) {
-        return JavaPsiFacade.getInstance(Application.project).findClass(className, new ProjectSearchScope(Application.project));
+        PsiClass aClass = JavaPsiFacade.getInstance(Application.project).findClass(className, SearchScopeService.getInstance());
+        if (aClass == null) {
+            aClass = JavaPsiFacade.getInstance(Application.project).findClass(className, new ProjectSearchScope());
+        } else {
+            return aClass;
+        }
+        if (aClass == null) {
+            aClass = findClass(className, GlobalSearchScope.allScope(Application.project));
+        }
+        return aClass;
     }
 
 
@@ -316,13 +327,22 @@ public class PSIUtil {
         return JavaPsiFacade.getInstance(Application.project).findClass(className, searchScope);
     }
 
-    public static PsiClass[] findClassWithShortName(String name, GlobalSearchScope searchScope) {
-        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, searchScope);
+    public static PsiClass[] findClassWithShortName(String name) {
+        PsiClass[] classes = PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, SearchScopeService.getInstance());
+        if (classes.length == 0) {
+            classes = findClassWithShortName(name, new ProjectSearchScope());
+        } else {
+            return classes;
+        }
+        if (classes.length == 0) {
+            classes = PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, GlobalSearchScope.allScope(Application.project));
+        }
+        return classes;
     }
 
 
-    public static PsiClass[] findClassWithShortName(String name) {
-        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, new ProjectSearchScope());
+    public static PsiClass[] findClassWithShortName(String name, GlobalSearchScope searchScope) {
+        return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, searchScope);
     }
 
 
@@ -449,7 +469,7 @@ public class PSIUtil {
             psiclass = PSIUtil.findClass(moduleName, new ProjectSearchScope());
         }
         if (psiclass == null) {
-            NotifyService.notifyWarning(moduleName + "not found");
+            NotifyService.notifyWarning(moduleName + " not found");
             return null;
         }
         PsiField[] allFields = psiclass.getAllFields();
@@ -501,7 +521,7 @@ public class PSIUtil {
         return null;
     }
 
-    public static String getFieldValue(PsiClass cacheClass,String value) {
+    public static String getFieldValue(PsiClass cacheClass, String value) {
         PsiField psiField = getField(cacheClass, value);
         assert psiField != null;
         return getFiledValue(psiField);
@@ -540,7 +560,7 @@ public class PSIUtil {
         PsiField[] allFields = cacheClass.getAllFields();
         for (PsiField psiField : allFields) {
             String name = psiField.getName();
-            if (!name.equals(filedName)) {
+            if (name.equals(filedName)) {
                 return psiField;
             }
         }
