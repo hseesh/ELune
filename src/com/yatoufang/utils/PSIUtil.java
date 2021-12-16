@@ -491,4 +491,59 @@ public class PSIUtil {
         return 0;
     }
 
+    public static PsiMethod getMethodByName(PsiClass aClass, String methodName) {
+        PsiMethod[] methods = aClass.getMethods();
+        for (PsiMethod method : methods) {
+            if (method.getName().equals(methodName)) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    public static String getFieldValue(PsiClass cacheClass,String value) {
+        PsiField psiField = getField(cacheClass, value);
+        assert psiField != null;
+        return getFiledValue(psiField);
+    }
+
+
+    private static String getFiledValue(PsiField psiField, String value) {
+        if (psiField == null) {
+            return StringUtil.EMPTY;
+        }
+        String name = psiField.getName();
+        if (!name.equals(value)) {
+            return StringUtil.EMPTY;
+        }
+        PsiElement[] elements = psiField.getChildren();
+        for (PsiElement element : elements) {
+            if (element instanceof PsiLiteralExpression) {
+                return element.getText();
+            }
+        }
+        return StringUtil.EMPTY;
+    }
+
+
+    public static String getFiledValue(PsiField psiField) {
+        PsiElement[] elements = psiField.getChildren();
+        for (PsiElement element : elements) {
+            if (element instanceof PsiLiteralExpression) {
+                return element.getText();
+            }
+        }
+        return StringUtil.EMPTY;
+    }
+
+    public static PsiField getField(PsiClass cacheClass, String filedName) {
+        PsiField[] allFields = cacheClass.getAllFields();
+        for (PsiField psiField : allFields) {
+            String name = psiField.getName();
+            if (!name.equals(filedName)) {
+                return psiField;
+            }
+        }
+        return null;
+    }
 }

@@ -7,7 +7,6 @@ import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtil;
 import com.yatoufang.core.MarkdownGenerator;
 import com.yatoufang.core.Parser;
-import com.yatoufang.entity.Param;
 import com.yatoufang.entity.TcpMethod;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
@@ -28,32 +27,42 @@ public class ApiDocumentAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
+        PsiElement data = e.getData(LangDataKeys.PSI_ELEMENT);
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
             NotifyService.notifyWarning(SystemKeys.NO_FILE_SELECTED);
             return;
         }
-        ArrayList<TcpMethod> methods = Lists.newArrayList();
         PsiClass cacheClass = null;
         PsiClass[] classes = file.getClasses();
-        String fileName = StringUtil.EMPTY;
-        for (PsiClass aClass : classes) {
-            PsiClass superClass = aClass.getSuperClass();
-            if (superClass == null || !Objects.equals(superClass.getQualifiedName(), ProjectKeys.GATE_WAY)) {
+        if (classes.length == 0) return;
+        PsiClass aClass = classes[0];
+        String fileName = aClass.getQualifiedName();
+        PsiClass superClass = aClass.getSuperClass();
+        ArrayList<TcpMethod> methods = Lists.newArrayList();
+        if (superClass == null || !Objects.equals(superClass.getQualifiedName(), ProjectKeys.GATE_WAY)) {
+            return;
+        }
+        PsiMethod getModuleMethod = PSIUtil.getMethodByName(classes[0], ProjectKeys.GET_MODULE);
+        if (getModuleMethod == null) {
+            return;
+        }
+        String methodModule = getMethodModule(getModuleMethod);
+        if (data instanceof PsiMethod) {
+            PsiMethod psiMethod = (PsiMethod) data;
+            PsiAnnotation cmdAnnotation = psiMethod.getAnnotation(Annotations.CMD);
+            if (cmdAnnotation == null) {
                 return;
             }
-            String methodModule = null;
+            parser(psiMethod, methods, methodModule, cacheClass);
+        } else {
             for (PsiMethod method : aClass.getMethods()) {
                 PsiAnnotation cmdAnnotation = method.getAnnotation(Annotations.CMD);
                 if (cmdAnnotation == null) {
-                    if (method.getName().equals(ProjectKeys.GET_MODULE)) {
-                        methodModule = getMethodModule(method);
-                    }
+                    continue;
                 }
                 cacheClass = parser(method, methods, methodModule, cacheClass);
             }
-            fileName = aClass.getQualifiedName();
-            break;
         }
         MarkdownGenerator markdownGenerator = new MarkdownGenerator();
         markdownGenerator.build(methods, fileName);
@@ -63,9 +72,9 @@ public class ApiDocumentAction extends AnAction {
     @NotNull
     private PsiClass searchInfo(PsiClass cacheClass, PsiAnnotationMemberValue idAttribute, TcpMethod tcpMethod) {
         String text = idAttribute.getText();
-        String[] split = text.split("\\.");
-        if (cacheClass == null || !Objects.equals(cacheClass.getName(), split[0])) {
-            PsiClass[] classWithShortName = PSIUtil.findClassWithShortName(split[0]);
+        String[] attribute = text.split("\\.");
+        if (cacheClass == null || !Objects.equals(cacheClass.getName(), attribute[0])) {
+            PsiClass[] classWithShortName = PSIUtil.findClassWithShortName(attribute[0]);
             for (PsiClass psiClass : classWithShortName) {
                 if (psiClass != null) {
                     cacheClass = psiClass;
@@ -73,21 +82,13 @@ public class ApiDocumentAction extends AnAction {
             }
         }
         assert cacheClass != null;
-        PsiField[] allFields = cacheClass.getAllFields();
-        for (PsiField psiField : allFields) {
-            String name = psiField.getName();
-            if (!name.equals(split[1])) {
-                continue;
-            }
-            PsiElement[] elements = psiField.getChildren();
-            for (PsiElement element : elements) {
-                if (element instanceof PsiLiteralExpression) {
-                    String value = element.getText();
-                    tcpMethod.setCmdCode(value);
-                    tcpMethod.setMethodName(PSIUtil.getDescription(psiField.getDocComment()));
-                }
-            }
+        PsiField field = PSIUtil.getField(cacheClass, attribute[1]);
+        if (field == null) {
+            return cacheClass;
         }
+        String value = PSIUtil.getFiledValue(field);
+        tcpMethod.setCmdCode(value);
+        tcpMethod.setMethodName(PSIUtil.getDescription(field.getDocComment()));
         return cacheClass;
     }
 
