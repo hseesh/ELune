@@ -31,7 +31,7 @@ public class Table {
     private boolean multiEntity;
 
     public Table(String name, String type) {
-        this.name = name.replace("\"","");
+        this.name = name.replace("\"",StringUtil.EMPTY);
         int indexOf = type.indexOf(".");
         if(indexOf >= 0){
             type = type.substring(indexOf);

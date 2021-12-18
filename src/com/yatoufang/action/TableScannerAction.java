@@ -9,7 +9,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.VelocityService;
-import com.yatoufang.templet.SystemKeys;
+import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.entity.Field;
@@ -37,7 +37,7 @@ public class TableScannerAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
-            NotifyService.notifyWarning(SystemKeys.NO_FILE_SELECTED);
+            NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
             return;
         }
 
@@ -52,7 +52,7 @@ public class TableScannerAction extends AnAction {
             if (rootPath == null || rootPath.isEmpty()) {
                 continue;
             }
-            generateCode(rootPath, table);
+           // generateCode(rootPath, table);
         }
     }
 
@@ -120,7 +120,7 @@ public class TableScannerAction extends AnAction {
     private Table getTable(PsiClass aClass) {
         PsiAnnotation annotation = aClass.getAnnotation(Annotations.TABLE);
         if (annotation == null) {
-            NotifyService.notifyWarning(SystemKeys.NO_TABLE_SELECTED);
+            NotifyService.notifyWarning(NotifyKeys.NO_TABLE_SELECTED);
             return null;
         }
         PsiAnnotationMemberValue name = annotation.findAttributeValue("name");
@@ -188,7 +188,9 @@ public class TableScannerAction extends AnAction {
             field.setDescription(PSIUtil.getDescription(classField.getDocComment()));
             tableField.add(field);
         }
-        tableField.add(new Field("updateTime", "timestamp"));
+        Field field = new Field("updateTime", "timestamp");
+        field.setConstraint("NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+        tableField.add(field);
         table.setFields(tableField);
         table.setComment(PSIUtil.getDescription(aClass.getDocComment()));
         return table;

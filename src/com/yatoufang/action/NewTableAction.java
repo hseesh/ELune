@@ -10,7 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.templet.SystemKeys;
+import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.ui.TableTemplaterDialog;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,13 +22,14 @@ public class NewTableAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         VirtualFile file = e.getData(LangDataKeys.VIRTUAL_FILE);
         if (file == null) {
-            NotifyService.notifyWarning(SystemKeys.NO_FILE_SELECTED);
+            NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
             return;
         }
         String rootPath;
         String workSpace;
         String canonicalPath = file.getCanonicalPath();
         if (canonicalPath == null) {
+            NotifyService.notifyWarning(NotifyKeys.NO_MODULE_SELECTED);
             return;
         }
         if (canonicalPath.contains(ProjectKeys.GAME_SERVER)) {
@@ -41,7 +42,7 @@ public class NewTableAction extends AnAction {
             workSpace = ProjectKeys.BATTLE_SERVER;
             rootPath = getRootPath(canonicalPath, ProjectKeys.BATTLE_SERVER);
         }else{
-            NotifyService.notifyWarning(SystemKeys.NO_MODULE_SELECTED);
+            NotifyService.notifyWarning(NotifyKeys.NO_MODULE_SELECTED);
             return;
         }
         JBPopupFactory instance = JBPopupFactory.getInstance();

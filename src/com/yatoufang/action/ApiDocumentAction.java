@@ -12,12 +12,11 @@ import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.templet.SystemKeys;
+import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.ui.ExportDialog;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,7 @@ public class ApiDocumentAction extends AnAction {
         PsiElement data = e.getData(LangDataKeys.PSI_ELEMENT);
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
-            NotifyService.notifyWarning(SystemKeys.NO_FILE_SELECTED);
+            NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
             return;
         }
         PsiClass cacheClass = null;

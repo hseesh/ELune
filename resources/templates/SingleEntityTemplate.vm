@@ -23,7 +23,7 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
    #foreach($item in $table.fields)/**
     * ${item.description}
     */
-    @Column
+    ${item.annotation}
     private ${item.alias} ${item.name}${item.defaultValue};
     #end
 

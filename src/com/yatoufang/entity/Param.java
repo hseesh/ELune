@@ -19,11 +19,12 @@ public class Param {
     private String description;
     private String setString;
     private String getString;
+    private String annotation;
 
 
     public Param(String paramName) {
         this.required = true;
-        this.description = "";
+        this.description = StringUtil.EMPTY;
         this.name = paramName;
         this.alias = paramName;
         initGetSetString();
@@ -44,7 +45,7 @@ public class Param {
     }
 
     public Param(String paramName, PsiType paramType) {
-        this.description = "";
+        this.description = StringUtil.EMPTY;
         this.name = paramName;
         this.type = paramType;
         this.typeAlias = paramType.getPresentableText();
@@ -88,7 +89,7 @@ public class Param {
     }
 
     public void setName(String name) {
-        this.name = name.replace("\"", "");
+        this.name = name.replace("\"", StringUtil.EMPTY);
     }
 
     public PsiType getType() {
@@ -115,7 +116,7 @@ public class Param {
 
     public void setDescription(String description) {
         this.description = description;
-        this.defaultValue = "";
+        this.defaultValue = StringUtil.EMPTY;
     }
 
     public String getValue() {
@@ -142,4 +143,11 @@ public class Param {
         this.required = required;
     }
 
+    public String getAnnotation() {
+        return annotation;
+    }
+
+    public void setAnnotation(String annotation) {
+        this.annotation = annotation;
+    }
 }

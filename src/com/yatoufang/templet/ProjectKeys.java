@@ -10,6 +10,8 @@ public interface ProjectKeys {
 
     String CONFIG_KEY = "cn.daxiang.shared.GlobalConfigKey";
 
+    String GATE_WAY = "cn.daxiang.lyltd.gameserver.core.router.GatewayRouterHandlerImpl";
+
     String MULTI_ENTITY = "MultiEntity";
 
     String SINGLE_ENTITY = "SingleEntity";
@@ -38,6 +40,8 @@ public interface ProjectKeys {
 
     String REQUEST = "request";
 
+    String SERIAL_UID = "serialVersionUID";
+
     String DELETE = "delete";
     String RESULT = "result";
 
@@ -47,6 +51,12 @@ public interface ProjectKeys {
     String FACADE = "facade";
 
     String PUSH = "push";
+    String CMD = "cmd";
+    String HANDLER = "handler";
+    String ACTOR_ID = "actorId";
+    String UPDATE_TIME = "updateTime";
+    String TABLE = "table";
+    CharSequence GET_VALUE = "getValue";
 
     String JAVA = ".java";
 
@@ -66,13 +76,5 @@ public interface ProjectKeys {
     String ENTITY_HANDLER_TEMPLATE = "/templates/EntityHandler.vm";
     String ENTITY_FACADE_TEMPLATE = "/templates/EntityFacadeTemplate.vm";
     String ENTITY_FACADE_IMPL_TEMPLATE = "/templates/EntityFacadeImplTemplate.vm";
-
-    String CMD = "cmd";
-    String HANDLER = "handler";
-    String ACTOR_ID = "actorId";
-    String UPDATE_TIME = "updateTime";
-    String TABLE = "table";
-    String GATE_WAY = "cn.daxiang.lyltd.gameserver.core.router.GatewayRouterHandlerImpl";
-    CharSequence GET_VALUE = "getValue";
 
 }

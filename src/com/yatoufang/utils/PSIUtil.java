@@ -1,5 +1,6 @@
 package com.yatoufang.utils;
 
+import com.android.aapt.Resources;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
@@ -143,7 +144,7 @@ public class PSIUtil {
         for (Param param : paramsDetail) {
             getClassFields(param, myParams, null);
         }
-        myParams.removeIf(next -> "serialVersionUID".equals(next.getName()));
+        myParams.removeIf(next -> ProjectKeys.SERIAL_UID.equals(next.getName()));
         myParams = removeDuplicates(myParams);
         Object[][] objects = new Object[myParams.size()][2];
         for (int i = 0; i < myParams.size(); i++) {
@@ -162,7 +163,7 @@ public class PSIUtil {
         for (Param param : paramsDetail) {
             getClassFields(param, myParams, null);
         }
-        myParams.removeIf(next -> "serialVersionUID".equals(next.getName()));
+        myParams.removeIf(next -> ProjectKeys.SERIAL_UID.equals(next.getName()));
         myParams = removeDuplicates(myParams);
         return myParams;
     }
@@ -219,7 +220,7 @@ public class PSIUtil {
         if (psiClass == null) return;
         PsiField[] fields = psiClass.getFields();
         for (PsiField field : fields) {
-            if ("serialVersionUID".equals(field.getName())) {
+            if (ProjectKeys.SERIAL_UID.equals(field.getName())) {
                 continue;
             }
             PsiType type = field.getType();
@@ -251,7 +252,7 @@ public class PSIUtil {
         if (psiClass == null) return;
         PsiField[] fields = psiClass.getFields();
         for (PsiField field : fields) {
-            if ("serialVersionUID".equals(field.getName())) {
+            if (ProjectKeys.SERIAL_UID.equals(field.getName())) {
                 continue;
             }
             PsiType type = field.getType();
@@ -322,10 +323,10 @@ public class PSIUtil {
         return aClass;
     }
 
-
     public static PsiClass findClass(String className, GlobalSearchScope searchScope) {
         return JavaPsiFacade.getInstance(Application.project).findClass(className, searchScope);
     }
+
 
     public static PsiClass[] findClassWithShortName(String name) {
         PsiClass[] classes = PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, SearchScopeService.getInstance());
@@ -340,7 +341,6 @@ public class PSIUtil {
         return classes;
     }
 
-
     public static PsiClass[] findClassWithShortName(String name, GlobalSearchScope searchScope) {
         return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, searchScope);
     }
@@ -349,14 +349,14 @@ public class PSIUtil {
     public static void getParameterDescription(PsiDocTag tag, HashMap<String, String> desc) {
         String paramName = getParamName(tag);
         String parameterDescription = getParameterDescription(tag);
-        if (!"".equals(paramName) && !"".equals(parameterDescription)) {
+        if (!"".equals(paramName) && !StringUtil.EMPTY.equals(parameterDescription)) {
             desc.put(paramName, parameterDescription);
         }
 
     }
 
     public static String getParamName(PsiDocTag tag) {
-        String paramName = "";
+        String paramName = StringUtil.EMPTY;
         PsiDocTagValue valueElement = tag.getValueElement();
         if (valueElement != null) {
             paramName = valueElement.getText();
@@ -370,7 +370,7 @@ public class PSIUtil {
         PsiElement[] dataElements = tag.getDataElements();
         for (PsiElement psiElement : dataElements) {
             String paramDesc = psiElement.getText().trim();
-            if (!paramDesc.equals(paramName) && !"".equals(paramDesc)) {
+            if (!paramDesc.equals(paramName) && !StringUtil.EMPTY.equals(paramDesc)) {
                 builder.append(paramDesc);
             }
         }
@@ -382,14 +382,14 @@ public class PSIUtil {
         if (psiAnnotation != null) {
             PsiAnnotationMemberValue classUrl = psiAnnotation.findAttributeValue("value");
             if (classUrl != null) {
-                String replace = classUrl.getText().replace("\"", "");
-                if (!"".equals(replace)) {
+                String replace = classUrl.getText().replace("\"", StringUtil.EMPTY);
+                if (!StringUtil.EMPTY.equals(replace)) {
                     replace = replace.startsWith("/") ? replace : "/" + replace;
                     return replace;
                 }
             }
         }
-        return "";
+        return StringUtil.EMPTY;
     }
 
 
@@ -398,18 +398,18 @@ public class PSIUtil {
             PsiElement[] descriptionElements = comment.getDescriptionElements();
             StringBuilder methodDescription = new StringBuilder();
             for (PsiElement element : descriptionElements) {
-                if (!"".equals(element.getText().trim())) {
+                if (!StringUtil.EMPTY.equals(element.getText().trim())) {
                     methodDescription.append(element.getText().trim());
                 }
             }
             return methodDescription.toString();
         }
-        return "";
+        return StringUtil.EMPTY;
     }
 
     public static String getMethodRequestType(PsiAnnotation annotation) {
         String methodAnnotation = annotation.getQualifiedName();
-        String type = "";
+        String type = StringUtil.EMPTY;
         if (methodAnnotation != null) {
             switch (methodAnnotation) {
                 case Annotations.REQUESTMAPPING:
@@ -445,7 +445,7 @@ public class PSIUtil {
                 return trims(value.getText().trim());
             }
         }
-        return "";
+        return StringUtil.EMPTY;
     }
 
 
@@ -459,7 +459,7 @@ public class PSIUtil {
     }
 
     private static String trims(String str) {
-        return str.replace("\"", "");
+        return str.replace("\"", StringUtil.EMPTY);
     }
 
 

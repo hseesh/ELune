@@ -1,6 +1,5 @@
 package com.yatoufang.core;
 
-import com.android.aapt.Resources;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -17,7 +16,8 @@ import com.yatoufang.entity.ReferenceBox;
 import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
-import com.yatoufang.templet.SystemKeys;
+import com.yatoufang.templet.NotifyKeys;
+import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
@@ -228,7 +228,7 @@ public class Parser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (SystemKeys.PACKAGE.equals(defaultValue)) {
+        if (NotifyKeys.PACKAGE.equals(defaultValue)) {
             StringWriter stringWriter = new StringWriter();
             JsonWriter writer = new JsonWriter(stringWriter);
             try {
@@ -268,7 +268,7 @@ public class Parser {
         if (defaultValue == null) {
             return;
         }
-        if (!SystemKeys.PACKAGE.equals(defaultValue)) {
+        if (!NotifyKeys.PACKAGE.equals(defaultValue)) {
             writer.value(defaultValue);
         } else {
             psiType = PSIUtil.getSuperType(psiType);
@@ -290,7 +290,7 @@ public class Parser {
                             continue;
                         }
                     }
-                    if (!SystemKeys.SERIAL_UID.equals(field.getName())) {
+                    if (!ProjectKeys.SERIAL_UID.equals(field.getName())) {
                         classFields.add(field);
                     }
                 }
@@ -438,7 +438,7 @@ public class Parser {
                 result = "void";
                 break;
             default:
-                result = SystemKeys.PACKAGE;
+                result = NotifyKeys.PACKAGE;
                 break;
         }
         return result;

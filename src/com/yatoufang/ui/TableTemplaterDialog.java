@@ -1,6 +1,7 @@
 package com.yatoufang.ui;
 
 
+import com.android.aapt.Resources;
 import com.google.common.collect.Maps;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.editor.ex.EditorEx;
@@ -153,6 +154,7 @@ public class TableTemplaterDialog {
         if (table.isMultiEntity()) {
             Field object = new Field(text + "Id");
             object.setAlias("long");
+            object.setAnnotation("@Column(fk = true)");
             object.setDescription(object.getName());
             table.addFields(object);
         }
@@ -194,7 +196,7 @@ public class TableTemplaterDialog {
 
 
     private void calcResult() {
-        String result = "";
+        String result;
         StringBuilder stringBuilder = new StringBuilder("(");
         List<Field> fields = table.getFields();
         for (int i = 0; i < fields.size(); i++) {
@@ -310,7 +312,9 @@ public class TableTemplaterDialog {
         Field actorId = new Field("actorId");
         actorId.setAlias("long");
         actorId.setDescription("角色ID");
+        actorId.setAnnotation("@Column(pk = true)");
         table.addFields(actorId);
+
 
         String text = "";
         try {

@@ -4,11 +4,9 @@ package com.yatoufang.templet;
  * @author GongHuang（hse）
  * @since 2021/11/20 20:48
  */
-public interface SystemKeys {
+public interface NotifyKeys {
 
     String PACKAGE = "com.yatoufang.hse";
-
-    String SERIAL_UID = "serialVersionUID";
 
     String NO_FILE_SELECTED = "No File Selected";
 

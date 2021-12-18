@@ -3,6 +3,7 @@ package com.yatoufang.service;
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.entity.Table;
 import com.yatoufang.utils.DateUtil;
+import com.yatoufang.utils.StringUtil;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
@@ -12,6 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 
+/**
+ * @author User
+ */
 public class VelocityService {
 
     private static VelocityService instance;
@@ -45,7 +49,7 @@ public class VelocityService {
         context.put("table", table);
         context.put("author","GongHuang(hse)");
         StringWriter stringWriter = new StringWriter();
-        String text = "";
+        String text = StringUtil.EMPTY;
         try {
             InputStream resourceAsStream = VelocityService.class.getResourceAsStream(filePath);
             if(resourceAsStream == null){
