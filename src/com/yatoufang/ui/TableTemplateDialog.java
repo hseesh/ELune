@@ -1,7 +1,6 @@
 package com.yatoufang.ui;
 
 
-import com.android.aapt.Resources;
 import com.google.common.collect.Maps;
 import com.intellij.ide.highlighter.JavaClassFileType;
 import com.intellij.openapi.editor.ex.EditorEx;
@@ -9,11 +8,11 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.ui.EditorTextField;
 import com.intellij.util.ui.FormBuilder;
-import com.yatoufang.service.ConsoleService;
-import com.yatoufang.service.VelocityService;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
+import com.yatoufang.service.ConsoleService;
+import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.ExceptionUtil;
@@ -39,7 +38,7 @@ import java.util.Map;
  * @author hse
  * @date 2021/6/5 0005
  */
-public class TableTemplaterDialog {
+public class TableTemplateDialog {
 
     private JSplitPane rootPane;
 
@@ -56,7 +55,7 @@ public class TableTemplaterDialog {
     private Table table;
 
 
-    public TableTemplaterDialog(String rootPath, String workSpace) {
+    public TableTemplateDialog(String rootPath, String workSpace) {
         initData(workSpace);
         drawPanel(rootPath);
         velocityService = VelocityService.getInstance();
@@ -328,6 +327,7 @@ public class TableTemplaterDialog {
         }
 
         editor = new EditorTextField(text, Application.project, JavaClassFileType.INSTANCE) {
+            @Override
             @NotNull
             protected EditorEx createEditor() {
                 EditorEx editor = super.createEditor();

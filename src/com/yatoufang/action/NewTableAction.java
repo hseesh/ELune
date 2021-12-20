@@ -11,7 +11,7 @@ import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.templet.NotifyKeys;
-import com.yatoufang.ui.TableTemplaterDialog;
+import com.yatoufang.ui.TableTemplateDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -46,7 +46,7 @@ public class NewTableAction extends AnAction {
             return;
         }
         JBPopupFactory instance = JBPopupFactory.getInstance();
-        TableTemplaterDialog dialog = new TableTemplaterDialog(rootPath,workSpace);
+        TableTemplateDialog dialog = new TableTemplateDialog(rootPath,workSpace);
         instance.createComponentPopupBuilder(dialog.getRootPanel(), dialog.preferableFocusComponent())
                 .setTitle("My Table")
                 .setMovable(true)

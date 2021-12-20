@@ -26,18 +26,6 @@ public class Test {
 		Node listener_=mindmap.addNode(root, "listener");
 		mindmap.addNode(model_, "Mindmap");
 		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Line");
-		mindmap.addNode(model_, "Line");
-		mindmap.addNode(model_, "Line");
-		mindmap.addNode(model_, "Line");
-		mindmap.addNode(model_, "Line");
 		mindmap.addNode(model_, "Line");
 		mindmap.addNode(model_, "Option");
 		mindmap.addNode(model_, "Paintable");

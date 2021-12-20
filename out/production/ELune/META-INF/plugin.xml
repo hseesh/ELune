@@ -55,6 +55,8 @@
 
     <postStartupActivity implementation="com.yatoufang.action.StartUpAction"/>
 
+      <fileEditorProvider implementation="com.yatoufang.test.MindMapDocumentEditorProvider"/>
+      <fileTypeFactory implementation="com.yatoufang.test.filetype.MindMapFileTypeFactory"/>
   </extensions>
 
 </idea-plugin>
