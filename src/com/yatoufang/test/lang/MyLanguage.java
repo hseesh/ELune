@@ -10,6 +10,6 @@ public class MyLanguage extends Language {
     public static final MyLanguage INSTANCE = new MyLanguage();
 
     public MyLanguage() {
-        super("NBMindMap", "text/x-nbmmd+plain");
+        super("MindMap");
     }
 }

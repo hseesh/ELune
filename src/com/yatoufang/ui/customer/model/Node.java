@@ -12,7 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Node implements Paintable {
-    private JTextArea name = new JTextArea();
+    private String name;
     private Mindmap mindmap;
     private Node parent;
     private ArrayList<Node> children;
@@ -30,7 +30,7 @@ public class Node implements Paintable {
 
     public Node(Mindmap map, String name, Node parent, Option opts) {
         this.mindmap = map;
-        this.name.setText(name);
+        this.name =name;
         this.parent = parent;
         this.options = opts;
         this.children = new ArrayList<Node>();
@@ -313,11 +313,11 @@ public class Node implements Paintable {
     }
 
     public String getName() {
-        return name.getText();
+        return name;
     }
 
     public void setName(String name) {
-        this.name.setText(name);
+        this.name = name;
     }
 
     public Node getParent() {
@@ -430,8 +430,9 @@ public class Node implements Paintable {
             return;
         Font font = new Font("default", Font.BOLD, 12);
         FontRenderContext context = ((Graphics2D) g).getFontRenderContext();
-        double widthT = name.getBounds().getWidth();
-        double heightT = name.getBounds().getHeight();
+        TextLayout layout=new TextLayout(name, font, context);
+        double widthT=layout.getBounds().getWidth();
+        double heightT=layout.getBounds().getHeight();
 
         this.width = (widthT + 20);
         this.height = (heightT + 20);
@@ -445,7 +446,7 @@ public class Node implements Paintable {
         drawx = (int) (x - widthT / 2);
         drawy = (int) (y + heightT / 2);
         g.setColor(JBColor.YELLOW);
-        name.setFont(font);
-        name.setLocation(drawx,drawy);
+        g.setFont(font);
+        g.drawString(this.name,drawx,drawy);
     }
 }

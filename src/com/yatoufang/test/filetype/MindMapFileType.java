@@ -30,18 +30,21 @@ public class MindMapFileType extends LanguageFileType {
     }
 
 
+    @NotNull
     @Override
     public String getName() {
         return "Mind Map";
     }
 
 
+    @NotNull
     @Override
     public String getDescription() {
-        return "IDEA Mind Map files";
+        return "Mind map files";
     }
 
 
+    @NotNull
     @Override
     public String getDefaultExtension() {
         return DEFAULT_EXTENSION;

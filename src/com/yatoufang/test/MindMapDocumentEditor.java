@@ -5,9 +5,9 @@ import com.intellij.openapi.fileEditor.DocumentsEditor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorLocation;
 import com.intellij.openapi.fileEditor.FileEditorState;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.yatoufang.test.component.MindMapEditor;
 import com.yatoufang.ui.customer.controller.MindmapController;
 import com.yatoufang.ui.customer.model.Mindmap;
 import com.yatoufang.ui.customer.model.Node;
@@ -28,6 +28,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     private final VirtualFile file;
     private Document[] documents;
+    private MindMapEditor mindMapEditor;
 
     public MindMapDocumentEditor(VirtualFile virtualFile) {
         this.file = virtualFile;
@@ -37,6 +38,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     private void initConfig() {
         final Document document = FileDocumentManager.getInstance().getDocument(this.file);
         this.documents = new Document[] {document};
+        mindMapEditor = new MindMapEditor();
     }
 
     @Override
@@ -46,7 +48,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     @Override
     public @NotNull JComponent getComponent() {
-        return test();
+        return mindMapEditor.getComponent();
     }
 
     private JComponent test() {
@@ -81,7 +83,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     @Override
     public @Nullable JComponent getPreferredFocusedComponent() {
-        return null;
+        return mindMapEditor.getPreferredFocusedComponent();
     }
 
     @Override
