@@ -5,6 +5,14 @@ package com.yatoufang.test.model;
  * @since 2021/12/23
  */
 public class Topic {
+    private String text;
 
 
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 }

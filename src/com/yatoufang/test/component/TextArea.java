@@ -3,6 +3,7 @@ package com.yatoufang.test.component;
 import com.yatoufang.test.model.TextAlign;
 import com.yatoufang.test.model.Line;
 import com.yatoufang.utils.EditorUtil;
+import com.yatoufang.utils.StringUtil;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -104,4 +105,8 @@ public class TextArea {
         }
     }
 
+    public void updateText(String text) {
+        this.text = text == null ? StringUtil.EMPTY : text;
+        invalidate();
+    }
 }
