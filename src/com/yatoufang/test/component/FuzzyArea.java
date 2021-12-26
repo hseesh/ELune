@@ -14,5 +14,23 @@ public class FuzzyArea {
     private Topic model;
     private boolean contentPresented;
 
+    public Rectangle2D getBounds() {
+        return bounds;
+    }
 
+    public Topic getModel() {
+        return model;
+    }
+
+    public void setModel(Topic model) {
+        this.model = model;
+    }
+
+    public boolean isContentPresented() {
+        return contentPresented;
+    }
+
+    public void setContentPresented(boolean contentPresented) {
+        this.contentPresented = contentPresented;
+    }
 }

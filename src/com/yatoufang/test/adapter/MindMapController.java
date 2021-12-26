@@ -1,6 +1,7 @@
 package com.yatoufang.test.adapter;
 
 import com.yatoufang.test.component.Canvas;
+import com.yatoufang.test.component.MainView;
 import com.yatoufang.test.component.MindMapEditor;
 
 import javax.swing.*;
@@ -15,10 +16,13 @@ public class MindMapController extends MouseAdapter {
 
     private final MindMapEditor mapEditor;
     private final JPopupMenu menu;
+    private final MainView mainView;
 
     public MindMapController(MindMapEditor mapEditor) {
         this.mapEditor = mapEditor;
+        this.mainView = mapEditor.getMainView();
         menu = Canvas.createMenu();
+
     }
 
     /**
@@ -28,8 +32,9 @@ public class MindMapController extends MouseAdapter {
      */
     @Override
     public void mouseClicked(MouseEvent e) {
-        super.mouseClicked(e);
-
+        if(!e.isPopupTrigger()){
+            mainView.startEdit(mainView.getRootTopic().getElement());
+        }
     }
 
     /**

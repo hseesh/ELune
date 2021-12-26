@@ -1,6 +1,7 @@
 package com.yatoufang.test.component;
 
 import com.yatoufang.test.adapter.MindMapController;
+import com.yatoufang.test.model.AbstractElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,7 @@ public class MindMapEditor {
     private MainView mainView;
     private JScrollPane scrollPane;
 
+
     public MindMapEditor() {
         init();
     }
@@ -26,6 +28,14 @@ public class MindMapEditor {
         rootPanel = new JPanel(new BorderLayout());
         rootPanel.add(mainView);
         scrollPane = new JScrollPane(rootPanel);
+
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.getVerticalScrollBar().setBlockIncrement(128);
+        scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
+        scrollPane.getHorizontalScrollBar().setBlockIncrement(128);
+
+        scrollPane.setWheelScrollingEnabled(true);
+        scrollPane.setAutoscrolls(true);
     }
 
     public JComponent getComponent() {
@@ -40,8 +50,11 @@ public class MindMapEditor {
         return scrollPane;
     }
 
-    public void reDrawBankGround(){
+    public void reDrawBankGround() {
         mainView.updateUI();
     }
 
+    public MainView getMainView() {
+        return mainView;
+    }
 }

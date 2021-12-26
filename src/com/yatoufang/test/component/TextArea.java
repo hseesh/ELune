@@ -5,6 +5,7 @@ import com.yatoufang.test.model.Line;
 import com.yatoufang.utils.EditorUtil;
 import com.yatoufang.utils.StringUtil;
 
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -108,5 +109,10 @@ public class TextArea {
     public void updateText(String text) {
         this.text = text == null ? StringUtil.EMPTY : text;
         invalidate();
+    }
+
+    public void fillByTextAndFont(JTextComponent component) {
+        component.setFont(font);
+        component.setText(text);
     }
 }
