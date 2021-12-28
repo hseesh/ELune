@@ -195,22 +195,6 @@ public class Parser {
         return httpState;
     }
 
-    public String builderJson(PsiType psiType) {
-        StringBuilder builder = new StringBuilder();
-        PsiClass aClass = PSIUtil.findClass(psiType.getCanonicalText());
-        ArrayList<Param> params = Lists.newArrayList();
-        PSIUtil.getClassFields(aClass, params, psiType);
-        for (int i = 0; i < params.size(); i++) {
-            Param param = params.get(i);
-            builder.append(param.getName()).append(StringUtil.SPACE).append(StringUtil.COLON).append(StringUtil.SPACE);
-            if (i != params.size()) {
-                builder.append(StringUtil.COMMA);
-            }
-        }
-        return builder.toString();
-    }
-
-
     /**
      * get Response Example
      * <p>
@@ -392,6 +376,7 @@ public class Parser {
             case "Long":
             case "Short":
             case "BigDecimal":
+            case "Number":
                 result = Application.getInteger();
                 break;
             case "double":

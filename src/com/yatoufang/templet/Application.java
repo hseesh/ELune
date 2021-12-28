@@ -22,7 +22,7 @@ public class Application {
             "dealt", "next", "You", "learn", "to", "take", "life", "as", "it", "comes", "at", "you"};
 
     //data type, for judging whether need to load class
-    private static final String DATATYPE = "-int,Integer,long,Long,short,Short,double,Double,float,Float,boolean,Boolean,byte,Byte,char,Char,String,Object,BigDecimal"+
+    private static final String DATATYPE = "-int,Integer,long,Long,short,Short,double,Double,float,Float,boolean,Boolean,byte,Byte,char,Char,String,Object,BigDecimal,Number"+
                     "Collection,Vector,List,ArrayList,LinkedList,Set,HashSet,LinkedHashSet,TreeSet,Map,HashMap,TreeMap,"+
                     "Date,Datetime,Timestamp,Time,LocalDate,LocalDateTime";
 

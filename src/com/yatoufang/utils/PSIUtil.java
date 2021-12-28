@@ -17,10 +17,7 @@ import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.ProjectKeys;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -248,8 +245,14 @@ public class PSIUtil {
         getClassFields(aClass, result, superResult, true, null);
     }
 
-    public static void getClassFields(PsiClass psiClass, List<Param> result, PsiType originType) {
+    public static void getClassFields(PsiClass psiClass, Collection<Param> result, PsiType originType) {
         if (psiClass == null) return;
+        if(psiClass.isEnum()){
+            return;
+        }
+        if(Application.isBasicType(psiClass.getName())){
+            return;
+        }
         PsiField[] fields = psiClass.getFields();
         for (PsiField field : fields) {
             if (ProjectKeys.SERIAL_UID.equals(field.getName())) {
@@ -258,7 +261,10 @@ public class PSIUtil {
             PsiType type = field.getType();
             type = getSuperType(type);
             if (Application.isBasicType(type.getPresentableText())) {
-                result.add(new Param(field.getName(), type));
+                Param param = new Param(field.getName());
+                param.setType(type);
+                param.setDescription(getDescription(field.getDocComment()));
+                result.add(param);
             }
             if (originType != null && originType == type) {
                 return;

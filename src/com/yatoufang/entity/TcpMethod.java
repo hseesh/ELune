@@ -1,7 +1,14 @@
 package com.yatoufang.entity;
 
 import com.yatoufang.utils.StringUtil;
+import org.apache.commons.compress.utils.Lists;
 
+import java.util.Collection;
+
+/**
+ * @author GongHuang（hse）
+ * @since 2021/11/4 20:56
+ */
 public class TcpMethod {
     private String methodName;
 
@@ -10,6 +17,8 @@ public class TcpMethod {
     private String moduleCode;
 
     private String cmdCode;
+
+    private final Collection<Param> params = Lists.newArrayList();
 
     public TcpMethod(String moduleCode) {
         this.moduleCode = moduleCode;
@@ -45,6 +54,14 @@ public class TcpMethod {
 
     public void setContent(String content) {
         this.content = StringUtil.getCustomerJson(content);
+    }
+
+    public Collection<Param> getParams() {
+        return params;
+    }
+
+    public void add(Param param) {
+        this.params.add(param);
     }
 
     @Override

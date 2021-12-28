@@ -135,6 +135,8 @@ public class ApiDocumentAction extends AnAction {
             if (firstChild instanceof PsiLocalVariable) {
                 PsiLocalVariable localVariable = (PsiLocalVariable) firstChild;
                 String jsonStr = new Parser().getResponseExample(localVariable.getType(), null);
+                PsiClass aClass = PSIUtil.findClass(localVariable.getType().getCanonicalText());
+                PSIUtil.getClassFields(aClass,tcpMethod.getParams(),localVariable.getType());
                 tcpMethod.setContent(jsonStr);
             }
         } else {

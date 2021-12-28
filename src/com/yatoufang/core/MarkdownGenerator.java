@@ -1,8 +1,10 @@
 package com.yatoufang.core;
 
+import com.yatoufang.entity.Param;
 import com.yatoufang.entity.TcpMethod;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * @Auther: hse
@@ -122,6 +124,14 @@ public class MarkdownGenerator {
         addTitle(fileName, 1);
         for (TcpMethod method : methods) {
             addContent(index++ + "." + method.getMethodName());
+            Collection<Param> params = method.getParams();
+            if(params.size() > 0){
+                addTableHead();
+                for (Param param : params) {
+                    addTableRow(param.toString());
+                }
+                newLine();
+            }
             addTcpRequestExample(method.toString());
             newLine();
         }

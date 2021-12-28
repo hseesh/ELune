@@ -9,7 +9,6 @@ import com.yatoufang.utils.StringUtil;
  */
 public class Param {
 
-
     private String name;
     private String alias;
     private PsiType type;
@@ -127,10 +126,6 @@ public class Param {
         this.defaultValue = defaultValue;
     }
 
-    public String getALL() {
-        return "| " + name + " | " + type.getPresentableText() + " | " + required + " | " + description + " |";
-    }
-
     public void setTypeAlias(String typeAlias) {
         this.typeAlias = typeAlias;
     }
@@ -149,5 +144,10 @@ public class Param {
 
     public void setAnnotation(String annotation) {
         this.annotation = annotation;
+    }
+
+    @Override
+    public String toString() {
+        return "| " + name + " | " + type.getPresentableText() + " | " + required + " | " + description + " |";
     }
 }
