@@ -13,7 +13,7 @@ public class MindmapView extends JLayeredPane{
 	private static final long serialVersionUID = -8821924272283741078L;
 	
 	private Paintable paintObj;
-	
+
 	public MindmapView(){
 		setSize(800, 600);
 	}

@@ -12,7 +12,7 @@ import java.awt.geom.Rectangle2D;
  */
 public class Crayons {
 
-    private final Graphics2D brush;
+    private Graphics2D brush;
     private StrokeType strokeType = StrokeType.SOLID;
     private float strokeWidth = 1.0f;
 
@@ -21,7 +21,7 @@ public class Crayons {
     }
 
 
-    public void drawRect(final int x, final int y, final int width, final int height, Color border, Color fill) {
+    public void drawRect(int x, int y, int width, int height, Color border, Color fill) {
         if (fill != null) {
             this.brush.setColor(fill);
             this.brush.fillRect(x, y, width, height);
@@ -39,7 +39,7 @@ public class Crayons {
     }
 
 
-    public void setClip(final int x, final int y, final int w, final int h) {
+    public void setClip(int x, int y, int w, int h) {
         this.brush.setClip(x, y, w, h);
     }
 
@@ -48,7 +48,7 @@ public class Crayons {
         this.brush.dispose();
     }
 
-    public void translate(final double x, final double y) {
+    public void translate(double x, double y) {
         this.brush.translate(x, y);
     }
 
@@ -61,7 +61,7 @@ public class Crayons {
             this.strokeType = type;
             this.strokeWidth = width;
 
-            final Stroke stroke;
+            Stroke stroke;
 
             switch (type) {
                 case SOLID:
@@ -101,7 +101,7 @@ public class Crayons {
     }
 
     public void drawCurve(double startX, double startY, double endX, double endY, Color color) {
-        final Path2D path = new Path2D.Double();
+        Path2D path = new Path2D.Double();
         path.moveTo(startX, startY);
         path.curveTo(startX, endY, startX, endY, endX, endY);
         if (color != null) {
@@ -123,7 +123,7 @@ public class Crayons {
     }
 
 
-    public void drawImage(Image image, final int x, final int y) {
+    public void drawImage(Image image, int x, int y) {
         if (image != null) {
             this.brush.drawImage(image, x, y, null);
         }
@@ -144,10 +144,14 @@ public class Crayons {
     }
 
 
-    public void drawString(String text, final int x, final int y, Color color) {
+    public void drawString(String text, int x, int y, Color color) {
         if (color != null && this.brush.getFont().getSize2D() > 1.0f) {
             this.brush.setColor(color);
             this.brush.drawString(text, x, y);
         }
+    }
+
+    public void drawString(String text, double x, double y) {
+        this.brush.drawString(text, (int)x, (int)y);
     }
 }

@@ -3,6 +3,7 @@ package com.yatoufang.ui.customer.test;
 import com.yatoufang.test.component.MainView;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * @author GongHuang（hse）
@@ -14,7 +15,16 @@ public class Test2 {
         JFrame frame=new JFrame("MindMap");
         frame.setSize(800,600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(new MainView());
+        RootLayer rootLayer = new RootLayer();
+        JTextArea textArea = new JTextArea();
+        textArea.setBackground(Color.pink);
+        textArea.setBounds(50,50,70,40);
+        textArea.setText("hello text ");
+        textArea.setVisible(true);
+        rootLayer.add(textArea);
+        RootLayerListener rootLayerListener = new RootLayerListener(rootLayer,textArea);
+        rootLayer.addMouseListener(rootLayerListener);
+        frame.getContentPane().add(rootLayer);
         frame.setVisible(true);
     }
 }

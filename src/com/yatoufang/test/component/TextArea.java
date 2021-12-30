@@ -81,29 +81,29 @@ public class TextArea {
 
 
     public void paint(Crayons crayons, Color color) {
-        if (font != null && lines != null) {
-            double posy = bounds.getY() + maxLineAscent;
-            crayons.setFont(font);
-            for (Line item : lines) {
-                double drawX;
-                switch (textAlign) {
-                    case LEFT: {
-                        drawX = bounds.getX();
-                    }
-                    break;
-                    case RIGHT: {
-                        drawX = bounds.getX() + (bounds.getWidth() - item.bounds.getWidth());
-                    }
-                    break;
-                    default:
-                        drawX = bounds.getX() + (bounds.getWidth() - item.bounds.getWidth()) / 2;
-                        break;
-                }
-
-                crayons.drawString(item.line, (int) Math.round(drawX), (int) Math.round(posy), color);
-                posy += item.bounds.getHeight();
-            }
-        }
+//        if (font != null || lines != null) {
+//            double posy = bounds.getY() + maxLineAscent;
+//            crayons.setFont(font);
+//            for (Line item : lines) {
+//                double drawX;
+//                switch (textAlign) {
+//                    case LEFT: {
+//                        drawX = bounds.getX();
+//                    }
+//                    break;
+//                    case RIGHT: {
+//                        drawX = bounds.getX() + (bounds.getWidth() - item.bounds.getWidth());
+//                    }
+//                    break;
+//                    default:
+//                        drawX = bounds.getX() + (bounds.getWidth() - item.bounds.getWidth()) / 2;
+//                        break;
+//                }
+//                crayons.drawString(item.line, (int) Math.round(drawX), (int) Math.round(posy), color);
+//                posy += item.bounds.getHeight();
+//            }
+//        }
+        crayons.drawString(text, bounds.getX(), bounds.getY());
     }
 
     public void updateText(String text) {
@@ -111,7 +111,7 @@ public class TextArea {
         invalidate();
     }
 
-    public void fillByTextAndFont(JTextComponent component) {
+    public void fillText(JTextComponent component) {
         component.setFont(font);
         component.setText(text);
     }

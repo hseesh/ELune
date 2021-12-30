@@ -4,10 +4,12 @@ package com.yatoufang.ui.customer.model;
 
 import com.yatoufang.ui.customer.listener.PaintListener;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class Mindmap implements Paintable{
+
 	private Node root=null;
 	private Node activeNode=null;
 	private Node dragNode=null;
@@ -22,6 +24,7 @@ public class Mindmap implements Paintable{
 		lines=new ArrayList<Line>();
 		listeners=new ArrayList<PaintListener>();
 		this.options=options;
+
 	}
 	
 	public void addListener(PaintListener l){

@@ -30,7 +30,7 @@ public class RootElement extends AbstractElement {
     public void drawComponent(Crayons crayons, boolean drawCollaborator) {
         crayons.setStroke(1f, StrokeType.SOLID);
 
-        final Shape shape = makeShape(0f, 0f);
+        final Shape shape = makeShape(1f, 1f);
 
         if (MindMapConfig.dropShadow) {
             crayons.draw(makeShape(MindMapConfig.shadowOffset, MindMapConfig.shadowOffset), null, MindMapConfig.shadowColor);
@@ -121,6 +121,11 @@ public class RootElement extends AbstractElement {
         }
 
         return size;
+    }
+
+    @Override
+    public void setBounds(int x, int y, int x1, int y1) {
+        this.bounds.setRect(x,y,x1,y1);
     }
 
 

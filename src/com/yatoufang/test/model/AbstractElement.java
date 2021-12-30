@@ -69,8 +69,8 @@ public abstract class AbstractElement {
     public abstract Dimension2D calcBlockSize(Dimension2D size, boolean childrenOnly);
 
 
-    public JTextComponent fillByTextAndFont(JTextComponent compo) {
-        textArea.fillByTextAndFont(compo);
+    public JTextComponent fillText(JTextComponent compo) {
+        textArea.fillText(compo);
         return compo;
     }
 
@@ -206,4 +206,6 @@ public abstract class AbstractElement {
         return this.bounds.getX();
     }
 
+
+    public abstract void setBounds(int x, int y, int i, int i1);
 }

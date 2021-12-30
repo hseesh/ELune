@@ -39,7 +39,7 @@ public class MainView extends JComponent {
             textEditorPanel.setVisible(false);
         } else {
             editingElement = element;
-            element.fillByTextAndFont(textEditor);
+            element.fillText(textEditor);
             final Dimension textBlockSize = new Dimension((int) element.getBounds().getWidth(), (int) element.getBounds().getHeight());
             textEditorPanel.setBounds((int) element.getBounds().getX(), (int) element.getBounds().getY(), textBlockSize.width, textBlockSize.height);
             textEditor.setMinimumSize(textBlockSize);
