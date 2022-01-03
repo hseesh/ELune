@@ -1,8 +1,5 @@
 package com.yatoufang.test.component;
 
-import com.intellij.openapi.util.ScalableIcon;
-import com.yatoufang.test.model.Topic;
-
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -12,7 +9,6 @@ import java.awt.geom.Rectangle2D;
 public class IconArea {
 
     private final Rectangle2D bounds = new Rectangle2D.Double();
-    private  Topic topic;
     private double scale = 1.0d;
     private boolean contentPresented;
 

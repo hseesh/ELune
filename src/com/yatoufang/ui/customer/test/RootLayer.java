@@ -1,7 +1,9 @@
 package com.yatoufang.ui.customer.test;
 
 import com.yatoufang.test.component.Canvas;
-import com.yatoufang.test.component.Crayons;
+import com.yatoufang.test.controller.Drawable;
+import com.yatoufang.test.model.AbstractElement;
+import com.yatoufang.test.model.RootElement;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,24 +14,37 @@ import java.awt.*;
  */
 public class RootLayer extends JLayeredPane {
 
-    Crayons brush;
+    public AbstractElement topic;
+
+    Drawable paint;
 
     public RootLayer() {
+        System.out.println("init ");
         setSize(800, 600);
+        topic = new RootElement("EMPTY NODE");
     }
 
 
+    public void create(Drawable drawable){
+        this.paint = drawable;
+        repaint();
+    }
     /**
      * Paints each of the components in this container.
      *
-     * @param g the graphics context.
+     * @param graphics the graphics context.
      * @see Component#paint
      * @see Component#paintAll
      */
     @Override
-    public void paintComponent(Graphics g) {
-        Graphics2D brush = (Graphics2D) g;
-        this.brush = new Crayons(brush);
-        Canvas.drawBankGround(brush);
+    public void paintComponent(Graphics graphics) {
+        if (paint != null) {
+            Graphics2D brush=(Graphics2D)graphics;
+            Canvas.drawBankGround(brush);
+            brush.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
+            brush.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            System.out.println(topic.children.size());
+            paint.draw(brush);
+        }
     }
 }

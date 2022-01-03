@@ -1,4 +1,4 @@
-package com.yatoufang.test.adapter;
+package com.yatoufang.test.controller;
 
 import com.yatoufang.test.component.MainView;
 

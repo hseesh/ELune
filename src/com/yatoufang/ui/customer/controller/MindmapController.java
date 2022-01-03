@@ -3,7 +3,7 @@ package com.yatoufang.ui.customer.controller;
 
 import com.yatoufang.ui.customer.listener.PaintListener;
 import com.yatoufang.ui.customer.model.Mindmap;
-import com.yatoufang.ui.customer.model.Paintable;
+import com.yatoufang.ui.customer.model.Printable;
 import com.yatoufang.ui.customer.view.MindmapView;
 
 import java.awt.event.MouseAdapter;
@@ -19,7 +19,7 @@ public class MindmapController extends MouseAdapter implements PaintListener {
 	}
 
 	@Override
-	public void show(Paintable obj) {
+	public void show(Printable obj) {
 		view.display(obj);
 	}
 

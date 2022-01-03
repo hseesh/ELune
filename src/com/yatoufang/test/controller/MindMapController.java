@@ -1,4 +1,4 @@
-package com.yatoufang.test.adapter;
+package com.yatoufang.test.controller;
 
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.MainView;
@@ -33,7 +33,6 @@ public class MindMapController extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
         if(!e.isPopupTrigger()){
-            mainView.startEdit(mainView.getRootTopic().getElement());
         }
     }
 

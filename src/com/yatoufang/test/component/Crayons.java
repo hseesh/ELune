@@ -12,54 +12,50 @@ import java.awt.geom.Rectangle2D;
  */
 public class Crayons {
 
-    private Graphics2D brush;
-    private StrokeType strokeType = StrokeType.SOLID;
-    private float strokeWidth = 1.0f;
-
-    public Crayons(Graphics2D graphics2D) {
-        this.brush = graphics2D;
-    }
+    public static Graphics2D brush;
+    private static StrokeType strokeType = StrokeType.SOLID;
+    private static float strokeWidth = 1.0f;
 
 
-    public void drawRect(int x, int y, int width, int height, Color border, Color fill) {
+    public static void drawRect(int x, int y, int width, int height, Color border, Color fill) {
         if (fill != null) {
-            this.brush.setColor(fill);
-            this.brush.fillRect(x, y, width, height);
+            brush.setColor(fill);
+            brush.fillRect(x, y, width, height);
         }
 
         if (border != null) {
-            this.brush.setColor(border);
-            this.brush.drawRect(x, y, width, height);
+            brush.setColor(border);
+            brush.drawRect(x, y, width, height);
         }
     }
 
 
     public Graphics2D getWrappedGraphics() {
-        return this.brush;
+        return brush;
     }
 
 
-    public void setClip(int x, int y, int w, int h) {
-        this.brush.setClip(x, y, w, h);
+    public static void setClip(int x, int y, int w, int h) {
+        brush.setClip(x, y, w, h);
     }
 
 
-    public void dispose() {
-        this.brush.dispose();
+    public static void dispose() {
+        brush.dispose();
     }
 
-    public void translate(double x, double y) {
-        this.brush.translate(x, y);
+    public static void translate(double x, double y) {
+        brush.translate(x, y);
     }
 
     public Rectangle getClipBounds() {
-        return this.brush.getClipBounds();
+        return brush.getClipBounds();
     }
 
-    public void setStroke(float width, StrokeType type) {
-        if (type != this.strokeType || Float.compare(this.strokeWidth, width) != 0) {
-            this.strokeType = type;
-            this.strokeWidth = width;
+    public static void setStroke(float width, StrokeType type) {
+        if (type != strokeType || Float.compare(strokeWidth, width) != 0) {
+            strokeType = type;
+            strokeWidth = width;
 
             Stroke stroke;
 
@@ -76,82 +72,82 @@ public class Crayons {
                 default:
                     throw new Error("Unexpected stroke type : " + type);
             }
-            this.brush.setStroke(stroke);
+            brush.setStroke(stroke);
         }
     }
 
 
-    public void drawLine(int startX, int startY, int endX, int endY, Color color) {
+    public static void drawLine(int startX, int startY, int endX, int endY, Color color) {
         if (color != null) {
-            this.brush.setColor(color);
-            this.brush.drawLine(startX, startY, endX, endY);
+            brush.setColor(color);
+            brush.drawLine(startX, startY, endX, endY);
         }
     }
 
-    public void draw(Shape shape, Color border, Color fill) {
+    public static void draw(Shape shape, Color border, Color fill) {
         if (fill != null) {
-            this.brush.setColor(fill);
-            this.brush.fill(shape);
+            brush.setColor(fill);
+            brush.fill(shape);
         }
 
         if (border != null) {
-            this.brush.setColor(border);
-            this.brush.draw(shape);
+            brush.setColor(border);
+            brush.draw(shape);
         }
     }
 
-    public void drawCurve(double startX, double startY, double endX, double endY, Color color) {
+    public static void drawCurve(double startX, double startY, double endX, double endY, Color color) {
         Path2D path = new Path2D.Double();
         path.moveTo(startX, startY);
         path.curveTo(startX, endY, startX, endY, endX, endY);
         if (color != null) {
-            this.brush.setColor(color);
+            brush.setColor(color);
         }
-        this.brush.draw(path);
+        brush.draw(path);
     }
 
-    public void drawOval(int x, int y, int w, int h, Color border, Color fill) {
+    public static void drawOval(int x, int y, int w, int h, Color border, Color fill) {
         if (fill != null) {
-            this.brush.setColor(fill);
-            this.brush.fillOval(x, y, w, h);
+            brush.setColor(fill);
+            brush.fillOval(x, y, w, h);
         }
 
         if (border != null) {
-            this.brush.setColor(border);
-            this.brush.drawOval(x, y, w, h);
+            brush.setColor(border);
+            brush.drawOval(x, y, w, h);
         }
     }
 
 
-    public void drawImage(Image image, int x, int y) {
+    public static void drawImage(Image image, int x, int y) {
         if (image != null) {
-            this.brush.drawImage(image, x, y, null);
+            brush.drawImage(image, x, y, null);
         }
     }
 
 
     public float getFontMaxAscent() {
-        return this.brush.getFontMetrics().getMaxAscent();
+        return brush.getFontMetrics().getMaxAscent();
     }
 
 
     public Rectangle2D getStringBounds(String str) {
-        return this.brush.getFont().getStringBounds(str, this.brush.getFontRenderContext());
+        return brush.getFont().getStringBounds(str, brush.getFontRenderContext());
     }
 
-    public void setFont(Font font) {
-        this.brush.setFont(font);
+    public static void setFont(Font font) {
+        brush.setFont(font);
     }
 
 
-    public void drawString(String text, int x, int y, Color color) {
-        if (color != null && this.brush.getFont().getSize2D() > 1.0f) {
-            this.brush.setColor(color);
-            this.brush.drawString(text, x, y);
+    public static void drawString(String text, int x, int y, Color color) {
+        if (color != null && brush.getFont().getSize2D() > 1.0f) {
+            brush.setColor(color);
+            brush.drawString(text, x, y);
         }
     }
 
-    public void drawString(String text, double x, double y) {
-        this.brush.drawString(text, (int)x, (int)y);
+    public static void drawString(String text, double x, double y) {
+        brush.drawString(text, (int) x, (int) y);
     }
 }

@@ -189,7 +189,7 @@ public class TableScannerAction extends AnAction {
             tableField.add(field);
         }
         Field field = new Field("updateTime", "timestamp");
-        field.setConstraint("NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+        field.setConstraint("NOT　NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
         tableField.add(field);
         table.setFields(tableField);
         table.setComment(PSIUtil.getDescription(aClass.getDocComment()));

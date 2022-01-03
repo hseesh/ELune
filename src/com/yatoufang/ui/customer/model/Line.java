@@ -2,7 +2,7 @@ package com.yatoufang.ui.customer.model;
 
 import java.awt.*;
 
-public class Line implements Paintable{
+public class Line implements Printable {
 	private Mindmap mindmap;
 	private Node start;
 	private Node end;

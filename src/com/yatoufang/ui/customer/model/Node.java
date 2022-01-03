@@ -2,7 +2,6 @@ package com.yatoufang.ui.customer.model;
 
 import com.intellij.ui.JBColor;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Node implements Paintable {
+public class Node implements Printable {
     private String name;
     private Mindmap mindmap;
     private Node parent;

@@ -1,7 +1,6 @@
 package com.yatoufang.test.component;
 
-import com.yatoufang.test.adapter.MindMapController;
-import com.yatoufang.test.model.AbstractElement;
+import com.yatoufang.test.controller.MindMapController;
 
 import javax.swing.*;
 import java.awt.*;

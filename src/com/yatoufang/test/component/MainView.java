@@ -2,7 +2,6 @@ package com.yatoufang.test.component;
 
 import com.intellij.util.ui.JBUI;
 import com.yatoufang.test.model.AbstractElement;
-import com.yatoufang.test.model.Topic;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,10 +16,10 @@ public class MainView extends JComponent {
     private final JTextArea textEditor = new JTextArea();
     private final JPanel textEditorPanel = new JPanel();
     private AbstractElement editingElement = null;
-    private final Topic rootTopic;
+
 
     public MainView() {
-        rootTopic = new Topic("New Topic");
+
         textEditorPanel.setLayout(new BorderLayout(10, 10));
 
         textEditor.setMargin(JBUI.insets(5));
@@ -40,9 +39,6 @@ public class MainView extends JComponent {
         } else {
             editingElement = element;
             element.fillText(textEditor);
-            final Dimension textBlockSize = new Dimension((int) element.getBounds().getWidth(), (int) element.getBounds().getHeight());
-            textEditorPanel.setBounds((int) element.getBounds().getX(), (int) element.getBounds().getY(), textBlockSize.width, textBlockSize.height);
-            textEditor.setMinimumSize(textBlockSize);
             textEditorPanel.setVisible(true);
             textEditor.requestFocus();
         }
@@ -55,9 +51,6 @@ public class MainView extends JComponent {
 
         if (editingElement != null) {
             final AbstractElement editedElement = editingElement;
-            Topic editedTopic = editingElement.getTopic();
-
-            final int[] pathToEditedTopic = editedTopic.getPositionPath();
 
             if (commit) {
 
@@ -88,8 +81,5 @@ public class MainView extends JComponent {
           Canvas.drawBankGround(brush);
     }
 
-    public Topic getRootTopic() {
-        return rootTopic;
-    }
 }
 

@@ -80,7 +80,7 @@ public class TextArea {
     }
 
 
-    public void paint(Crayons crayons, Color color) {
+    public void paint(Color color) {
 //        if (font != null || lines != null) {
 //            double posy = bounds.getY() + maxLineAscent;
 //            crayons.setFont(font);
@@ -103,7 +103,11 @@ public class TextArea {
 //                posy += item.bounds.getHeight();
 //            }
 //        }
-        crayons.drawString(text, bounds.getX(), bounds.getY());
+        Crayons.drawString(text, bounds.getX(), bounds.getY());
+    }
+
+    public String getText() {
+        return text;
     }
 
     public void updateText(String text) {
@@ -114,5 +118,9 @@ public class TextArea {
     public void fillText(JTextComponent component) {
         component.setFont(font);
         component.setText(text);
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

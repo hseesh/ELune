@@ -11,7 +11,7 @@ import java.awt.*;
  */
 public class Canvas {
 
-    public static void drawBankGround(Graphics2D brush) {
+    public static void drawBankGround(Graphics brush) {
         Rectangle clipBounds = brush.getClipBounds();
 
         brush.setColor(new JBColor(new Color(0x617B94), new Color(0x617B94)));

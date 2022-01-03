@@ -4,11 +4,10 @@ package com.yatoufang.ui.customer.model;
 
 import com.yatoufang.ui.customer.listener.PaintListener;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class Mindmap implements Paintable{
+public class Mindmap implements Printable {
 
 	private Node root=null;
 	private Node activeNode=null;

@@ -1,7 +1,7 @@
 package com.yatoufang.ui.customer.view;
 
 
-import com.yatoufang.ui.customer.model.Paintable;
+import com.yatoufang.ui.customer.model.Printable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,13 +12,13 @@ public class MindmapView extends JLayeredPane{
 	 */
 	private static final long serialVersionUID = -8821924272283741078L;
 	
-	private Paintable paintObj;
+	private Printable paintObj;
 
 	public MindmapView(){
 		setSize(800, 600);
 	}
 	
-	public void display(Paintable obj){
+	public void display(Printable obj){
 		this.paintObj=obj;
 		repaint();
 	}

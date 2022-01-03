@@ -1,5 +1,6 @@
 package com.yatoufang.test.model;
 
+import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.component.Crayons;
 
@@ -27,38 +28,6 @@ public class RootElement extends AbstractElement {
 
 
     @Override
-    public void drawComponent(Crayons crayons, boolean drawCollaborator) {
-        crayons.setStroke(1f, StrokeType.SOLID);
-
-        final Shape shape = makeShape(1f, 1f);
-
-        if (MindMapConfig.dropShadow) {
-            crayons.draw(makeShape(MindMapConfig.shadowOffset, MindMapConfig.shadowOffset), null, MindMapConfig.shadowColor);
-        }
-
-        crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
-
-        textArea.paint(crayons, MindMapConfig.rootTextColor);
-
-    }
-
-    @Override
-    public void drwLinkLine(Crayons crayons, Rectangle2D source, Rectangle2D destination) {
-        crayons.setStroke(1f, StrokeType.SOLID);
-
-        final double startX;
-        if (destination.getCenterX() < source.getCenterX()) {
-            // left
-            startX = source.getCenterX() - source.getWidth() / 4;
-        } else {
-            // right
-            startX = source.getCenterX() + source.getWidth() / 4;
-        }
-
-        crayons.drawCurve(startX, source.getCenterY(), destination.getCenterX(), destination.getCenterY(), MindMapConfig.linkLineColor);
-    }
-
-    @Override
     public boolean movable() {
         return false;
     }
@@ -75,7 +44,7 @@ public class RootElement extends AbstractElement {
 
     @Override
     public Color getTextColor() {
-        return  MindMapConfig.rootTextColor;
+        return MindMapConfig.rootTextColor;
     }
 
     @Override
@@ -93,22 +62,11 @@ public class RootElement extends AbstractElement {
         double rightWidth = 0.0d;
         double rightHeight = 0.0d;
 
-        boolean nonfirstOnRight = false;
-
-        for (final Topic topic : this.topic.getChildren()) {
-            AbstractElement element = topic.getElement();
-            element.calcBlockSize(size, false);
-            rightWidth = Math.max(rightWidth, size.getWidth());
-            rightHeight += size.getHeight();
-            if (nonfirstOnRight) {
-                rightHeight += insetV;
-            } else {
-                nonfirstOnRight = true;
-            }
-        }
+        rightWidth = Math.max(rightWidth, size.getWidth());
+        rightHeight += size.getHeight();
 
         if (!childrenOnly) {
-            rightWidth += nonfirstOnRight ? insetH : 0.0d;
+            rightWidth += insetH;
         }
 
         this.leftBlockSize.setSize(leftWidth, leftHeight);
@@ -124,10 +82,65 @@ public class RootElement extends AbstractElement {
     }
 
     @Override
-    public void setBounds(int x, int y, int x1, int y1) {
-        this.bounds.setRect(x,y,x1,y1);
+    public void add(RootElement element) {
+        this.children.add(element);
     }
 
+    @Override
+    public void draw(Graphics g) {
+        g.setColor(JBColor.BLUE);
+        g.drawRect((int) bounds.getX() - 5,(int) bounds.getY() - 5,(int)bounds.getWidth() + 10,(int) bounds.getWidth() + 10);
+        for (AbstractElement child : children) {
+            g.setColor(JBColor.RED);
+            int x = (int) child.bounds.getX() - 5;
+            int y = (int) child.bounds.getY() - 5;
+            int width = (int) child.bounds.getWidth() + 10;
+            int height = (int) child.bounds.getHeight() + 10;
+            System.out.println("x = " + x + " y = " + y + " width = " + width + " height = " + height);
+
+            g.drawLine(x, y, x + width - 1, y);
+            g.drawLine(x + width, y, x + width, y + height - 1);
+            g.drawLine(x + width, y + height, x + 1, y + height);
+            g.drawLine(x, y + height, x, y + 1);
+        }
+    }
+
+    @Override
+    public void setBounds(int x, int y, int x1, int y1) {
+        this.bounds.setFrame(x, y, x1, y1);
+    }
+
+    @Override
+    public void drawComponent() {
+        Crayons.setStroke(1f, StrokeType.SOLID);
+
+        final Shape shape = makeShape(1f, 1f);
+
+        if (MindMapConfig.dropShadow) {
+            Crayons.draw(makeShape(MindMapConfig.shadowOffset, MindMapConfig.shadowOffset), null, MindMapConfig.shadowColor);
+        }
+
+        Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
+
+        textArea.paint(MindMapConfig.rootTextColor);
+    }
+
+    @Override
+    public void drwLinkLine(Rectangle2D source, Rectangle2D destination) {
+        Crayons.setStroke(1f, StrokeType.SOLID);
+
+        final double startX;
+        if (destination.getCenterX() < source.getCenterX()) {
+            // left
+            startX = source.getCenterX() - source.getWidth() / 4;
+        } else {
+            // right
+            startX = source.getCenterX() + source.getWidth() / 4;
+        }
+
+        Crayons.drawCurve(startX, source.getCenterY(), destination.getCenterX(), destination.getCenterY(), MindMapConfig.linkLineColor);
+
+    }
 
     public Dimension2D getLeftBlockSize() {
         return this.leftBlockSize;
@@ -137,5 +150,6 @@ public class RootElement extends AbstractElement {
     public Dimension2D getRightBlockSize() {
         return this.rightBlockSize;
     }
+
 
 }
