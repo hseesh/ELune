@@ -1,20 +1,16 @@
 package com.yatoufang.test.model;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.yatoufang.config.MindMapConfig;
-import com.yatoufang.test.controller.Drawable;
-import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.component.FuzzyArea;
 import com.yatoufang.test.component.TextArea;
+import com.yatoufang.test.controller.Drawable;
 
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author GongHuang（hse）
@@ -121,7 +117,7 @@ public abstract class AbstractElement implements Drawable {
         } else {
             for (AbstractElement child : this.children) {
                 AbstractElement element = child.find(point);
-                if(element != null){
+                if (element != null) {
                     return element;
                 }
             }
@@ -141,4 +137,6 @@ public abstract class AbstractElement implements Drawable {
     public Rectangle getBounds() {
         return bounds;
     }
+
+
 }

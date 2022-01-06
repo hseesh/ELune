@@ -3,6 +3,7 @@ package com.yatoufang.test.model;
 import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.component.Crayons;
+import com.yatoufang.test.event.Context;
 
 import java.awt.*;
 import java.awt.geom.Dimension2D;
@@ -88,15 +89,16 @@ public class RootElement extends AbstractElement {
 
     @Override
     public void draw(Graphics g) {
-        g.setColor(JBColor.BLUE);
-        g.drawRect((int) bounds.getX() - 5,(int) bounds.getY() - 5,(int)bounds.getWidth() + 10,(int) bounds.getWidth() + 10);
         for (AbstractElement child : children) {
-            g.setColor(JBColor.RED);
+            if (Context.current != null && Context.current.equals(child)) {
+                g.setColor(JBColor.RED);
+            }else{
+                g.setColor(JBColor.BLUE);
+            }
             int x = (int) child.bounds.getX() - 5;
             int y = (int) child.bounds.getY() - 5;
             int width = (int) child.bounds.getWidth() + 10;
             int height = (int) child.bounds.getHeight() + 10;
-            System.out.println("x = " + x + " y = " + y + " width = " + width + " height = " + height);
 
             g.drawLine(x, y, x + width - 1, y);
             g.drawLine(x + width, y, x + width, y + height - 1);

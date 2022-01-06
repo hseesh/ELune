@@ -22,6 +22,7 @@ public class ContextHandler extends EventHandler{
                 Context.setSelect(result);
                 Context.textArea.setBounds(result.getBounds());
                 Context.textAreaState.set(true);
+                Context.pushUpdates(result);
             }
         }
         handler.invoke(inputEvent,eventType);
