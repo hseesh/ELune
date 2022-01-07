@@ -2,7 +2,7 @@ package com.yatoufang.service;
 
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.entity.Table;
-import com.yatoufang.utils.DateUtil;
+import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -45,7 +45,7 @@ public class VelocityService {
 
     public String execute(String filePath, Table table){
         VelocityContext context = new VelocityContext();
-        context.put("now", DateUtil.now());
+        context.put("now", DataUtil.now());
         context.put("table", table);
         context.put("author","GongHuang(hse)");
         StringWriter stringWriter = new StringWriter();

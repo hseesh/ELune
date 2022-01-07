@@ -17,7 +17,7 @@ import java.awt.geom.Rectangle2D;
 public class TextArea {
 
     private static final Rectangle2D ZERO = new Rectangle2D.Double();
-    private final Rectangle2D bounds = new Rectangle2D.Double();
+    private Rectangle2D bounds = new Rectangle2D.Double();
     private String text;
     private Line[] lines;
     private Font font;
@@ -26,11 +26,13 @@ public class TextArea {
 
     public TextArea(String text) {
         this.text = text;
+        font = new Font(null, Font.PLAIN,14);
     }
 
     public TextArea(String text, TextAlign textAlign) {
         this.text = text;
         this.textAlign = textAlign;
+
     }
 
     public Rectangle2D getBounds() {
@@ -58,7 +60,7 @@ public class TextArea {
     public void updateSize(Crayons crayons) {
         Font font = new Font(Font.SERIF, Font.BOLD, 18);
         font = font.deriveFont(AffineTransform.getScaleInstance(1, 1));
-        crayons.setFont(font);
+        Crayons.setFont(font);
 
         maxLineAscent = crayons.getFontMaxAscent();
 
@@ -81,29 +83,9 @@ public class TextArea {
 
 
     public void paint(Color color) {
-//        if (font != null || lines != null) {
-//            double posy = bounds.getY() + maxLineAscent;
-//            crayons.setFont(font);
-//            for (Line item : lines) {
-//                double drawX;
-//                switch (textAlign) {
-//                    case LEFT: {
-//                        drawX = bounds.getX();
-//                    }
-//                    break;
-//                    case RIGHT: {
-//                        drawX = bounds.getX() + (bounds.getWidth() - item.bounds.getWidth());
-//                    }
-//                    break;
-//                    default:
-//                        drawX = bounds.getX() + (bounds.getWidth() - item.bounds.getWidth()) / 2;
-//                        break;
-//                }
-//                crayons.drawString(item.line, (int) Math.round(drawX), (int) Math.round(posy), color);
-//                posy += item.bounds.getHeight();
-//            }
-//        }
-        Crayons.drawString(text, bounds.getX(), bounds.getY());
+        Crayons.setFont(this.font);
+        Point point = Canvas.calcBestPosition(text, font, bounds);
+        Crayons.drawString(text, point.x, point.y, color);
     }
 
     public String getText() {
@@ -116,8 +98,9 @@ public class TextArea {
     }
 
     public void fillText(JTextComponent component) {
-        component.setFont(font);
-        component.setText(text);
+        this.bounds = component.getBounds();
+        this.text = component.getText();
+        this.font = component.getFont();
     }
 
     public void setText(String text) {

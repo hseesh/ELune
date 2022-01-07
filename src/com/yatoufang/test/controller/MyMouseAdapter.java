@@ -1,4 +1,4 @@
-package com.yatoufang.ui.customer.test;
+package com.yatoufang.test.controller;
 
 import com.yatoufang.test.event.EventService;
 import com.yatoufang.test.event.EventType;
@@ -10,7 +10,7 @@ import java.awt.event.MouseEvent;
  * @author GongHuang（hse）
  * @since 2021/12/30
  */
-public class RootLayerListener extends MouseAdapter {
+public class MyMouseAdapter extends MouseAdapter {
 
     /**
      * {@inheritDoc}

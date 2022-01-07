@@ -141,10 +141,8 @@ public class Crayons {
 
 
     public static void drawString(String text, int x, int y, Color color) {
-        if (color != null && brush.getFont().getSize2D() > 1.0f) {
-            brush.setColor(color);
-            brush.drawString(text, x, y);
-        }
+        brush.setColor(color);
+        brush.drawString(text, x, y);
     }
 
     public static void drawString(String text, double x, double y) {

@@ -17,8 +17,9 @@ public class ContextHandler extends EventHandler{
         if (inputEvent instanceof MouseEvent) {
             MouseEvent event = (MouseEvent) inputEvent;
             Point point = event.getPoint();
-            AbstractElement result = Context.panel.topic.find(point);
+            AbstractElement result = Context.rootPanel.topic.find(point);
             if(result != null){
+                System.out.println(result.getText());
                 Context.setSelect(result);
                 Context.textArea.setBounds(result.getBounds());
                 Context.textAreaState.set(true);

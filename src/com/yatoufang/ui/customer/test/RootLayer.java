@@ -2,8 +2,9 @@ package com.yatoufang.ui.customer.test;
 
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.controller.Drawable;
+import com.yatoufang.test.event.Context;
 import com.yatoufang.test.model.AbstractElement;
-import com.yatoufang.test.model.RootElement;
+import com.yatoufang.test.model.Element;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,12 @@ public class RootLayer extends JLayeredPane {
     public RootLayer() {
         System.out.println("init ");
         setSize(800, 600);
-        topic = new RootElement("EMPTY NODE");
+        topic = new Element("EMPTY NODE");
+        topic.setBounds(100,100,70,40);
+        Context.textArea.setBounds(100,100,70,40);
+        Context.textArea.setEnabled(true);
+        Context.current = topic;
+        paint = topic;
     }
 
 
@@ -43,7 +49,6 @@ public class RootLayer extends JLayeredPane {
             Canvas.drawBankGround(brush);
             brush.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
             brush.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            System.out.println(topic.children.size());
             paint.draw(brush);
         }
     }

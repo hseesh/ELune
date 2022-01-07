@@ -4,21 +4,22 @@ package com.yatoufang.test.model;
  * @author GongHuang（hse）
  * @since 2021/12/23
  */
-public enum ElementType {
+public enum ComponentType {
     NONE(0),
-    ROOT(1),
-    TOP_ROOT(2),
-    NORMAL(3),
-    ICONS(4);
+    AREA(1),
+    VISUAL_ATTRIBUTES(2),
+    TEXT(3),
+    ICONS(4),
+    COLLAPSATOR(5);
 
     private final int ID;
 
-    ElementType(int id) {
+    ComponentType(int id) {
         this.ID = id;
     }
 
-    public ElementType getType() {
-        for (ElementType type : ElementType.values()) {
+    public ComponentType getType() {
+        for (ComponentType type : ComponentType.values()) {
             if (type.getID() == ID) {
                 return type;
             }

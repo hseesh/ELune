@@ -9,7 +9,11 @@ public enum EventType {
     MOUSE_DRAG(2),
     MOUSE_MOVE(3),
     TYPING(4),
-    NONE(5);
+    INSERT_KEY(5),
+    DELETE_KEY(6),
+    CTRL_S_KEY(7),
+    NONE(10);
+
 
     int ID;
 

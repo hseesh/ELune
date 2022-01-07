@@ -20,6 +20,8 @@ public abstract class AbstractElement implements Drawable {
 
     public List<AbstractElement> children = Lists.newArrayList();
 
+    public ElementType type;
+
     protected Color fillColor;
     protected Color textColor;
     protected Color borderColor;
@@ -72,7 +74,7 @@ public abstract class AbstractElement implements Drawable {
 
     public abstract Dimension2D calcBlockSize(Dimension2D size, boolean childrenOnly);
 
-    public abstract void add(RootElement rootElement);
+    public abstract void add(AbstractElement rootElement);
 
 
     public JTextComponent fillText(JTextComponent compo) {
