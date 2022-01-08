@@ -1,7 +1,7 @@
 package com.yatoufang.test.component;
 
 import com.intellij.util.ui.JBUI;
-import com.yatoufang.test.model.AbstractElement;
+import com.yatoufang.test.model.Element;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +15,7 @@ public class MainView extends JComponent {
     private Crayons crayons;
     private final JTextArea textEditor = new JTextArea();
     private final JPanel textEditorPanel = new JPanel();
-    private AbstractElement editingElement = null;
+    private Element editingElement = null;
 
 
     public MainView() {
@@ -32,48 +32,8 @@ public class MainView extends JComponent {
         add(textEditorPanel);
     }
 
-    public void startEdit(AbstractElement element) {
-        if (element == null) {
-            editingElement = null;
-            textEditorPanel.setVisible(false);
-        } else {
-            editingElement = element;
-            element.fillText(textEditor);
-            textEditorPanel.setVisible(true);
-            textEditor.requestFocus();
-        }
-    }
-
-    public boolean endEdit(final boolean commit) {
-        boolean result = false;
-
-        result = editingElement != null;
-
-        if (editingElement != null) {
-            final AbstractElement editedElement = editingElement;
-
-            if (commit) {
 
 
-                final String oldText = editedElement.getText();
-                String newText = textEditor.getText();
-
-
-                boolean contentChanged = false;
-                if (!oldText.equals(newText)) {
-                    editedElement.setText(newText);
-                    contentChanged = true;
-                }
-                textEditorPanel.setVisible(false);
-
-                doLayout();
-                revalidate();
-                repaint();
-
-            }
-        }
-        return result;
-    }
 
     @Override
     public void paintComponent(Graphics g) {

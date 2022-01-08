@@ -1,6 +1,6 @@
 package com.yatoufang.test.event;
 
-import com.yatoufang.test.model.AbstractElement;
+import com.yatoufang.test.model.Element;
 import com.yatoufang.ui.customer.test.RootLayer;
 import org.apache.commons.compress.utils.Lists;
 
@@ -13,13 +13,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @since 2022/1/2 0002
  */
 public class Context {
-    public static AbstractElement last;
-    public static AbstractElement current;
+    public static Element last;
+    public static Element current;
     public static JTextArea textArea = new JTextArea();
     public static RootLayer rootPanel = new RootLayer();
     public static AtomicBoolean menuState = new AtomicBoolean(false);
     public static AtomicBoolean textAreaState = new AtomicBoolean(false);
-    private static final Collection<AbstractElement> updates = Lists.newArrayList();
+    private static final Collection<Element> updates = Lists.newArrayList();
+
+    static {
+        current = rootPanel.topic;
+        current.fillText(textArea, current.getBounds());
+    }
 
     public static void updateUI() {
         if (updates.size() > 0) {
@@ -28,18 +33,16 @@ public class Context {
         }
     }
 
-    public static void pushUpdates(AbstractElement element) {
+    public static void pushUpdates(Element element) {
         updates.add(element);
     }
 
-    public static void setSelect(AbstractElement element) {
-        if (element.equals(current)) {
-            return;
-        }
+    public static void setSelect(Element element) {
         last = current;
         current = element;
-        last.fillText(textArea);
+        last.fillText(textArea, last.getBounds());
         updates.add(last);
+        System.out.println("current" + current);
     }
 
     public static void enableTextArea() {

@@ -1,7 +1,7 @@
 package com.yatoufang.test.event;
 
 import com.yatoufang.test.component.Canvas;
-import com.yatoufang.test.model.AbstractElement;
+import com.yatoufang.test.model.Element;
 
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
@@ -17,7 +17,7 @@ public class KeyBoardHandler extends EventHandler{
         if(event instanceof KeyEvent){
             switch (eventType){
                 case INSERT_KEY:
-                    AbstractElement element = Canvas.createElement(Context.current);
+                    Element element = Canvas.createElement(Context.current);
                     Context.textArea.setBounds(element.getBounds().x, element.getBounds().y, 70, 40);
                     Context.textAreaState.set(true);
                     Context.rootPanel.topic.add(element);

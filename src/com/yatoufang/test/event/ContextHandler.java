@@ -1,6 +1,6 @@
 package com.yatoufang.test.event;
 
-import com.yatoufang.test.model.AbstractElement;
+import com.yatoufang.test.model.Element;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
@@ -17,9 +17,8 @@ public class ContextHandler extends EventHandler{
         if (inputEvent instanceof MouseEvent) {
             MouseEvent event = (MouseEvent) inputEvent;
             Point point = event.getPoint();
-            AbstractElement result = Context.rootPanel.topic.find(point);
+            Element result = Context.rootPanel.topic.find(point);
             if(result != null){
-                System.out.println(result.getText());
                 Context.setSelect(result);
                 Context.textArea.setBounds(result.getBounds());
                 Context.textAreaState.set(true);

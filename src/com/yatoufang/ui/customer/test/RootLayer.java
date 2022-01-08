@@ -3,7 +3,6 @@ package com.yatoufang.ui.customer.test;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.controller.Drawable;
 import com.yatoufang.test.event.Context;
-import com.yatoufang.test.model.AbstractElement;
 import com.yatoufang.test.model.Element;
 
 import javax.swing.*;
@@ -15,7 +14,7 @@ import java.awt.*;
  */
 public class RootLayer extends JLayeredPane {
 
-    public AbstractElement topic;
+    public Element topic;
 
     Drawable paint;
 

@@ -1,22 +1,41 @@
 package com.yatoufang.test.model;
 
+import com.google.common.collect.Lists;
 import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
+import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.Crayons;
+import com.yatoufang.test.controller.Drawable;
 import com.yatoufang.test.event.Context;
 
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.util.List;
 
 /**
  * @author GongHuang（hse）
  * @since 2021/12/25 0025
  */
-public class Element extends AbstractElement {
+public class Element implements Drawable {
+    public Rectangle bounds = new Rectangle();
+
+    public List<Element> children = Lists.newArrayList();
+
+    public String text;
+
+    public Font font;
+
+    public ElementType type;
+
+    protected Color fillColor;
+    protected Color textColor;
+    protected Color borderColor;
+
     public Element(String text) {
-        super(text);
+        this.text = text;
     }
 
     private final Dimension2D leftBlockSize = new Dimension();
@@ -33,32 +52,31 @@ public class Element extends AbstractElement {
     }
 
 
-    @Override
     public boolean movable() {
         return false;
     }
 
-    @Override
+
     public boolean isCollapsed() {
         return false;
     }
 
-    @Override
+
     public Color getBackgroundColor() {
         return MindMapConfig.rootBackgroundColor;
     }
 
-    @Override
+
     public Color getTextColor() {
         return MindMapConfig.rootTextColor;
     }
 
-    @Override
+
     public boolean hasDirection() {
         return false;
     }
 
-    @Override
+
     public Dimension2D calcBlockSize(Dimension2D size, final boolean childrenOnly) {
         final double insetV = MindMapConfig.scale * MindMapConfig.firstLevelVerticalInset;
         final double insetH = MindMapConfig.scale * MindMapConfig.firstLevelHorizontalInset;
@@ -87,8 +105,8 @@ public class Element extends AbstractElement {
         return size;
     }
 
-    @Override
-    public void add(AbstractElement element) {
+
+    public void add(Element element) {
         this.children.add(element);
     }
 
@@ -108,30 +126,29 @@ public class Element extends AbstractElement {
         g.drawLine(x + width, y, x + width, y + height - 1);
         g.drawLine(x + width, y + height, x + 1, y + height);
         g.drawLine(x, y + height, x, y + 1);
-        for (AbstractElement child : children) {
+        for (Element child : children) {
             drawComponent();
-            drwLinkLine(this.bounds, child.bounds);
+            drwLinkLine(this.bounds, child.getBounds());
             child.draw(g);
         }
     }
 
-    @Override
+
     public void setBounds(int x, int y, int x1, int y1) {
         this.bounds.setFrame(x, y, x1, y1);
     }
 
-    @Override
+
     public void drawComponent() {
-        Crayons.setStroke(1f, StrokeType.SOLID);
-
+        Crayons.setStroke(2f, StrokeType.SOLID);
         final Shape shape = makeShape();
-
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
-
-        textArea.paint(MindMapConfig.rootTextColor);
+        Point point = Canvas.calcBestPosition(text, font, this.bounds);
+        System.out.println("updating" + this);
+        Crayons.drawString(text, point.x, point.y, MindMapConfig.rootTextColor);
     }
 
-    @Override
+
     public void drwLinkLine(Rectangle2D source, Rectangle2D destination) {
         Crayons.setStroke(1f, StrokeType.SOLID);
 
@@ -147,6 +164,15 @@ public class Element extends AbstractElement {
 
     }
 
+
+    public void fillText(JTextComponent compo, Rectangle rectangle) {
+        System.out.println("compo = " + compo.getText());
+        this.text = compo.getText();
+        this.font = compo.getFont();
+        this.bounds.setBounds((int) rectangle.getX(), (int) rectangle.getY(), (int) rectangle.getWidth(), (int) rectangle.getHeight());
+        System.out.println(bounds);
+    }
+
     public Dimension2D getLeftBlockSize() {
         return this.leftBlockSize;
     }
@@ -157,4 +183,22 @@ public class Element extends AbstractElement {
     }
 
 
+    public Element find(Point point) {
+        if (this.bounds.contains(point)) {
+            return this;
+        } else {
+            for (Element child : this.children) {
+                Element element = child.find(point);
+                if (element != null) {
+                    return element;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    public Rectangle getBounds() {
+        return bounds;
+    }
 }

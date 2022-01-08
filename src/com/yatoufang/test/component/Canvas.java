@@ -2,7 +2,6 @@ package com.yatoufang.test.component;
 
 import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
-import com.yatoufang.test.model.AbstractElement;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.utils.StringUtil;
 
@@ -23,10 +22,11 @@ public class Canvas {
     private static final FontRenderContext fontRenderContext = new FontRenderContext(affineTransform, true, true);
 
     public static Point calcBestPosition(String text, Font font, Rectangle2D bounds) {
+        System.out.println("bounds = " + bounds);
         int width = (int) font.getStringBounds(text, fontRenderContext).getWidth();
         int height = (int) font.getStringBounds(text, fontRenderContext).getHeight();
         double x = (bounds.getWidth() - width) / 2;
-        double y = bounds.getHeight() - ( height / 2) ;
+        double y = bounds.getHeight() - (int)( height / 2) ;
         return new Point((int) (bounds.getX() + x), (int) (bounds.getY() + y));
     }
 
@@ -74,10 +74,11 @@ public class Canvas {
         return menu;
     }
 
-    public static AbstractElement createElement(AbstractElement element) {
+    public static Element createElement(Element element) {
         Element rootElement = new Element(StringUtil.EMPTY);
         Rectangle bounds = element.getBounds();
         rootElement.setBounds(bounds.x + MindMapConfig.distance, bounds.y, bounds.width, bounds.height);
+        System.out.println("new bounds" + bounds);
         return rootElement;
     }
 }
