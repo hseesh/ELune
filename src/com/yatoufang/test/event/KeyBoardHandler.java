@@ -18,6 +18,7 @@ public class KeyBoardHandler extends EventHandler{
             switch (eventType){
                 case INSERT_KEY:
                     Element element = Canvas.createElement(Context.current);
+                    Context.setSelect(element);
                     Context.textArea.setBounds(element.getBounds().x, element.getBounds().y, 70, 40);
                     Context.textAreaState.set(true);
                     Context.rootPanel.topic.add(element);

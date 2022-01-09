@@ -22,11 +22,10 @@ public class Canvas {
     private static final FontRenderContext fontRenderContext = new FontRenderContext(affineTransform, true, true);
 
     public static Point calcBestPosition(String text, Font font, Rectangle2D bounds) {
-        System.out.println("bounds = " + bounds);
         int width = (int) font.getStringBounds(text, fontRenderContext).getWidth();
         int height = (int) font.getStringBounds(text, fontRenderContext).getHeight();
         double x = (bounds.getWidth() - width) / 2;
-        double y = bounds.getHeight() - (int)( height / 2) ;
+        double y = bounds.getHeight() - (int) (height / 2);
         return new Point((int) (bounds.getX() + x), (int) (bounds.getY() + y));
     }
 
@@ -78,8 +77,20 @@ public class Canvas {
         Element rootElement = new Element(StringUtil.EMPTY);
         Rectangle bounds = element.getBounds();
         rootElement.setBounds(bounds.x + MindMapConfig.distance, bounds.y, bounds.width, bounds.height);
-        System.out.println("new bounds" + bounds);
         return rootElement;
+    }
+
+    public static void calcPrepareLine(Element source, Element target) {
+        int index = 1;
+        if (source.bounds.x > target.bounds.x) {//1,2象限
+            if(source.bounds.y > target.bounds.y){
+                index = 4;
+            }else{
+                index = 3;
+            }
+        }else{
+
+        }
     }
 }
         

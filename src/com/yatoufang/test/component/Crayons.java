@@ -56,9 +56,7 @@ public class Crayons {
         if (type != strokeType || Float.compare(strokeWidth, width) != 0) {
             strokeType = type;
             strokeWidth = width;
-
             Stroke stroke;
-
             switch (type) {
                 case SOLID:
                     stroke = new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER);

@@ -25,7 +25,6 @@ public class RootLayer extends JLayeredPane {
         topic.setBounds(100,100,70,40);
         Context.textArea.setBounds(100,100,70,40);
         Context.textArea.setEnabled(true);
-        Context.current = topic;
         paint = topic;
     }
 

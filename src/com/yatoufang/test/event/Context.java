@@ -18,16 +18,18 @@ public class Context {
     public static JTextArea textArea = new JTextArea();
     public static RootLayer rootPanel = new RootLayer();
     public static AtomicBoolean menuState = new AtomicBoolean(false);
+    public static AtomicBoolean shouldUpdate = new AtomicBoolean(true);
     public static AtomicBoolean textAreaState = new AtomicBoolean(false);
     private static final Collection<Element> updates = Lists.newArrayList();
 
     static {
+        last = rootPanel.topic;
         current = rootPanel.topic;
         current.fillText(textArea, current.getBounds());
     }
 
     public static void updateUI() {
-        if (updates.size() > 0) {
+        if (updates.size() > 0 || shouldUpdate.getAndSet(false)) {
             rootPanel.create(rootPanel.topic);
             updates.clear();
         }
@@ -42,7 +44,6 @@ public class Context {
         current = element;
         last.fillText(textArea, last.getBounds());
         updates.add(last);
-        System.out.println("current" + current);
     }
 
     public static void enableTextArea() {

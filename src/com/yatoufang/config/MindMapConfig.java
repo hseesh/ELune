@@ -30,7 +30,7 @@ public class MindMapConfig {
     public static  Color firstLevelTextColor = JBColor.BLACK;
     public static  Color otherLevelTextColor = JBColor.BLACK;
     public static  Color elementBorderColor = JBColor.BLACK;
-    public static  Color linkLineColor = JBColor.WHITE;
+    public static  Color linkLineColor = JBColor.PINK;
     public static  Color shadowColor = new JBColor(new Color(0x30000000, true), JBColor.BLACK);
     public static  Color selectLineColor = JBColor.ORANGE;
     public static  Color jumpLinkColor = JBColor.CYAN;

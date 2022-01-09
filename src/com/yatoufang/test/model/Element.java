@@ -36,6 +36,8 @@ public class Element implements Drawable {
 
     public Element(String text) {
         this.text = text;
+        this.font =new Font(null, Font.PLAIN, 25);
+        borderColor = MindMapConfig.elementBorderColor;
     }
 
     private final Dimension2D leftBlockSize = new Dimension();
@@ -118,19 +120,11 @@ public class Element implements Drawable {
             g.setColor(JBColor.BLUE);
         }
         Crayons.brush = (Graphics2D) g;
-        int x = (int) this.bounds.getX() - 5;
-        int y = (int) this.bounds.getY() - 5;
-        int width = (int) this.bounds.getWidth() + 10;
-        int height = (int) this.bounds.getHeight() + 10;
-        g.drawLine(x, y, x + width - 1, y);
-        g.drawLine(x + width, y, x + width, y + height - 1);
-        g.drawLine(x + width, y + height, x + 1, y + height);
-        g.drawLine(x, y + height, x, y + 1);
         for (Element child : children) {
-            drawComponent();
             drwLinkLine(this.bounds, child.getBounds());
             child.draw(g);
         }
+        drawComponent();
     }
 
 
@@ -140,17 +134,21 @@ public class Element implements Drawable {
 
 
     public void drawComponent() {
+        int x = (int) this.bounds.getX() - 5;
+        int y = (int) this.bounds.getY() - 5;
+        int width = (int) this.bounds.getWidth() + 10;
+        int height = (int) this.bounds.getHeight() + 10;
         Crayons.setStroke(2f, StrokeType.SOLID);
+        Crayons.drawRect(x,y,width,height,borderColor,fillColor);
         final Shape shape = makeShape();
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
         Point point = Canvas.calcBestPosition(text, font, this.bounds);
-        System.out.println("updating" + this);
         Crayons.drawString(text, point.x, point.y, MindMapConfig.rootTextColor);
     }
 
 
     public void drwLinkLine(Rectangle2D source, Rectangle2D destination) {
-        Crayons.setStroke(1f, StrokeType.SOLID);
+        Crayons.setStroke(2f, StrokeType.SOLID);
 
         final double startX;
         if (destination.getCenterX() < source.getCenterX()) {
@@ -166,11 +164,9 @@ public class Element implements Drawable {
 
 
     public void fillText(JTextComponent compo, Rectangle rectangle) {
-        System.out.println("compo = " + compo.getText());
         this.text = compo.getText();
         this.font = compo.getFont();
-        this.bounds.setBounds((int) rectangle.getX(), (int) rectangle.getY(), (int) rectangle.getWidth(), (int) rectangle.getHeight());
-        System.out.println(bounds);
+        this.bounds.setBounds(rectangle);
     }
 
     public Dimension2D getLeftBlockSize() {
