@@ -130,7 +130,7 @@ public class ApiDocumentAction extends AnAction {
             return cacheClass;
         }
         PsiStatement firstStatement = statements[0];
-        if (firstStatement.getText().contains(ProjectKeys.GET_VALUE)) {
+        if (firstStatement.getText().contains(ProjectKeys.GET_VALUE_METHOD)) {
             PsiElement firstChild = firstStatement.getFirstChild();
             if (firstChild instanceof PsiLocalVariable) {
                 PsiLocalVariable localVariable = (PsiLocalVariable) firstChild;

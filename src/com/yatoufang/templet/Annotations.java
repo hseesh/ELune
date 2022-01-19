@@ -34,5 +34,7 @@ public interface Annotations {
 
     String CMD = "cn.daxiang.framework.router.annotation.Cmd";
 
+    String DATA_FILE = "cn.daxiang.framework.dataconfig.annotation.DataFile";
 
+    String FILED_IGNORE = "cn.daxiang.framework.dataconfig.annotation.FieldIgnore";
 }

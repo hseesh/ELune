@@ -1,6 +1,5 @@
 package com.yatoufang.utils;
 
-import com.android.aapt.Resources;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
@@ -15,7 +14,6 @@ import com.yatoufang.templet.Application;
 import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.ProjectKeys;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -247,10 +245,10 @@ public class PSIUtil {
 
     public static void getClassFields(PsiClass psiClass, Collection<Param> result, PsiType originType) {
         if (psiClass == null) return;
-        if(psiClass.isEnum()){
+        if (psiClass.isEnum()) {
             return;
         }
-        if(Application.isBasicType(psiClass.getName())){
+        if (Application.isBasicType(psiClass.getName())) {
             return;
         }
         PsiField[] fields = psiClass.getFields();
@@ -271,6 +269,23 @@ public class PSIUtil {
             }
             PsiClass aClass = findClass(type.getCanonicalText());
             getClassFields(aClass, result, type);
+        }
+    }
+
+    public static void getClassFields(PsiClass psiClass, Collection<Param> result) {
+        if (psiClass == null) return;
+        if (Application.isBasicType(psiClass.getName())) {
+            return;
+        }
+        PsiField[] fields = psiClass.getFields();
+        for (PsiField field : fields) {
+            PsiType type = field.getType();
+            if (Application.isBasicType(type.getPresentableText())) {
+                Param param = new Param(field.getName());
+                param.setType(type);
+                param.setDescription(getDescription(field.getDocComment()));
+                result.add(param);
+            }
         }
     }
 
@@ -549,6 +564,25 @@ public class PSIUtil {
             }
         }
         return StringUtil.EMPTY;
+    }
+
+
+    public static String getFiledValue(PsiElement element) {
+        if (element == null) return null;
+        if (element instanceof PsiJavaToken) {
+            if (StringUtil.EQUAL == element.getText().charAt(0)) {
+                PsiElement nextSibling = element.getNextSibling();
+                return ProjectKeys.EQUAL + nextSibling.getNextSibling().getText();
+            }
+        }
+        PsiElement[] children = element.getChildren();
+        for (PsiElement child : children) {
+            String filedValue = getFiledValue(child);
+            if (filedValue != null) {
+                return filedValue;
+            }
+        }
+        return null;
     }
 
 

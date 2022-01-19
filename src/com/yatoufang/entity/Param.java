@@ -3,6 +3,8 @@ package com.yatoufang.entity;
 import com.intellij.psi.PsiType;
 import com.yatoufang.utils.StringUtil;
 
+import java.util.Objects;
+
 /**
  * @author hse
  * @Date: 2021/1/13
@@ -10,15 +12,15 @@ import com.yatoufang.utils.StringUtil;
 public class Param {
 
     private String name;
-    private String alias;
-    private PsiType type;
-    private String typeAlias;
-    private boolean required;
+    private transient String alias;
+    private transient PsiType type;
+    private  String typeAlias;
+    private transient boolean required;
     private String defaultValue;
     private String description;
-    private String setString;
-    private String getString;
-    private String annotation;
+    private transient String setString;
+    private transient String getString;
+    private transient String annotation;
 
 
     public Param(String paramName) {
@@ -144,6 +146,19 @@ public class Param {
 
     public void setAnnotation(String annotation) {
         this.annotation = annotation;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Param param = (Param) o;
+        return Objects.equals(name, param.name) && Objects.equals(type, param.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, type);
     }
 
     @Override

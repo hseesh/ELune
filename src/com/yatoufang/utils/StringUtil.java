@@ -11,6 +11,7 @@ public class StringUtil {
     public static final char COMMA = ',';
     public static final char COLON = ':';
     public static final char SPACE = ' ';
+    public static final char EQUAL = '=';
     public static final char LEFT_BRACKET = '[';
     public static final char RIGHT_BRACKET = ']';
     public static final char LEFT_BRACE = '{';

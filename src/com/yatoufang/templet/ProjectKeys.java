@@ -56,9 +56,14 @@ public interface ProjectKeys {
     String ACTOR_ID = "actorId";
     String UPDATE_TIME = "updateTime";
     String TABLE = "table";
-    CharSequence GET_VALUE = "getValue";
+    String CONFIG = "config";
 
     String JAVA = ".java";
+
+    String EQUAL = " = ";
+
+    String GET_VALUE_METHOD = "getValue";
+    String INITIALIZE_METHOD = "initialize";
 
     String SINGLE_ENTITY_TEMPLATE = "/templates/SingleDaoTemplate.vm";
     String MULTI_ENTITY_TEMPLATE = "/templates/MultiDaoTemplate.vm";
@@ -76,5 +81,4 @@ public interface ProjectKeys {
     String ENTITY_HANDLER_TEMPLATE = "/templates/EntityHandler.vm";
     String ENTITY_FACADE_TEMPLATE = "/templates/EntityFacadeTemplate.vm";
     String ENTITY_FACADE_IMPL_TEMPLATE = "/templates/EntityFacadeImplTemplate.vm";
-
 }

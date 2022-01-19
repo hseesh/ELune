@@ -14,4 +14,5 @@ public interface NotifyKeys {
 
     String NO_MODULE_SELECTED = "No Module Selected";
 
+    String NO_PACKAGE_SELECTED = "No Package Selected";
 }
