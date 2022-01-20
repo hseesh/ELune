@@ -81,4 +81,6 @@ public interface ProjectKeys {
     String ENTITY_HANDLER_TEMPLATE = "/templates/EntityHandler.vm";
     String ENTITY_FACADE_TEMPLATE = "/templates/EntityFacadeTemplate.vm";
     String ENTITY_FACADE_IMPL_TEMPLATE = "/templates/EntityFacadeImplTemplate.vm";
+
+    String CONFIG_TEMPLATE = "/templates/ConfigTemplate.vm";
 }

@@ -68,7 +68,6 @@ public class CodeTemplateSetting {
             if(name != null && name.length() != 0){
                 templateMap.replace(jbList.getSelectedValue(),name);
             }
-
         });
 
         jbList.addListSelectionListener(e -> {

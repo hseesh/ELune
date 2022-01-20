@@ -15,4 +15,12 @@ public interface NotifyKeys {
     String NO_MODULE_SELECTED = "No Module Selected";
 
     String NO_PACKAGE_SELECTED = "No Package Selected";
+
+    String INPUT = "Please Input Your File Name";
+
+    String INPUT_TITLE = "Export File";
+
+    String CREATED = " created successfully\n";
+
+    String SAVED = "File Saved Successfully";
 }

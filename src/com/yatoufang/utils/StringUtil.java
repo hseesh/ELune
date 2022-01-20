@@ -4,6 +4,7 @@ package com.yatoufang.utils;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StringUtil {
 
@@ -120,6 +121,25 @@ public class StringUtil {
             }
         }
         return chars.length;
+    }
+
+    public static List<String> getParam(String s) {
+        StringBuilder builder = new StringBuilder();
+        List<String> params = Lists.newArrayList();
+        boolean jumpFlag = true;
+        for (char c : s.toCharArray()) {
+            if(c == 9 ){
+                if(jumpFlag){
+                    params.add(builder.toString());
+                    builder.delete(0,builder.length());
+                    jumpFlag = false;
+                }
+            }else{
+                builder.append(c);
+                jumpFlag = true;
+            }
+        }
+        return params;
     }
 
     public static void main(String[] args) {

@@ -1,6 +1,7 @@
 package com.yatoufang.service;
 
 import com.intellij.openapi.util.io.FileUtil;
+import com.yatoufang.entity.Config;
 import com.yatoufang.entity.Table;
 import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.StringUtil;
@@ -8,6 +9,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.log.NullLogChute;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,16 +45,22 @@ public class VelocityService {
         }
     }
 
-    public String execute(String filePath, Table table){
+    public String execute(String filePath, Object object){
         VelocityContext context = new VelocityContext();
         context.put("now", DataUtil.now());
-        context.put("table", table);
+        context.put("config", object);
         context.put("author","GongHuang(hse)");
+        return execute(filePath, context);
+    }
+
+
+    @Nullable
+    private String execute(String filePath, VelocityContext context) {
         StringWriter stringWriter = new StringWriter();
         String text = StringUtil.EMPTY;
         try {
             InputStream resourceAsStream = VelocityService.class.getResourceAsStream(filePath);
-            if(resourceAsStream == null){
+            if (resourceAsStream == null) {
                 return null;
             }
             text = FileUtil.loadTextAndClose(resourceAsStream);

@@ -8,7 +8,9 @@ import com.yatoufang.entity.ConfigParam;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author GongHuang（hse）
@@ -20,7 +22,7 @@ import java.util.Set;
 )
 public class TemplateConfigFile {
 
-    Set<ConfigParam> params = new HashSet<>();
+   public Set<ConfigParam> params = new HashSet<>();
 
     public static TemplateConfigFile getInstance(){
         TemplateConfigFile service = ServiceManager.getService(TemplateConfigFile.class);
@@ -28,6 +30,10 @@ public class TemplateConfigFile {
             service = new TemplateConfigFile();
         }
         return service;
+    }
+
+    public Map<String,ConfigParam> getMaps(){
+        return params.stream().collect(Collectors.toMap(ConfigParam::getName, v -> v));
     }
 
     public TemplateConfigFile getFile(){return  this;}

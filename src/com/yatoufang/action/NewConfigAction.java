@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.popup.IconButton;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.ui.ConfigTemplateDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
@@ -19,18 +20,6 @@ public class NewConfigAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        JBPopupFactory instance = JBPopupFactory.getInstance();
-
-        instance.createComponentPopupBuilder(null,null)
-                .setTitle("My Config")
-                .setMovable(true)
-                .setResizable(true)
-                .setCancelOnClickOutside(false)
-                .setCancelButton(new IconButton("Close", AllIcons.Actions.Cancel))
-                .setRequestFocus(true)
-                .setMinSize(new Dimension(1100, 800))
-                .setDimensionServiceKey(null, Application.PROJECT_ID + ProjectKeys.CONFIG, true)
-                .createPopup()
-                .showInFocusCenter();
+        new ConfigTemplateDialog("","").show();
     }
 }

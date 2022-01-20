@@ -1,0 +1,36 @@
+package cn.daxiang.lyltd.gameserver.core.dataconfig.model;
+
+
+import cn.daxiang.framework.dataconfig.ModelAdapter;
+import cn.daxiang.framework.dataconfig.annotation.DataFile;
+import cn.daxiang.framework.dataconfig.annotation.FieldIgnore;
+import cn.daxiang.framework.identity.IdentiyKey;
+import cn.daxiang.lyltd.gameserver.module.hero.type.HeroVocationType;
+
+/**
+*  配置
+*
+* @author $!{author}
+* @since ${now}
+*/
+@DataFile(fileName = "${config.nameAlias}")
+public class  ${config.name} implements ModelAdapter {
+
+    #foreach($item in $config.paramList)
+    /**
+    * ${item.description}
+    */
+    private ${item.alias} ${item.name};
+    #end
+
+
+    @Override
+    public void initialize() {
+        ${config.initialize}
+    }
+
+    @Override
+    public IdentiyKey findKey() {
+        return IdentiyKey.build(id);
+    }
+}
