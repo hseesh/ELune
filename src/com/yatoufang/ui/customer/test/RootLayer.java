@@ -21,7 +21,7 @@ public class RootLayer extends JLayeredPane {
     public RootLayer() {
         System.out.println("init ");
         setSize(800, 600);
-        topic = new Element("EMPTY NODE");
+        topic = new Element("EMPTY NODE",null);
         topic.setBounds(100,100,70,40);
         Context.textArea.setBounds(100,100,70,40);
         Context.textArea.setEnabled(true);

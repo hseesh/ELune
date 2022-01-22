@@ -20,6 +20,7 @@ import java.util.List;
  * @since 2021/12/25 0025
  */
 public class Element implements Drawable {
+    public Element parent;
     public Rectangle bounds = new Rectangle();
 
     public List<Element> children = Lists.newArrayList();
@@ -34,8 +35,9 @@ public class Element implements Drawable {
     protected Color textColor;
     protected Color borderColor;
 
-    public Element(String text) {
+    public Element(String text,Element element) {
         this.text = text;
+        this.parent = element;
         this.font =new Font(null, Font.PLAIN, 25);
         borderColor = MindMapConfig.elementBorderColor;
     }
@@ -113,13 +115,13 @@ public class Element implements Drawable {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void draw(Graphics2D g) {
         if (Context.current != null && Context.current.equals(this)) {
             g.setColor(JBColor.RED);
         } else {
             g.setColor(JBColor.BLUE);
         }
-        Crayons.brush = (Graphics2D) g;
+        Crayons.brush = g;
         for (Element child : children) {
             drwLinkLine(this.bounds, child.getBounds());
             child.draw(g);

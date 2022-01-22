@@ -11,5 +11,5 @@ public interface Drawable {
      *  draw custom component
      * @param g Graphics object
      */
-    void draw(Graphics g);
+    void draw(Graphics2D g);
 }

@@ -8,21 +8,21 @@ import java.awt.event.InputEvent;
  */
 public class EventService {
 
-    private static final MouseHandler mouseHandler = new MouseHandler();
-    private static final UpdateHandler updateHandler = new UpdateHandler();
-    private static final ContextHandler contextHandler = new ContextHandler();
-    private static final KeyBoardHandler keyBoardHandler = new KeyBoardHandler();
-    private static final WorldStateHandler worldStateHandler = new WorldStateHandler();
+    private static final MouseHandler MOUSE_HANDLER = new MouseHandler();
+    private static final UpdateHandler UPDATE_HANDLER = new UpdateHandler();
+    private static final ContextHandler CONTEXT_HANDLER = new ContextHandler();
+    private static final KeyBoardHandler KEY_BOARD_HANDLER = new KeyBoardHandler();
+    private static final WorldStateHandler WORLD_STATE_HANDLER = new WorldStateHandler();
 
     static {
-        contextHandler.handler = mouseHandler;
-        mouseHandler.handler = keyBoardHandler;
-        keyBoardHandler.handler = worldStateHandler;
-        worldStateHandler.handler = updateHandler;
+        CONTEXT_HANDLER.handler = MOUSE_HANDLER;
+        MOUSE_HANDLER.handler = KEY_BOARD_HANDLER;
+        KEY_BOARD_HANDLER.handler = WORLD_STATE_HANDLER;
+        WORLD_STATE_HANDLER.handler = UPDATE_HANDLER;
     }
 
-    public static void post(InputEvent event,EventType eventType){
-        contextHandler.invoke(event,eventType);
+    public static void post(InputEvent event, EventType eventType) {
+        CONTEXT_HANDLER.invoke(event, eventType);
     }
 
 }

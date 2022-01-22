@@ -20,6 +20,7 @@ public class ContextHandler extends EventHandler{
             Element result = Context.rootPanel.topic.find(point);
             if(result != null){
                 Context.setSelect(result);
+                Context.textArea.setText(result.text);
                 Context.textArea.setBounds(result.getBounds());
                 Context.textAreaState.set(true);
                 Context.pushUpdates(result);

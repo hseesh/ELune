@@ -75,6 +75,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
 
 
+
     public static void main(String[] args) {
         String text = "data\ttype\trank\trewards\t\t\t\t\tnationalRewards\t\t\t\t\tshowrewards\n";
         String text2 = "incarnation_reinforce_config\tIncarnationReinforceConfig\t\t\t\n" +

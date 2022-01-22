@@ -10,5 +10,10 @@ public abstract class EventHandler {
 
     protected EventHandler handler;
 
+    /**
+     *  event handler
+     * @param event InputEvent
+     * @param type EventType
+     */
     public abstract void invoke(InputEvent event,EventType type);
 }

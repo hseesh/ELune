@@ -17,13 +17,13 @@ import java.awt.geom.Rectangle2D;
  */
 public class Canvas {
 
-    private static final AffineTransform affineTransform = new AffineTransform();
+    private static final AffineTransform AFFINE_TRANSFORM = new AffineTransform();
 
-    private static final FontRenderContext fontRenderContext = new FontRenderContext(affineTransform, true, true);
+    private static final FontRenderContext FONT_RENDER_CONTEXT = new FontRenderContext(AFFINE_TRANSFORM, true, true);
 
     public static Point calcBestPosition(String text, Font font, Rectangle2D bounds) {
-        int width = (int) font.getStringBounds(text, fontRenderContext).getWidth();
-        int height = (int) font.getStringBounds(text, fontRenderContext).getHeight();
+        int width = (int) font.getStringBounds(text, FONT_RENDER_CONTEXT).getWidth();
+        int height = (int) font.getStringBounds(text, FONT_RENDER_CONTEXT).getHeight();
         double x = (bounds.getWidth() - width) / 2;
         double y = bounds.getHeight() - (int) (height / 2);
         return new Point((int) (bounds.getX() + x), (int) (bounds.getY() + y));
@@ -74,7 +74,7 @@ public class Canvas {
     }
 
     public static Element createElement(Element element) {
-        Element rootElement = new Element(StringUtil.EMPTY);
+        Element rootElement = new Element(StringUtil.EMPTY, element);
         Rectangle bounds = element.getBounds();
         rootElement.setBounds(bounds.x + MindMapConfig.distance, bounds.y, bounds.width, bounds.height);
         return rootElement;
@@ -83,12 +83,12 @@ public class Canvas {
     public static void calcPrepareLine(Element source, Element target) {
         int index = 1;
         if (source.bounds.x > target.bounds.x) {//1,2象限
-            if(source.bounds.y > target.bounds.y){
+            if (source.bounds.y > target.bounds.y) {
                 index = 4;
-            }else{
+            } else {
                 index = 3;
             }
-        }else{
+        } else {
 
         }
     }
