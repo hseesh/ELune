@@ -2,44 +2,36 @@ package com.yatoufang.ui;
 
 
 import com.google.common.collect.Maps;
-import com.intellij.ide.highlighter.JavaClassFileType;
-import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.psi.*;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.FormBuilder;
-import com.yatoufang.config.CodeTemplateState;
+import com.yatoufang.config.AppSettingService;
 import com.yatoufang.entity.Config;
 import com.yatoufang.entity.ConfigParam;
-import com.yatoufang.service.ConsoleService;
+import com.yatoufang.service.NotifyService;
 import com.yatoufang.service.VelocityService;
+import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.utils.DataUtil;
-import com.yatoufang.utils.ExceptionUtil;
-import com.yatoufang.utils.StringUtil;
-import com.yatoufang.utils.SwingUtils;
+import com.yatoufang.utils.*;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.compress.utils.Sets;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.Callable;
 
 /**
  * @author hse
@@ -47,21 +39,26 @@ import java.util.Map;
  */
 public class ConfigTemplateDialog extends DialogWrapper {
 
-    private JSplitPane rootPane;
-
     private EditorTextField editor;
 
     private String workSpace;
 
-    private final ArrayList<String> files = Lists.newArrayList();
     private final Map<String, String> fileMap = Maps.newHashMap();
+    private HashSet<ConfigParam> params = new HashSet<>();
 
-
-    private final VelocityService velocityService;
+    private VelocityService velocityService;
 
 
     public ConfigTemplateDialog(String rootPath, String workSpace) {
-        super(Application.project,true);
+        super(Application.project, true);
+        try {
+            params = new BankGroundTask().call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (params.isEmpty()) {
+            return;
+        }
         this.workSpace = workSpace;
         velocityService = VelocityService.getInstance();
         initData();
@@ -72,8 +69,6 @@ public class ConfigTemplateDialog extends DialogWrapper {
     private void saveFile() {
 
     }
-
-
 
 
     public static void main(String[] args) {
@@ -92,10 +87,12 @@ public class ConfigTemplateDialog extends DialogWrapper {
         Config config = new Config();
         String[] split = text.split("\n");
         switch (split.length) {
+            case 4:
+                config.setFileDescription(StringUtil.getParam(split[0]));
             case 3:
-                config.setFileName(StringUtil.getParam(split[0]));
+                config.setFileName(StringUtil.getParam(split[1]));
             case 2:
-                config.setIndexLists(StringUtil.getParam(split[1]));
+                config.setIndexLists(StringUtil.getParam(split[2]));
             case 1:
                 config.setParams(StringUtil.getParam(split[split.length - 1]));
                 break;
@@ -107,23 +104,23 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
 
     private void initData() {
-        String text = velocityService.execute(ProjectKeys.MULTI_TEMPLATE, new Config());
+        String text = velocityService.execute(ProjectKeys.CONFIG_TEMPLATE, new Config());
         editor = SwingUtils.createEditor(text);
     }
 
     @Override
-    protected @Nullable JComponent createCenterPanel() {
-        rootPane = new JSplitPane();
+    protected @Nullable
+    JComponent createCenterPanel() {
+        JSplitPane rootPane = new JSplitPane();
+        ArrayList<String> files = Lists.newArrayList();
         rootPane.setMinimumSize(new Dimension(1100, 800));
         editor.setFont(new Font(null, Font.PLAIN, 14));
 
-        JTextField configData = new JTextField();
+        JTextArea configData = new JTextArea();
 
         JButton execute = new JButton("Execute");
 
         JPanel rightRootPanel = new JPanel(new BorderLayout());
-
-        JTextArea editor = new JTextArea();
 
         CollectionListModel<String> listModel = new CollectionListModel<>(files);
         JBList<String> fileList = new JBList<>(listModel);
@@ -149,14 +146,13 @@ public class ConfigTemplateDialog extends DialogWrapper {
         decorator.setEditAction(anActionButton -> {
             String name = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
             if (name != null && name.length() != 0) {
-                System.out.println("str = " + name);
                 fileMap.replace(fileList.getSelectedValue(), name);
+                listModel.setElementAt(name, fileList.getSelectedIndex());
             }
         });
 
         fileList.addListSelectionListener(e -> {
             String selectedValue = fileList.getSelectedValue();
-            System.out.println("selectedValue = " + selectedValue);
             String temp = fileMap.get(selectedValue);
             editor.setText(temp);
         });
@@ -164,7 +160,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
         configData.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-
+                configData.setText(StringUtil.EMPTY);
             }
 
             @Override
@@ -179,18 +175,25 @@ public class ConfigTemplateDialog extends DialogWrapper {
                         return;
                     }
                     config.setFileName(name);
-                    if (config.hasParams()) {
-                        String result = velocityService.execute(ProjectKeys.CONFIG_TEMPLATE, config);
-                        editor.setText(result);
-                        fileMap.put(fileList.getSelectedValue(), result);
+                }
+                if (config.hasParams()) {
+                    config.build(params);
+                    String result = velocityService.execute(ProjectKeys.CONFIG_TEMPLATE, config);
+                    int elementIndex = listModel.getElementIndex(config.getFileName());
+                    if (elementIndex > -1) {
+                        fileList.setSelectedIndex(elementIndex);
+                    } else {
+                        listModel.add(config.getFileName());
+                        fileList.setSelectedIndex(listModel.getSize() - 1);
                     }
+                    fileMap.put(fileList.getSelectedValue(), result);
+                    editor.setText(result);
                 }
             }
         });
         editor.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
-
             }
 
             @Override
@@ -204,7 +207,8 @@ public class ConfigTemplateDialog extends DialogWrapper {
             saveFile();
         });
         JPanel panel = decorator.createPanel();
-        panel.setMinimumSize(new Dimension(300,600));
+        configData.setMinimumSize(new Dimension(300, 400));
+        panel.setMinimumSize(new Dimension(300, 400));
         JPanel executeDimension = new JPanel(new BorderLayout());
         executeDimension.setSize(new Dimension(300, 50));
         executeDimension.add(execute);
@@ -224,4 +228,101 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
         return rootPane;
     }
+
+    @Override
+    protected @NotNull
+    JPanel createButtonsPanel(@NotNull List<? extends JButton> buttons) {
+        return new JPanel();
+    }
+
+
+    static class BankGroundTask implements Callable<HashSet<ConfigParam>> {
+
+        /**
+         * Computes a result, or throws an exception if unable to do so.
+         *
+         * @return computed result
+         * @throws Exception if unable to compute a result
+         */
+        @Override
+        public HashSet<ConfigParam> call() throws Exception {
+            return selectPackage();
+        }
+
+        private HashSet<ConfigParam> selectPackage() {
+            AppSettingService service = AppSettingService.getInstance();
+            if (service.dataConfigPath == null || service.dataConfigPath.isEmpty()) {
+                return null;
+            }
+            PsiPackage selectedPackage = JavaPsiFacade.getInstance(Application.project).findPackage(service.dataConfigPath);
+            if (selectedPackage == null) {
+                NotifyService.notifyError("No package Match: " + service.dataConfigPath);
+                return null;
+            }
+            PsiClass[] classes = selectedPackage.getClasses();
+            HashSet<ConfigParam> params = Sets.newHashSet();
+            ArrayList<ConfigParam> paramLists = Lists.newArrayList();
+            ArrayList<ConfigParam> referenceList = Lists.newArrayList();
+            ArrayList<String> expressionList = Lists.newArrayList();
+            for (PsiClass aClass : classes) {
+                if (!aClass.hasAnnotation(Annotations.DATA_FILE)) {
+                    NotifyService.notifyWarning(NotifyKeys.NO_PACKAGE_SELECTED);
+                    continue;
+                }
+                PsiField[] fields = aClass.getFields();
+                getExpressions(expressionList, aClass);
+                for (PsiField field : fields) {
+                    PsiType type = field.getType();
+                    ConfigParam param = new ConfigParam(field.getName());
+                    param.setTypeAlias(type.getPresentableText());
+                    param.setDescription(PSIUtil.getDescription(field.getDocComment()));
+                    if (field.hasAnnotation(Annotations.FILED_IGNORE)) {
+                        param.setDefaultValue(PSIUtil.getFiledValue((PsiElement) field));
+                        referenceList.add(param);
+                    } else {
+                        paramLists.add(param);
+                    }
+                }
+                for (ConfigParam configParam : referenceList) {
+                    FLAG:
+                    for (int i = 0; i < expressionList.size(); i++) {
+                        if (expressionList.get(i).contains(configParam.getName())) {
+                            for (ConfigParam param : paramLists) {
+                                if (expressionList.get(i).contains(param.getName())) {
+                                    param.setReferenceExpression(expressionList.get(i));
+                                }
+                                if (i > 0) {
+                                    int index = i;
+                                    if (expressionList.get(--index).contains(param.getName())) {
+                                        param.setReferenceExpression(expressionList.get(index) + expressionList.get(i));
+                                        param.setAliaParam(configParam);
+                                        break FLAG;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                params.addAll(paramLists);
+                paramLists.clear();
+                referenceList.clear();
+                expressionList.clear();
+            }
+            return params;
+        }
+
+        private void getExpressions(ArrayList<String> expressionList, PsiClass aClass) {
+            PsiMethod method = PSIUtil.getMethodByName(aClass, ProjectKeys.INITIALIZE_METHOD);
+            if (method != null) {
+                PsiCodeBlock body = method.getBody();
+                if (body != null) {
+                    PsiStatement[] statements = body.getStatements();
+                    for (PsiStatement statement : statements) {
+                        expressionList.add(statement.getText());
+                    }
+                }
+            }
+        }
+    }
+
 }

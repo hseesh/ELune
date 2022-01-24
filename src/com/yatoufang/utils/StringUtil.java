@@ -68,6 +68,22 @@ public class StringUtil {
         return builder.toString();
     }
 
+    public static String toLowerCaseWithUnderLine(String variable) {
+        StringBuilder builder = new StringBuilder();
+        char[] chars = variable.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] >= 65 && chars[i] <= 97) {
+                if (i != 0) {
+                    builder.append("_");
+                }
+                builder.append(chars[i] += 32);
+                continue;
+            }
+            builder.append(chars[i]);
+        }
+        return builder.toString();
+    }
+
     public static String getChineseCharacter(String value) {
         if (value.length() < 6) {
             return value;
@@ -143,9 +159,7 @@ public class StringUtil {
     }
 
     public static void main(String[] args) {
-        String str = "{\"type\":{\"NORMAL\":{\"id\":\"23\"},\"id\":\"100\"}}";
-        System.out.println(getCustomerJson(str));
-        System.out.println(DOUBLE_QUOTATION);
+        System.out.println(toLowerCaseWithUnderLine("TestConfig"));
     }
 
 }

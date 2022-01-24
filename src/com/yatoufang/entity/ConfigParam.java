@@ -22,6 +22,11 @@ public class ConfigParam extends Param{
         super(paramName);
     }
 
+    public ConfigParam(String name, String type) {
+        super(name);
+        super.setTypeAlias(type);
+    }
+
     public ConfigParam getAliaParam() {
         return aliaParam;
     }

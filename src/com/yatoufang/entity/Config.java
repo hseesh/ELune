@@ -1,12 +1,10 @@
 package com.yatoufang.entity;
 
 import com.yatoufang.config.TemplateConfigFile;
+import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -18,6 +16,10 @@ public class Config {
     private String fileName;
 
     private String fileNameAlias;
+
+    private String fileDescription;
+
+    private String initialize;
 
     private List<String> params = Lists.newArrayList();
 
@@ -62,31 +64,76 @@ public class Config {
         this.fileName = name;
     }
 
+    public void setFileDescription(String fileDescription) {
+        this.fileDescription = fileDescription;
+    }
+
+    public String getInitialize() {
+        return initialize;
+    }
+
+    public List<ConfigParam> getParamList() {
+        return paramList;
+    }
+
+    public void setParamList(List<ConfigParam> paramList) {
+        this.paramList = paramList;
+    }
+
+    public void setInitialize(String initialize) {
+        this.initialize = initialize;
+    }
+
     public boolean hasParams() {
         return params.size() > 0;
     }
 
-    public void build() {
-        TemplateConfigFile instance = TemplateConfigFile.getInstance();
-        Map<String, ConfigParam> maps = instance.getMaps();
+    public String getFileDescription() {
+        return fileDescription;
+    }
+
+    public void setFileDescription(List<String> fileDescription) {
+        this.fileDescription = fileDescription.get(0);
+    }
+
+    public void build(HashSet<ConfigParam> sets) {
+        Map<String, ConfigParam> maps = sets.stream().collect(Collectors.toMap(ConfigParam::getName, v -> v));
         if (indexLists.size() > 0) {
             for (int i = 0; i < this.params.size(); i++) {
                 String s = indexLists.get(i);
-                if("sc".equals(s) || "cs".equals(s)){
+                if(s.length() >= 2){
                     ConfigParam param = maps.get(params.get(i));
                     if(param != null){
                         paramList.add(param);
+                    }else{
+                        paramList.add(new ConfigParam(params.get(i),"String"));
                     }
                 }
             }
+
         }else{
             for (String paramName : this.params) {
                 ConfigParam param = maps.get(paramName);
-                if(param != null){
-                    paramList.add(param);
-                }
+                paramList.add(Objects.requireNonNullElseGet(param, () -> new ConfigParam(paramName, "String")));
             }
         }
+        StringBuilder builder = new StringBuilder();
+        List<ConfigParam> temp = Lists.newArrayList();
+        for (ConfigParam param : paramList) {
+            if (param.getAliaParam() != null) {
+                temp.add(param.getAliaParam());
+            }
+            if (param.getReferenceExpression() == null || param.getReferenceExpression().isEmpty()) {
+                continue;
+            }
+            builder.append(param.getReferenceExpression())
+                    .append("\n");
+        }
+        if(fileNameAlias == null || fileNameAlias.isEmpty()){
+            fileNameAlias = StringUtil.toUpperCaseWithUnderLine(fileName);
+        }
+        paramList.addAll(temp);
+        initialize = builder.toString();
     }
 
     @Override

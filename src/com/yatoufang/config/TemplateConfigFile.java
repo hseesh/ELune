@@ -16,10 +16,7 @@ import java.util.stream.Collectors;
  * @author GongHuang（hse）
  * @since 2022/1/19
  */
-@State(
-        name = "com.yatoufang.config.template.params",
-        storages = {@Storage("com.yatoufang.template.params.xml")}
-)
+
 public class TemplateConfigFile {
 
    public Set<ConfigParam> params = new HashSet<>();

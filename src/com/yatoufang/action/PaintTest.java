@@ -39,7 +39,6 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        selectPackage();
     }
 
 
@@ -59,79 +58,5 @@ public class PaintTest extends AnAction {
         }
     }
 
-    private void selectPackage() {
-        PackageChooserDialog selector = new PackageChooserDialog("Select a Package", Application.project);
-        selector.show();
-        PsiPackage selectedPackage = selector.getSelectedPackage();
-        if (selectedPackage == null) {
-            return;
-        }
-        PsiClass[] classes = selectedPackage.getClasses();
-        HashSet<ConfigParam> params = Sets.newHashSet();
-        ArrayList<ConfigParam> paramLists = Lists.newArrayList();
-        ArrayList<ConfigParam> referenceList = Lists.newArrayList();
-        ArrayList<String> expressionList = Lists.newArrayList();
-        for (PsiClass aClass : classes) {
-            if (!aClass.hasAnnotation(Annotations.DATA_FILE)) {
-                NotifyService.notifyWarning(NotifyKeys.NO_PACKAGE_SELECTED);
-                continue;
-            }
-            PsiField[] fields = aClass.getFields();
-            getExpressions(expressionList, aClass);
-            for (PsiField field : fields) {
-                PsiType type = field.getType();
-                ConfigParam param = new ConfigParam(field.getName());
-                param.setTypeAlias(type.getPresentableText());
-                param.setDescription(PSIUtil.getDescription(field.getDocComment()));
-                if (field.hasAnnotation(Annotations.FILED_IGNORE)) {
-                    param.setDefaultValue(PSIUtil.getFiledValue((PsiElement) field));
-                    referenceList.add(param);
-                } else {
-                    paramLists.add(param);
-                }
-            }
-            for (ConfigParam configParam : referenceList) {
-                FLAG:
-                for (int i = 0; i < expressionList.size(); i++) {
-                    if (expressionList.get(i).contains(configParam.getName())) {
-                        for (ConfigParam param : paramLists) {
-                            if (expressionList.get(i).contains(param.getName())) {
-                                param.setReferenceExpression(expressionList.get(i));
-                            }
-                            if (i > 0) {
-                                int index = i;
-                                if (expressionList.get(--index).contains(param.getName())) {
-                                    param.setReferenceExpression(expressionList.get(index) + expressionList.get(i));
-                                    param.setAliaParam(configParam);
-                                    break FLAG;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            params.addAll(paramLists);
-            paramLists.clear();
-            referenceList.clear();
-            expressionList.clear();
-        }
-        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
-        String str = gson.toJson(params);
-        System.out.println(str);
-        HashSet<ConfigParam> configParamHashSet = gson.fromJson(str, TypeToken.getParameterized(HashSet.class, ConfigParam.class).getType());
-        System.out.println(configParamHashSet.size());
-    }
 
-    private void getExpressions(ArrayList<String> expressionList, PsiClass aClass) {
-        PsiMethod method = PSIUtil.getMethodByName(aClass, ProjectKeys.INITIALIZE_METHOD);
-        if (method != null) {
-            PsiCodeBlock body = method.getBody();
-            if (body != null) {
-                PsiStatement[] statements = body.getStatements();
-                for (PsiStatement statement : statements) {
-                    expressionList.add(statement.getText());
-                }
-            }
-        }
-    }
 }

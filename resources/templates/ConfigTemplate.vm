@@ -5,7 +5,6 @@ import cn.daxiang.framework.dataconfig.ModelAdapter;
 import cn.daxiang.framework.dataconfig.annotation.DataFile;
 import cn.daxiang.framework.dataconfig.annotation.FieldIgnore;
 import cn.daxiang.framework.identity.IdentiyKey;
-import cn.daxiang.lyltd.gameserver.module.hero.type.HeroVocationType;
 
 /**
 *  配置
@@ -13,14 +12,14 @@ import cn.daxiang.lyltd.gameserver.module.hero.type.HeroVocationType;
 * @author $!{author}
 * @since ${now}
 */
-@DataFile(fileName = "${config.nameAlias}")
-public class  ${config.name} implements ModelAdapter {
+@DataFile(fileName = "${config.fileNameAlias}")
+public class  ${config.fileName} implements ModelAdapter {
 
     #foreach($item in $config.paramList)
     /**
     * ${item.description}
     */
-    private ${item.alias} ${item.name};
+    private ${item.typeAlias} ${item.name} ${item.defaultValue};
     #end
 
 
