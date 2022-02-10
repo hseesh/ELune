@@ -200,7 +200,6 @@ public class CodeGeneratorDialog {
             radioButton.addActionListener(listener);
             buttonGroup.add(radioButton);
             panel.add(radioButton);
-
         }
     }
 

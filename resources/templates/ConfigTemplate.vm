@@ -5,17 +5,19 @@ import cn.daxiang.framework.dataconfig.ModelAdapter;
 import cn.daxiang.framework.dataconfig.annotation.DataFile;
 import cn.daxiang.framework.dataconfig.annotation.FieldIgnore;
 import cn.daxiang.framework.identity.IdentiyKey;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 
 /**
-*  配置
+*  ${table.fileDescription}
 *
 * @author $!{author}
 * @since ${now}
 */
-@DataFile(fileName = "${config.fileNameAlias}")
-public class  ${config.fileName} implements ModelAdapter {
+@DataFile(fileName = "${table.fileNameAlias}")
+public class  ${table.fileName} implements ModelAdapter {
 
-    #foreach($item in $config.paramList)
+    #foreach($item in $table.paramList)
     /**
     * ${item.description}
     */
@@ -25,7 +27,7 @@ public class  ${config.fileName} implements ModelAdapter {
 
     @Override
     public void initialize() {
-        ${config.initialize}
+        ${table.initialize}
     }
 
     @Override

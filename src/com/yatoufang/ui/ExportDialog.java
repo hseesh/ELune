@@ -114,7 +114,6 @@ public class ExportDialog extends DialogWrapper {
         FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
         VirtualFile[] virtualFiles = FileChooser.chooseFiles(fileChooserDescriptor, Application.project, null);
         for (VirtualFile virtualFile : virtualFiles) {
-            System.out.println("virtualFile = " + virtualFile.getPath());
             return virtualFile.getPath();
         }
         return null;

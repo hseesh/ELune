@@ -12,6 +12,8 @@ public interface ProjectKeys {
 
     String GATE_WAY = "cn.daxiang.lyltd.gameserver.core.router.GatewayRouterHandlerImpl";
 
+    String CONFIG_PATH = "core/dataconfig/model";
+
     String MULTI_ENTITY = "MultiEntity";
 
     String SINGLE_ENTITY = "SingleEntity";

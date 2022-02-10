@@ -1,6 +1,7 @@
 package com.yatoufang.service;
 
 import com.intellij.openapi.util.io.FileUtil;
+import com.yatoufang.config.AppSettingService;
 import com.yatoufang.entity.Config;
 import com.yatoufang.entity.Table;
 import com.yatoufang.utils.DataUtil;
@@ -24,8 +25,8 @@ public class VelocityService {
 
     private VelocityEngine velocityEngine;
 
-    public static VelocityService getInstance(){
-        if(instance == null){
+    public static VelocityService getInstance() {
+        if (instance == null) {
             instance = new VelocityService();
             instance.init();
         }
@@ -33,7 +34,7 @@ public class VelocityService {
     }
 
     private void init() {
-       velocityEngine = new VelocityEngine();
+        velocityEngine = new VelocityEngine();
         Thread currentThread = Thread.currentThread();
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
@@ -45,11 +46,12 @@ public class VelocityService {
         }
     }
 
-    public String execute(String filePath, Object object){
+    public String execute(String filePath, Object object) {
         VelocityContext context = new VelocityContext();
+        AppSettingService settingService = AppSettingService.getInstance();
         context.put("now", DataUtil.now());
-        context.put("config", object);
-        context.put("author","GongHuang(hse)");
+        context.put("table", object);
+        context.put("author", settingService.author);
         return execute(filePath, context);
     }
 

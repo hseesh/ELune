@@ -1,10 +1,12 @@
 package com.yatoufang.entity;
 
-import com.yatoufang.config.TemplateConfigFile;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -126,11 +128,10 @@ public class Config {
             if (param.getReferenceExpression() == null || param.getReferenceExpression().isEmpty()) {
                 continue;
             }
-            builder.append(param.getReferenceExpression())
-                    .append("\n");
+            builder.append(param.getReferenceExpression()).append("\n");
         }
         if(fileNameAlias == null || fileNameAlias.isEmpty()){
-            fileNameAlias = StringUtil.toUpperCaseWithUnderLine(fileName);
+            fileNameAlias = StringUtil.toLowerCaseWithUnderLine(fileName);
         }
         paramList.addAll(temp);
         initialize = builder.toString();

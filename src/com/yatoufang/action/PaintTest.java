@@ -24,6 +24,7 @@ import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.test.lang.MyLanguage;
+import com.yatoufang.ui.ModuleGeneratorDialog;
 import com.yatoufang.ui.customer.view.PaintDialog;
 import com.yatoufang.utils.PSIUtil;
 import org.apache.commons.compress.utils.Lists;
@@ -39,6 +40,7 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
+        new ModuleGeneratorDialog().show();
     }
 
 

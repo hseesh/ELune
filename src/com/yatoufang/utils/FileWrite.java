@@ -15,20 +15,21 @@ import java.io.IOException;
 public class FileWrite {
 
     public static void write(String file, String path, boolean printInfo, boolean notifyInfo) {
-        if (path.isEmpty()) {
+        if (path.isEmpty() || file.isEmpty()) {
             return;
         }
-        ConsoleService consoleService = ConsoleService.getInstance();
         File tableFile = new File(path);
         try {
             FileUtil.writeToFile(tableFile, file);
             if(printInfo){
+                ConsoleService consoleService = ConsoleService.getInstance();
                 consoleService.print(tableFile.getCanonicalPath() + NotifyKeys.CREATED);
             }else if(notifyInfo){
                 NotifyService.notify(tableFile.getCanonicalPath() + NotifyKeys.CREATED);
             }
         } catch (IOException e) {
            if(printInfo){
+               ConsoleService consoleService = ConsoleService.getInstance();
                consoleService.printError(ExceptionUtil.getExceptionInfo(e));
            }
         }

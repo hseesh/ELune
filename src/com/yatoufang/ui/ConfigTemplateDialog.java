@@ -32,6 +32,7 @@ import java.awt.event.FocusListener;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.BiConsumer;
 
 /**
  * @author hse
@@ -41,6 +42,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
     private EditorTextField editor;
 
+    private String rootPath;
     private String workSpace;
 
     private final Map<String, String> fileMap = Maps.newHashMap();
@@ -59,6 +61,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
         if (params.isEmpty()) {
             return;
         }
+        this.rootPath = rootPath;
         this.workSpace = workSpace;
         velocityService = VelocityService.getInstance();
         initData();
@@ -67,7 +70,12 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
 
     private void saveFile() {
-
+        if (fileMap.size() > 0) {
+            fileMap.forEach((fileName, fileContent) -> {
+                String filePath = StringUtil.buildPath(rootPath, ProjectKeys.CONFIG_PATH, fileName + ProjectKeys.JAVA);
+                FileWrite.write(fileContent, filePath, false, true);
+            });
+        }
     }
 
 
@@ -127,16 +135,6 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
 
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(fileList);
-
-        //component controller
-        decorator.setAddAction(anActionButton -> {
-//            String fileName = getFileName();
-//            listModel.add(fileName);
-//            fileMap.put(fileName, "");
-//            fileList.setSelectedIndex(listModel.getSize() - 1);
-//            System.out.println("listModel = " + listModel.getSize());
-
-        });
 
         decorator.setRemoveAction(anActionButton -> {
             String selectedValue = fileList.getSelectedValue();
@@ -201,8 +199,6 @@ public class ConfigTemplateDialog extends DialogWrapper {
                 fileMap.replace(fileList.getSelectedValue(), editor.getText());
             }
         });
-
-
         execute.addActionListener(e -> {
             saveFile();
         });
