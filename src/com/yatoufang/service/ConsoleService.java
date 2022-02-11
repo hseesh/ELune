@@ -7,6 +7,7 @@ import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
+import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Application;
 import com.yatoufang.ui.ModuleGeneratorDialog;
 import icons.Icon;
@@ -25,6 +26,13 @@ public class ConsoleService implements Console {
 
     private static ConsoleService instance;
 
+    public static ConsoleService getInstance(Table table) {
+        if (instance == null) {
+            instance = new ConsoleService();
+            instance.init(table);
+        }
+        return instance;
+    }
     public static ConsoleService getInstance() {
         if (instance == null) {
             instance = new ConsoleService();
@@ -35,6 +43,20 @@ public class ConsoleService implements Console {
 
     @Override
     public void init() {
+        ToolWindow toolWindow = ToolWindowManager.getInstance(Application.project).getToolWindow("ELune");
+        consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(Application.project).getConsole();
+        if (toolWindow == null) {
+            return;
+        }
+        Content content = toolWindow.getContentManager().getFactory().createContent(consoleView.getComponent(), "Table Scanner", true);
+        toolWindow.getContentManager().addContent(content);
+        toolWindow.getContentManager().setSelectedContent(content);
+        toolWindow.activate(() -> {});
+    }
+
+
+    @Override
+    public void init(Table table) {
         ToolWindow toolWindow = ToolWindowManager.getInstance(Application.project).getToolWindow("ELune");
         consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(Application.project).getConsole();
         if (toolWindow == null) {
@@ -51,7 +73,7 @@ public class ConsoleService implements Console {
         actionGroup.addAction(new AnAction("Run Module Generator", "Run",Icon.RUN) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-                new ModuleGeneratorDialog().show();
+                new ModuleGeneratorDialog(table).show();
             }
         });
         panel.add(consoleView.getComponent(), BorderLayout.CENTER);

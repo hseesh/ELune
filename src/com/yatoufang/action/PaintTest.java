@@ -8,10 +8,13 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.ScriptRunnerUtil;
 import com.intellij.execution.util.ExecUtil;
+import com.intellij.find.findInProject.FindInProjectManager;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.openapi.actionSystem.impl.SimpleDataContext;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.psi.*;
@@ -30,6 +33,7 @@ import com.yatoufang.utils.PSIUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.compress.utils.Sets;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
@@ -40,7 +44,9 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        new ModuleGeneratorDialog().show();
+        FindInProjectManager instance = FindInProjectManager.getInstance(Application.project);
+        instance.findInProject(SimpleDataContext.getProjectContext(Application.project),null);
+        //new ModuleGeneratorDialog().show();
     }
 
 
