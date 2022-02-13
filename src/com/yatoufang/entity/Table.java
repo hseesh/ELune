@@ -80,6 +80,7 @@ public class Table {
 
     public void setName(String name) {
         this.name = name;
+        this.alias = StringUtil.toUpperCaseWithUnderLine(name);
     }
 
     public String getComment() {

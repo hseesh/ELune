@@ -3,6 +3,7 @@ package com.yatoufang.service;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.execution.ui.layout.Tab;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
@@ -24,12 +25,14 @@ public class ConsoleService implements Console {
 
     private ConsoleView consoleView;
 
+    public Table tableObject;
+
     private static ConsoleService instance;
 
-    public static ConsoleService getInstance(Table table) {
+    public static ConsoleService getInstance(Table table,String rootPath) {
         if (instance == null) {
             instance = new ConsoleService();
-            instance.init(table);
+            instance.init(table, rootPath);
         }
         return instance;
     }
@@ -56,7 +59,8 @@ public class ConsoleService implements Console {
 
 
     @Override
-    public void init(Table table) {
+    public void init(Table table,String rootPath) {
+        tableObject = table;
         ToolWindow toolWindow = ToolWindowManager.getInstance(Application.project).getToolWindow("ELune");
         consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(Application.project).getConsole();
         if (toolWindow == null) {
@@ -73,7 +77,7 @@ public class ConsoleService implements Console {
         actionGroup.addAction(new AnAction("Run Module Generator", "Run",Icon.RUN) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-                new ModuleGeneratorDialog(table).show();
+                new ModuleGeneratorDialog(tableObject,rootPath).show();
             }
         });
         panel.add(consoleView.getComponent(), BorderLayout.CENTER);
@@ -106,6 +110,8 @@ public class ConsoleService implements Console {
         String result = "\n" + info + "\n";
         consoleView.print(result, ConsoleViewContentType.ERROR_OUTPUT);
     }
+
+
 
 
 }

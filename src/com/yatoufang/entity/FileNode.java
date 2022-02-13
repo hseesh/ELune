@@ -1,10 +1,12 @@
 package com.yatoufang.entity;
 
 
-import com.google.common.collect.Lists;
+import com.yatoufang.service.VelocityService;
+import com.yatoufang.utils.StringUtil;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.util.List;
+import javax.swing.tree.TreeNode;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -13,11 +15,11 @@ import java.util.Objects;
  */
 public class FileNode extends DefaultMutableTreeNode {
     public String name;
-    public String alias;
-    public final List<Field> fields = Lists.newArrayList();
+    public String content;
     public boolean isCatalog;
     public String templatePath;
-    private Field primaryKey;
+    public boolean isInterface;
+    public Table table;
 
     /**
      * Creates a tree node that has no parent and no children, but which
@@ -26,7 +28,6 @@ public class FileNode extends DefaultMutableTreeNode {
     public FileNode(String name) {
         super(name);
         this.name = name;
-        this.alias = name;
         this.isCatalog = true;
     }
 
@@ -37,7 +38,6 @@ public class FileNode extends DefaultMutableTreeNode {
     public FileNode(String name, String templatePath) {
         super(name);
         this.name = name;
-        this.alias = name;
         this.templatePath = templatePath;
     }
 
@@ -48,7 +48,6 @@ public class FileNode extends DefaultMutableTreeNode {
     public FileNode(String name, boolean flag) {
         super(name);
         this.name = name;
-        this.alias = name;
         this.isCatalog = flag;
     }
 
@@ -65,19 +64,17 @@ public class FileNode extends DefaultMutableTreeNode {
         return Objects.hash(name);
     }
 
-    public boolean tryAddFields(Field field) {
-        if(field == null){
-            return false;
+    public String getFilePath(String rootPath) {
+        TreeNode[] path = super.getPath();
+        StringBuilder builder = new StringBuilder();
+        for (TreeNode treeNode : path) {
+            builder.append("\\").append(String.valueOf(treeNode));
         }
-        if(fields.contains(field)){
-            fields.remove(field);
-        }else{
-            fields.add(field);
-        }
-        return true;
+        return builder.toString();
     }
 
     public void setTemplatePath(String templatePath) {
         this.templatePath = templatePath;
     }
+
 }

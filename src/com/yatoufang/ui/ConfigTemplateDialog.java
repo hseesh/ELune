@@ -114,6 +114,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
     private void initData() {
         String text = velocityService.execute(ProjectKeys.CONFIG_TEMPLATE, new Config());
         editor = SwingUtils.createEditor(text);
+        editor.setFont(new Font(null, Font.PLAIN, 14));
     }
 
     @Override
@@ -122,7 +123,6 @@ public class ConfigTemplateDialog extends DialogWrapper {
         JSplitPane rootPane = new JSplitPane();
         ArrayList<String> files = Lists.newArrayList();
         rootPane.setMinimumSize(new Dimension(1100, 800));
-        editor.setFont(new Font(null, Font.PLAIN, 14));
 
         JTextArea configData = new JTextArea();
 

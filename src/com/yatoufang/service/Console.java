@@ -18,6 +18,6 @@ public interface Console {
 
     void printError(String error);
 
-    void init(Table table);
+    void init(Table table,String rootPath);
 
 }

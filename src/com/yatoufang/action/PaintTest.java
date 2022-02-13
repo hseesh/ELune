@@ -17,6 +17,7 @@ import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
+import com.intellij.openapi.roots.ui.configuration.ProjectSettingsService;
 import com.intellij.psi.*;
 import com.yatoufang.entity.ConfigParam;
 import com.yatoufang.entity.MyCookie;
@@ -46,6 +47,8 @@ public class PaintTest extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         FindInProjectManager instance = FindInProjectManager.getInstance(Application.project);
         instance.findInProject(SimpleDataContext.getProjectContext(Application.project),null);
+
+
         //new ModuleGeneratorDialog().show();
     }
 

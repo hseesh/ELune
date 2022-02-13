@@ -2,9 +2,11 @@ package com.yatoufang.ui;
 
 import com.google.common.collect.Maps;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.io.FileUtil;
-import com.intellij.ui.ColoredTreeCellRenderer;
+import com.intellij.ui.AnActionButton;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.TreeSpeedSearch;
@@ -17,8 +19,10 @@ import com.yatoufang.entity.Table;
 import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
+import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.ExceptionUtil;
+import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import com.yatoufang.utils.SwingUtils;
 import org.apache.commons.compress.utils.Lists;
@@ -26,15 +30,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author GongHuang（hse）
@@ -42,20 +46,19 @@ import java.util.List;
  */
 public class ModuleGeneratorDialog extends DialogWrapper {
 
+    private final String rootPath;
     private final Table table;
     private FileNode defaultNode;
 
     private Tree tree;
     private EditorTextField editor;
-    private final List<JRadioButton> fields = Lists.newArrayList();
 
-
-    private ActionListener actionListener;
     private final VelocityService velocityService = VelocityService.getInstance();
 
-    public ModuleGeneratorDialog(Table table) {
-        super(Application.project);
+    public ModuleGeneratorDialog(Table table,String rootPath) {
+        super(Application.project, true, false);
         this.table = table;
+        this.rootPath = rootPath;
         initComponent();
         init();
         setTitle("My Module");
@@ -87,17 +90,17 @@ public class ModuleGeneratorDialog extends DialogWrapper {
         subRootPanel.setMinimumSize(new Dimension(400, 600));
         executeDimension.add(execute);
         JPanel leftRootPanel = FormBuilder.createFormBuilder()
-                .addComponent(subRootPanel)
+                .addComponent(createStructureTree())
                 .addComponentFillVertically(createMethodPanel(), 0)
                 .addComponent(executeDimension)
                 .getPanel();
         rootPanel.setLeftComponent(leftRootPanel);
         rootPanel.setRightComponent(editor);
-        subRootPanel.setLeftComponent(createStructureTree());
-        subRootPanel.setRightComponent(createFieldsPanel());
+        execute.addActionListener(e -> {
+            saveFile();
+        });
         return rootPanel;
     }
-
 
     private JComponent createStructureTree() {
         FileNode root = initTreeData();
@@ -106,30 +109,67 @@ public class ModuleGeneratorDialog extends DialogWrapper {
         tree.setDragEnabled(true);
         tree.setExpandableItemsEnabled(true);
         tree.setSelectionPath(new TreePath(defaultNode));
-        TreeSpeedSearch treeSpeedSearch = new TreeSpeedSearch(tree);
         ToolbarDecorator toolbarDecorator = ToolbarDecorator.createDecorator(tree);
         toolbarDecorator.setAddAction(anActionButton -> {
-            FileNode[] selectedNodes = tree.getSelectedNodes(FileNode.class, fileNode -> fileNode.isCatalog);
-            for (FileNode selectedNode : selectedNodes) {
-                System.out.println("selectedNode = " + Arrays.toString(selectedNode.getPath()));
+            FileNode selectedNode = getSelectedNode();
+            String fileName = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
+            if (fileName == null || selectedNode == null) {
+                return;
             }
+            TreeNode parent = selectedNode.getParent();
+            if (parent == null) {
+                return;
+            }
+            if (!fileName.endsWith(ProjectKeys.JAVA)) {
+                fileName += ProjectKeys.JAVA;
+            }
+            FileNode newNode = new FileNode(fileName, selectedNode.templatePath);
+            selectedNode.add(newNode);
+            fileTreeModel.nodesWereInserted(selectedNode, new int[]{selectedNode.getChildCount() - 1});
+            newNode.content = velocityService.execute(selectedNode.templatePath, selectedNode.table);
+            editor.setText(selectedNode.content);
         });
         toolbarDecorator.setRemoveAction(anActionButton -> {
-            FileNode[] selectedNodes = tree.getSelectedNodes(FileNode.class, fileNode -> fileNode.isCatalog);
-            for (FileNode selectedNode : selectedNodes) {
-                fileTreeModel.removeNodeFromParent(selectedNode);
+            FileNode selectedNode = getSelectedNode();
+            fileTreeModel.removeNodeFromParent(selectedNode);
+            editor.setText(StringUtil.EMPTY);
+        });
+        toolbarDecorator.setEditAction(anActionButton -> {
+            FileNode selectedNode = getSelectedNode();
+            if (selectedNode == null) {
+                return;
+            }
+            String fileName = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
+            if (fileName == null || fileName.isEmpty()) {
+                return;
+            }
+            fileName = fileName.replace(ProjectKeys.JAVA, StringUtil.EMPTY);
+            selectedNode.name = fileName;
+            selectedNode.setUserObject(fileName + ProjectKeys.JAVA);
+            selectedNode.table.setName(fileName.toLowerCase(Locale.ROOT));
+            fileTreeModel.reload(selectedNode);
+            selectedNode.content = velocityService.execute(selectedNode.templatePath, selectedNode.table);
+            editor.setText(selectedNode.content);
+        });
+        toolbarDecorator.addExtraAction(new AnActionButton() {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
+                new ChooseFieldsDialog(false).show();
             }
         });
+
         final FileNode[] lastSelectedNode = {root};
         tree.addTreeSelectionListener(l -> {
             FileNode[] selectedNodes = tree.getSelectedNodes(FileNode.class, fileNode -> !fileNode.isCatalog);
             for (FileNode selectedNode : selectedNodes) {
-                if(!selectedNode.equals(lastSelectedNode[0])){
-                    if(selectedNode.fields.size() > 0){
-                        editor.setText(velocityService.execute(selectedNode.templatePath,selectedNode));
-                    }else{
-                        editor.setText(velocityService.execute(selectedNode.templatePath, table));
+                if (!selectedNode.equals(lastSelectedNode[0])) {
+                    if (selectedNode.table == null) {
+                        selectedNode.table = table;
                     }
+                    if(selectedNode.content == null || selectedNode.content.isEmpty()){
+                        selectedNode.content = velocityService.execute(selectedNode.templatePath, selectedNode.table);
+                    }
+                    editor.setText(selectedNode.content);
                     lastSelectedNode[0] = selectedNode;
                 }
             }
@@ -140,10 +180,14 @@ public class ModuleGeneratorDialog extends DialogWrapper {
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
                 super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
                 FileNode node = (FileNode) value;
-                if(node.isCatalog){
+                if (node.isCatalog) {
                     this.setIcon(AllIcons.Nodes.Folder);
-                }else{
-                    this.setIcon(AllIcons.Nodes.Class);
+                } else {
+                    if (node.isInterface) {
+                        this.setIcon(AllIcons.Nodes.Interface);
+                    } else {
+                        this.setIcon(AllIcons.Nodes.Class);
+                    }
                 }
                 return this;
             }
@@ -156,59 +200,143 @@ public class ModuleGeneratorDialog extends DialogWrapper {
     }
 
 
-    private JComponent createFieldsPanel() {
-        FormBuilder formBuilder = FormBuilder.createFormBuilder();
-        if (table != null && table.getFields() != null) {
-            for (Field field : table.getFields()) {
-                JRadioButton radioButton = new JRadioButton(field.getName());
-                radioButton.addActionListener(actionListener);
-                formBuilder.addComponent(radioButton);
-                fields.add(radioButton);
-            }
-        }
-        return new JBScrollPane(formBuilder.getPanel());
-    }
-
-
     private JComponent createMethodPanel() {
         return new JLabel();
     }
 
     private void initComponent() {
-        table.getFields().removeIf( e -> "actorId".equals(e.getName()) || "updateTime".equals(e.getName()));
+        table.getFields().removeIf(e -> "actorId".equals(e.getName()) || "updateTime".equals(e.getName()));
         editor = SwingUtils.createEditor(velocityService.execute(ProjectKeys.ENTITY_VO_TEMPLATE, table));
         editor.setFont(new Font(null, Font.PLAIN, 14));
-        actionListener =event -> {
-            Object sourceObject = event.getSource();
-            if (sourceObject instanceof JRadioButton) {
-                JRadioButton radioButton = (JRadioButton) sourceObject;
-                String text = radioButton.getText();
-                Field field = getFieldByName(text);
-                if (field != null) {
-                    FileNode[] selectedNodes = tree.getSelectedNodes(FileNode.class, fileNode -> !fileNode.isCatalog);
-                    for (FileNode selectedNode : selectedNodes) {
-                        if(selectedNode.tryAddFields(field)){
-                            editor.setText(velocityService.execute(selectedNode.templatePath,selectedNode));
-                        }
-                        break;
-                    }
-                }
-            } else if (sourceObject instanceof JButton) {
-                JButton button = (JButton) sourceObject;
+        editor.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
 
             }
-        };
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                FileNode selectedNode = getSelectedNode();
+                if (selectedNode == null) {
+                    return;
+                }
+                selectedNode.content = editor.getText();
+            }
+        });
     }
 
-    private Field getFieldByName(String text) {
-        for (Field field : table.getFields()) {
-            if (field.getName().toLowerCase(Locale.ROOT).startsWith(text.toLowerCase(Locale.ROOT))){
-                return field;
-            }
+    private FileNode getSelectedNode() {
+        FileNode[] selectedNodes = tree.getSelectedNodes(FileNode.class, fileNode -> !fileNode.isCatalog);
+        for (FileNode selectedNode : selectedNodes) {
+            return selectedNode;
         }
         return null;
     }
 
+    class ChooseFieldsDialog extends DialogWrapper {
+        private Tree fieldsTree;
+
+        protected ChooseFieldsDialog(boolean canBeParent) {
+            super(canBeParent);
+            init();
+            setTitle("My Fields");
+        }
+
+        @Override
+        protected @Nullable
+        JComponent createCenterPanel() {
+            return createFieldsPanel();
+        }
+
+        @NotNull
+        @Override
+        protected JPanel createButtonsPanel(@NotNull List<? extends JButton> buttons) {
+            JPanel jPanel = new JPanel();
+            JButton confirmButton = new JButton("Confirm");
+            JButton cancelButton = new JButton("Close");
+            jPanel.add(confirmButton);
+            jPanel.add(cancelButton);
+
+            confirmButton.addActionListener(e -> {
+                FileNode selectedNode = getSelectedNode();
+                if (selectedNode != null) {
+                    DefaultMutableTreeNode[] selectedNodes = fieldsTree.getSelectedNodes(DefaultMutableTreeNode.class, fileNode -> !fileNode.getAllowsChildren());
+                    List<Field> fields = Lists.newArrayList();
+                    for (DefaultMutableTreeNode node : selectedNodes) {
+                        Field field = (Field) node.getUserObject();
+                        fields.add(field);
+                    }
+                    if (fields.size() > 0) {
+                        selectedNode.table.setFields(fields);
+                        editor.setText(velocityService.execute(selectedNode.templatePath, selectedNode.table));
+                    }
+                }
+                dispose();
+            });
+            cancelButton.addActionListener(e -> dispose());
+            return jPanel;
+        }
+
+        private JComponent createFieldsPanel() {
+            DefaultMutableTreeNode root = new DefaultMutableTreeNode(table.getName());
+            for (Field field : table.getFields()) {
+                DefaultMutableTreeNode node = new DefaultMutableTreeNode(field);
+                node.setAllowsChildren(false);
+                root.add(node);
+            }
+            DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer() {
+                @Override
+                public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+                    super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+                    Object userObject = node.getUserObject();
+                    if (userObject instanceof Field) {
+                        Field field = (Field) userObject;
+                        this.setIcon(AllIcons.Nodes.Field);
+                        this.setText(field.getName() + "  " + field.getAlias());
+                    } else {
+                        this.setIcon(AllIcons.Nodes.Class);
+                    }
+                    return this;
+                }
+            };
+
+            DefaultTreeModel fileTreeModel = new DefaultTreeModel(root);
+            fieldsTree = new Tree(fileTreeModel);
+            fieldsTree.setDragEnabled(true);
+            fieldsTree.setExpandableItemsEnabled(true);
+            fieldsTree.setCellRenderer(cellRenderer);
+            return new JBScrollPane(fieldsTree);
+        }
+
+    }
+
+    private void saveFile() {
+        TreeModel model = tree.getModel();
+        FileNode root = (FileNode) model.getRoot();
+        List<String> paths = Lists.newArrayList();
+        List<FileNode> files = Lists.newArrayList();
+        visitNode(root, files);
+        files.removeIf(e -> e.isCatalog);
+        for (FileNode file : files) {
+            if (file.content == null || file.content.isEmpty()) {
+                file.content = velocityService.execute(file.templatePath,table);
+            }
+            paths.add(file.getFilePath(rootPath));
+        }
+        dispose();
+        for (int i = 0; i < files.size(); i++) {
+            FileWrite.write(paths.get(i),files.get(i).content,true,false);
+        }
+    }
+
+    private void visitNode(FileNode root, List<FileNode> files) {
+        for (int i = 0; i < root.getChildCount(); i++) {
+            FileNode leafNode = (FileNode) root.getChildAt(i);
+            files.add(leafNode);
+            visitNode(leafNode,files);
+        }
+    }
 
     private FileNode initTreeData() {
         FileNode root = new FileNode(table.getName(), true);
@@ -232,12 +360,12 @@ public class ModuleGeneratorDialog extends DialogWrapper {
         FileNode pushHelper = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA), ProjectKeys.PUSH_HELP_TEMPLATE);
         FileNode entityCmdFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.CMD, ProjectKeys.JAVA), ProjectKeys.ENTITY_CMD_TEMPLATE);
         FileNode entityHandlerFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.HANDLER, ProjectKeys.JAVA), ProjectKeys.ENTITY_HANDLER_TEMPLATE);
-        FileNode daoFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.DAO, ProjectKeys.JAVA),false);
+        FileNode daoFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.DAO, ProjectKeys.JAVA), false);
         FileNode voFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.VO, ProjectKeys.JAVA), ProjectKeys.ENTITY_VO_TEMPLATE);
         FileNode entityFacadeFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.FACADE, ProjectKeys.JAVA), ProjectKeys.ENTITY_FACADE_TEMPLATE);
         FileNode entityResponseFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.RESPONSE, ProjectKeys.JAVA), ProjectKeys.ENTITY_RESPONSE_TEMPLATE);
         FileNode entityFacadeImplFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.FACADE, ProjectKeys.IMPL, ProjectKeys.JAVA), ProjectKeys.ENTITY_FACADE_IMPL_TEMPLATE);
-        FileNode daoImplFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.DAO, ProjectKeys.IMPL, ProjectKeys.JAVA),false);
+        FileNode daoImplFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.DAO, ProjectKeys.IMPL, ProjectKeys.JAVA), false);
         FileNode entityDeleteResponseFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.DELETE, ProjectKeys.RESPONSE, ProjectKeys.JAVA), ProjectKeys.ENTITY_DELETE_RESPONSE_TEMPLATE);
         FileNode entityRewardResponseFile = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.REWARD, ProjectKeys.RESULT, ProjectKeys.RESPONSE, ProjectKeys.JAVA), ProjectKeys.ENTITY_REWARD_RESPONSE_TEMPLATE);
         if (table.isMultiEntity()) {
@@ -259,6 +387,10 @@ public class ModuleGeneratorDialog extends DialogWrapper {
         response.add(entityRewardResponseFile);
         response.add(entityDeleteResponseFile);
         defaultNode = voFile;
+        defaultNode.table = table;
+        daoFile.isInterface = true;
+        entityCmdFile.isInterface = true;
+        entityFacadeFile.isInterface = true;
         return root;
     }
 

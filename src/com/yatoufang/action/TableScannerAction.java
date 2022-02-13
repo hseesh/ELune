@@ -48,11 +48,11 @@ public class TableScannerAction extends AnAction {
             if (table == null) {
                 continue;
             }
-            printResult(table);
+            printResult(table,rootPath);
             if (rootPath == null || rootPath.isEmpty()) {
                 continue;
             }
-           // generateCode(rootPath, table);
+            // generateCode(rootPath, table);
         }
     }
 
@@ -145,15 +145,15 @@ public class TableScannerAction extends AnAction {
             tableField.add(field);
         }
         Field field = new Field("updateTime", "timestamp");
-        field.setConstraint("NOT　NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+        field.setConstraint(" NOT　NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
         tableField.add(field);
         table.setFields(tableField);
         table.setComment(PSIUtil.getDescription(aClass.getDocComment()));
         return table;
     }
 
-    private void printResult(Table table) {
-        ConsoleService instance = ConsoleService.getInstance(table);
+    private void printResult(Table table,String rootPath) {
+        ConsoleService instance = ConsoleService.getInstance(table,rootPath);
         instance.printHead("File scanning process completed successfully");
         if (table.getComment().isEmpty()) {
             instance.printError("No comments fund in table : " + table.getName());
@@ -163,6 +163,7 @@ public class TableScannerAction extends AnAction {
                 instance.printError("No comments fund for field: " + field.getName());
             }
         }
+        instance.tableObject = table;
         instance.printInfo(table.toString());
     }
 
