@@ -1,12 +1,8 @@
 package com.yatoufang.entity;
 
 
-import com.yatoufang.service.VelocityService;
-import com.yatoufang.utils.StringUtil;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -66,7 +62,7 @@ public class FileNode extends DefaultMutableTreeNode {
 
     public String getFilePath(String rootPath) {
         TreeNode[] path = super.getPath();
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(rootPath);
         for (TreeNode treeNode : path) {
             builder.append("\\").append(String.valueOf(treeNode));
         }

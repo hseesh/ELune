@@ -257,7 +257,7 @@ public class Parser {
         } else {
             psiType = PSIUtil.getSuperType(psiType);
             PsiClass aClass = PSIUtil.findClass(psiType.getCanonicalText());
-            if (aClass == null) {
+            if (aClass == null || aClass.isEnum()) {
                 if (isSingleValue) {
                     writer.name(psiType.getPresentableText());
                 }

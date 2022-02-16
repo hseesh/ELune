@@ -7,6 +7,7 @@ import com.intellij.openapi.util.IconLoader;
  * @since 2022/2/9
  */
 public interface Icon {
+    javax.swing.Icon EDIT = IconLoader.getIcon("/icons/edit.svg", Icon.class);
     javax.swing.Icon CLEAR = IconLoader.getIcon("/icons/clear.svg", Icon.class);
     javax.swing.Icon RUN = IconLoader.getIcon("/icons/generator.svg", Icon.class);
 }
