@@ -1,0 +1,31 @@
+package cn.daxiang.lyltd.gameserver.module.${table.name}.dao
+
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
+import cn.daxiang.lyltd.gameserver.core.oss.type.OperationType;
+
+import java.util.Collection;
+import java.util.Map;
+
+/**
+ * ${table.comment}
+ * @author ${author}
+ * @since ${now}
+ */
+public interface ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao {
+
+    /**
+    * 创建${table.comment}
+    */
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}${table.valueOf};
+
+    /**
+    * 获取${table.comment}
+    */
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long id, long targetId);
+
+    /**
+    * 删除${table.comment}·
+    */
+    public void delete${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, Collection<Long> ${table.name}Ids, OperationType operationType);
+
+}

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ELune">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ELune.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
