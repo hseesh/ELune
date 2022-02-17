@@ -21,7 +21,9 @@ import org.apache.commons.compress.utils.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
+/**
+ * @author hse
+ */
 public class ApiDocumentAction extends AnAction {
 
     @Override
@@ -32,7 +34,6 @@ public class ApiDocumentAction extends AnAction {
             NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
             return;
         }
-        PsiClass cacheClass = null;
         PsiClass[] classes = file.getClasses();
         if (classes.length == 0) return;
         PsiClass aClass = classes[0];
@@ -42,25 +43,25 @@ public class ApiDocumentAction extends AnAction {
         if (superClass == null || !Objects.equals(superClass.getQualifiedName(), ProjectKeys.GATE_WAY)) {
             return;
         }
-        PsiMethod getModuleMethod = PSIUtil.getMethodByName(classes[0], ProjectKeys.GET_MODULE);
-        if (getModuleMethod == null) {
+        PsiMethod methodName = PSIUtil.getMethodByName(classes[0], ProjectKeys.GET_MODULE);
+        if (methodName == null) {
             return;
         }
-        String methodModule = getMethodModule(getModuleMethod);
+        String moduleCode = getModuleCode(methodName);
         if (data instanceof PsiMethod) {
             PsiMethod psiMethod = (PsiMethod) data;
             PsiAnnotation cmdAnnotation = psiMethod.getAnnotation(Annotations.CMD);
             if (cmdAnnotation == null) {
                 return;
             }
-            parser(psiMethod, methods, methodModule, cacheClass);
+            parser(psiMethod, methods, moduleCode);
         } else {
             for (PsiMethod method : aClass.getMethods()) {
                 PsiAnnotation cmdAnnotation = method.getAnnotation(Annotations.CMD);
                 if (cmdAnnotation == null) {
                     continue;
                 }
-                cacheClass = parser(method, methods, methodModule, cacheClass);
+                parser(method, methods, moduleCode);
             }
         }
         MarkdownGenerator markdownGenerator = new MarkdownGenerator();
@@ -68,66 +69,65 @@ public class ApiDocumentAction extends AnAction {
         new ExportDialog(Application.project, markdownGenerator.getContent(), fileName).show();
     }
 
-
-    private PsiClass searchInfo(PsiClass cacheClass, PsiAnnotationMemberValue idAttribute, TcpMethod tcpMethod) {
-        String text = idAttribute.getText();
-        String[] attribute = text.split("\\.");
-        if (cacheClass == null || !Objects.equals(cacheClass.getName(), attribute[0])) {
-            PsiClass[] classWithShortName = PSIUtil.findClassWithShortName(attribute[0]);
-            for (PsiClass psiClass : classWithShortName) {
-                if (psiClass != null) {
-                    cacheClass = psiClass;
-                }
-            }
-        }
-        if (cacheClass == null) {
-            return cacheClass;
-        }
-        PsiField field = PSIUtil.getField(cacheClass, attribute[1]);
-        if (field == null) {
-            return cacheClass;
-        }
-        String value = PSIUtil.getFiledValue(field);
-        tcpMethod.setCmdCode(value);
-        tcpMethod.setMethodName(PSIUtil.getDescription(field.getDocComment()));
-        return cacheClass;
-    }
-
-    private String getMethodModule(PsiMethod method) {
+    /**
+     * get module code for current handler
+     *
+     * @param method getModule() method
+     * @return module code
+     */
+    private String getModuleCode(PsiMethod method) {
         PsiReturnStatement[] returnStatements = PsiUtil.findReturnStatements(method);
         for (PsiReturnStatement returnStatement : returnStatements) {
             PsiExpression returnValue = returnStatement.getReturnValue();
-            if (returnValue == null) {
-                continue;
+            if (returnValue != null) {
+                PsiReference reference = returnValue.getReference();
+                if (reference != null) {
+                    PsiElement resolve = reference.resolve();
+                    if (resolve instanceof PsiField) {
+                        PsiField field = (PsiField) resolve;
+                        return PSIUtil.getFiledValue(field);
+                    }
+                }
             }
-            String text = returnValue.getText();
-            String[] split = text.split("\\.");
-            if (split.length != 2) {
-                continue;
-            }
-            return PSIUtil.getFieldsValue(ProjectKeys.MODULE_NAME, split[1]);
         }
         return null;
     }
 
-    private PsiClass parser(PsiMethod method, List<TcpMethod> methods, String methodModule, PsiClass cacheClass) {
+    /**
+     *  parsing info for handler file
+     * @param method selected method
+     * @param methods  tcp protocol view object collections
+     * @param moduleCode handler module code
+     */
+    private void parser(PsiMethod method, List<TcpMethod> methods, String moduleCode) {
         PsiAnnotation cmdAnnotation = method.getAnnotation(Annotations.CMD);
         if (cmdAnnotation == null) {
-            return cacheClass;
+            return;
         }
-        PsiAnnotationMemberValue idAttribute = cmdAnnotation.findAttributeValue("Id");
-        if (idAttribute == null) {
-            return cacheClass;
+        TcpMethod tcpMethod = new TcpMethod(moduleCode);
+        PsiAnnotationParameterList parameterList = cmdAnnotation.getParameterList();
+        PsiNameValuePair[] attributes = parameterList.getAttributes();
+        for (PsiNameValuePair attribute : attributes) {
+            for (PsiElement child : attribute.getChildren()) {
+                if (child instanceof PsiReferenceExpression) {
+                    PsiReferenceExpression expression = (PsiReferenceExpression) child;
+                    PsiElement resolve = expression.resolve();
+                    if (resolve instanceof PsiField) {
+                        PsiField field = (PsiField) resolve;
+                        tcpMethod.setCmdCode(PSIUtil.getFiledValue(field));
+                        tcpMethod.setMethodName(PSIUtil.getDescription(field.getDocComment()));
+                    }
+                }
+            }
+            break;
         }
-        TcpMethod tcpMethod = new TcpMethod(methodModule);
-        cacheClass = searchInfo(cacheClass, idAttribute, tcpMethod);
         PsiCodeBlock body = method.getBody();
         if (body == null) {
-            return cacheClass;
+            return;
         }
         PsiStatement[] statements = body.getStatements();
         if (statements.length == 0) {
-            return cacheClass;
+            return;
         }
         PsiStatement firstStatement = statements[0];
         if (firstStatement.getText().contains(ProjectKeys.GET_VALUE_METHOD)) {
@@ -136,13 +136,12 @@ public class ApiDocumentAction extends AnAction {
                 PsiLocalVariable localVariable = (PsiLocalVariable) firstChild;
                 String jsonStr = new Parser().getResponseExample(localVariable.getType(), null);
                 PsiClass aClass = PSIUtil.findClass(localVariable.getType().getCanonicalText());
-                PSIUtil.getClassFields(aClass,tcpMethod.getParams(),localVariable.getType());
+                PSIUtil.getClassFields(aClass, tcpMethod.getParams(), localVariable.getType());
                 tcpMethod.setContent(jsonStr);
             }
         } else {
             tcpMethod.setContent(StringUtil.EMPTY);
         }
         methods.add(tcpMethod);
-        return cacheClass;
     }
 }
