@@ -48,5 +48,6 @@ public class AppSettingsConfigurable implements Configurable {
     public void disposeUIResources() {
         component = null;
         Configurable.super.disposeUIResources();
+
     }
 }
