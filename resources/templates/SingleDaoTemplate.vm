@@ -1,6 +1,6 @@
-package cn.daxiang.lyltd.gameserver.module.${table.name}.dao
+package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.dao;
 
-import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)};
 import cn.daxiang.lyltd.gameserver.core.oss.type.OperationType;
 
 import java.util.Collection;
@@ -20,12 +20,17 @@ public interface ${table.name.substring(0, 1).toUpperCase()}${table.name.substri
 
     /**
     * 获取${table.comment}
+    * @param actorId 玩家ID
+    * @param targetId ${table.comment}对象ID
     */
-    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long id, long targetId);
+    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, long targetId);
 
     /**
-    * 删除${table.comment}·
+    * 删除${table.comment}
+    * @param actorId 玩家ID
+    * @param ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Ids ${table.comment}对象ID集合
+    * @param operationType 操作类型
     */
-    public void delete${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, Collection<Long> ${table.name}Ids, OperationType operationType);
+    public void delete${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, Collection<Long> ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Ids, OperationType operationType);
 
 }

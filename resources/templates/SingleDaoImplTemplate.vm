@@ -1,10 +1,10 @@
-package cn.daxiang.lyltd.gameserver.module.${table.name}.dao.impl;
+package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.dao.impl;
 
 import cn.daxiang.framework.database.SingleEntity;
 import cn.daxiang.framework.database.dao.SingleEntityDaoImpl;
 import cn.daxiang.framework.identity.IdentiyKey;
-import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
-import cn.daxiang.lyltd.gameserver.module.${table.name}.dao.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao;
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)};
+import cn.daxiang.lyltd.gameserver.module.${table.name}.dao.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Dao;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
  * @since ${now}
  */
 @Component
-public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DaoImpl extends SingleEntityDaoImpl implements ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao{
+public class ${table.name}DaoImpl extends SingleEntityDaoImpl implements ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Dao{
 
     @Override
     protected Class<? extends SingleEntity<?>> forClass() {
-        return ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.class;
+        return ${table.name}.class;
     }
 
     @Override
@@ -26,16 +26,18 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
 
     @Override
     public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, long targetId) {
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name} = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}();
-        this.updateQueue(${table.name});
-        return ${table.name};
+        IdentiyKey key = IdentiyKey.build(actorId);
+        if (!this.exsit(key,  ${table.name}.class)) {
+            return null;
+        }
+        return this.get(IdentiyKey.build(actorId));
     }
 
     @Override
-    public ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} create${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.valueOf};
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name} = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.valueOf(#foreach($item in $table.fields)${item.name}#if($foreach.hasNext),#end#end);
-        this.updateQueue(${table.name});
-        return ${table.name};
+    public ${table.name} create${table.name} (#foreach($item in $table.fields)${item.name}#if($foreach.hasNext),#end#end)
+        ${table.name} ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)} = ${table.name}.valueOf(#foreach($item in $table.fields)${item.name}#if($foreach.hasNext),#end#end);
+        this.updateQueue(${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)});
+        return ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)};
     }
 
     @Override

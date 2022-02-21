@@ -1,26 +1,30 @@
-package cn.daxiang.lyltd.gameserver.module.${table.name}.response;
+package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.response;
 
-import cn.daxiang.lyltd.gameserver.module.${table.name}.model.vo.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO;
+import cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.model.vo.${table.name}VO;
 
 import java.util.Collection;
 
 /**
  * ${table.comment}响应
  *
- * @author $!{author}
+ * @author ${author}
  * @since ${now}
  */
-public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response {
+public class ${table.name}Response {
 
-    private Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO>  ${table.name}s;
+    /**
+    * 响应对象
+    * {@link ${table.name}VO}
+    */
+    private Collection<${table.name}VO>  ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}s;
 
-    public static ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response valueOf(Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO> ${table.name}s) {
+    public static ${table.name}Response valueOf(Collection<${table.name}VO> ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}s) {
         ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response response = new ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response();
-        response.${table.name}s = ${table.name}s;
+        response.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}s = ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}s;
         return response;
     }
 
-    public Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO> get${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}s() {
-        return ${table.name}s;
+    public Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO> get${table.name}s() {
+        return ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}s;
     }
 }

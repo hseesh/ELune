@@ -1,9 +1,9 @@
-package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}.facade;
+package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.facade;
 
 import cn.daxiang.framework.result.CollectionResult;
 import cn.daxiang.framework.result.Result;
 import cn.daxiang.framework.result.TResult;
-import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)};
 import cn.daxiang.lyltd.gameserver.core.oss.type.OperationType;
 import cn.daxiang.shared.reward.RewardObject;
 import cn.daxiang.shared.reward.RewardResult;

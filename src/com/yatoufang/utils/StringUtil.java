@@ -1,6 +1,7 @@
 package com.yatoufang.utils;
 
 
+import com.yatoufang.templet.ProjectKeys;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
@@ -40,8 +41,12 @@ public class StringUtil {
         char[] chars = variable.toCharArray();
         boolean needUpper = true;
         for (int i = 0; i < chars.length; i++) {
-            if (needUpper && chars[i] > 96 && chars[i] < 123) {
-                builder.append(chars[i] -= 32);
+            if (needUpper) {
+                if(chars[i] > 96 && chars[i] < 123){
+                    builder.append(chars[i] -= 32);
+                }else{
+                    builder.append(chars[i]);
+                }
                 needUpper = false;
                 continue;
             } else if (chars[i] == '_') {
@@ -164,7 +169,8 @@ public class StringUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(toUpper("cross_up"));
+        System.out.println(getUpperCaseVariable("Rune"));
+        System.out.println(toUpper("Rune", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
     }
 
 }

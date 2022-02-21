@@ -9,7 +9,9 @@ import java.util.Collection;
  * @since ${now}
  */
 public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DeleteResponse {
-
+    /**
+    * 删除对象ID集合
+    */
     private Collection<Long> ids;
 
     public static ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DeleteResponse valueOf(Collection<Long> ids) {
@@ -20,9 +22,5 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
 
     public Collection<Long> getIds() {
         return ids;
-    }
-
-    public void setIds(Collection<Long> ids) {
-        this.ids = ids;
     }
 }
