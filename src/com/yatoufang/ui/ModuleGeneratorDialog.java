@@ -1,5 +1,6 @@
 package com.yatoufang.ui;
 
+import com.android.aapt.Resources;
 import com.google.common.collect.Maps;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -9,7 +10,6 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.TreeSpeedSearch;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.FormBuilder;
@@ -25,6 +25,7 @@ import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import com.yatoufang.utils.SwingUtils;
+import icons.Icon;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,6 +59,7 @@ public class ModuleGeneratorDialog extends DialogWrapper {
     public ModuleGeneratorDialog(Table table,String rootPath) {
         super(Application.project, true, false);
         this.table = table;
+        this.table.setName(StringUtil.getUpperCaseVariable(table.getName()));
         this.rootPath = rootPath;
         initComponent();
         init();
@@ -116,18 +118,19 @@ public class ModuleGeneratorDialog extends DialogWrapper {
             if (fileName == null || selectedNode == null) {
                 return;
             }
-            TreeNode parent = selectedNode.getParent();
-            if (parent == null) {
-                return;
-            }
+            FileNode newNode = new FileNode(fileName, selectedNode.templatePath);
+            newNode.table = table;
+            newNode.table.setName(fileName);
             if (!fileName.endsWith(ProjectKeys.JAVA)) {
                 fileName += ProjectKeys.JAVA;
             }
-            FileNode newNode = new FileNode(fileName, selectedNode.templatePath);
-            selectedNode.add(newNode);
-            fileTreeModel.nodesWereInserted(selectedNode, new int[]{selectedNode.getChildCount() - 1});
-            newNode.content = velocityService.execute(selectedNode.templatePath, selectedNode.table);
-            editor.setText(selectedNode.content);
+            newNode.name = fileName;
+            FileNode selectedNodeParent = (FileNode) (selectedNode.getParent());
+            selectedNodeParent.add(newNode);
+            fileTreeModel.nodesWereInserted(selectedNodeParent, new int[]{selectedNodeParent.getChildCount() - 1});
+            newNode.content = velocityService.execute(newNode.templatePath, newNode.table);
+            editor.setText(newNode.content);
+            tree.setSelectionPath(new TreePath(newNode.getPath()));
         });
         toolbarDecorator.setRemoveAction(anActionButton -> {
             FileNode selectedNode = getSelectedNode();
@@ -151,7 +154,7 @@ public class ModuleGeneratorDialog extends DialogWrapper {
             selectedNode.content = velocityService.execute(selectedNode.templatePath, selectedNode.table);
             editor.setText(selectedNode.content);
         });
-        toolbarDecorator.addExtraAction(new AnActionButton() {
+        toolbarDecorator.addExtraAction(new AnActionButton("Edit Object Fields", "Edit", Icon.EDIT) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
                 new ChooseFieldsDialog(false).show();
@@ -325,6 +328,7 @@ public class ModuleGeneratorDialog extends DialogWrapper {
             paths.add(file.getFilePath(rootPath));
         }
         dispose();
+        System.out.println(paths);
         for (int i = 0; i < files.size(); i++) {
             FileWrite.write(paths.get(i),files.get(i).content,true,false);
         }

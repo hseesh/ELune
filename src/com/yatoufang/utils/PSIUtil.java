@@ -246,6 +246,10 @@ public class PSIUtil {
     public static void getClassFields(PsiClass psiClass, Collection<Param> result, PsiType originType) {
         if (psiClass == null) return;
         if (psiClass.isEnum()) {
+            Param param = new Param(psiClass.getName());
+            param.setType(originType);
+            param.setDescription(getDescription(psiClass.getDocComment()));
+            result.add(param);
             return;
         }
         if (Application.isBasicType(psiClass.getName())) {

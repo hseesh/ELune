@@ -1,31 +1,23 @@
 package com.yatoufang.action;
 
-import com.google.common.collect.Maps;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
-import com.yatoufang.service.ConsoleService;
-import com.yatoufang.service.VelocityService;
-import com.yatoufang.templet.NotifyKeys;
-import com.yatoufang.utils.ExceptionUtil;
-import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
-import com.yatoufang.templet.Annotations;
+import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.NotifyService;
+import com.yatoufang.templet.Annotations;
+import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author hse
@@ -49,10 +41,6 @@ public class TableScannerAction extends AnAction {
                 continue;
             }
             printResult(table,rootPath);
-            if (rootPath == null || rootPath.isEmpty()) {
-                continue;
-            }
-            // generateCode(rootPath, table);
         }
     }
 

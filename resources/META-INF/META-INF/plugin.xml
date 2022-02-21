@@ -22,8 +22,8 @@
   <idea-version since-build="184.0"/>
 
   <depends>com.intellij.modules.platform</depends>
-  <depends config-file="depends.xml" optional="true">com.intellij.java</depends>
-  <depends config-file="module.xml" optional="true">com.intellij.modules.java</depends>
+  <depends config-file="META-INF/depends.xml" optional="true">com.intellij.java</depends>
+  <depends config-file="META-INF/module.xml" optional="true">com.intellij.modules.java</depends>
 
   <actions>
         <action id="com.yatoufang.code.generator.scanner" class="com.yatoufang.action.TableScannerAction"
@@ -38,6 +38,10 @@
               text="Api Document" icon="/icons/icon.svg">
           <add-to-group group-id="EditorPopupMenu" anchor="last"/>
       </action>
+      <action id="com.yatoufang.hse.Elune.NewConfig" class="com.yatoufang.action.NewConfigAction"
+              text="New Config" icon="/icons/config.svg">
+          <add-to-group group-id="NewGroup" anchor="last"/>
+      </action>
       <action id="com.yatoufang.hse.paint.test" class="com.yatoufang.action.PaintTest" text="PaintTest">
           <add-to-group group-id="HelpMenu" anchor="last"/>
       </action>
@@ -46,11 +50,17 @@
 
   <extensions defaultExtensionNs="com.intellij">
 
+      <applicationConfigurable displayName="Elune Settings"
+                               id="com.yatoufang.elune.config.AppSettingsConfigurable"
+                               instance="com.yatoufang.config.AppSettingsConfigurable" parentId="tools"/>
+
+      <applicationService serviceImplementation="com.yatoufang.config.AppSettingService"/>
+
 
     <toolWindow id="ELune"
                 anchor="bottom"
                 icon="/icons/task.svg"
-                canCloseContents="true"
+                canCloseContents="false"
                 factoryClass="com.yatoufang.config.ConsoleWindowFactory"/>
 
     <postStartupActivity implementation="com.yatoufang.action.StartUpAction"/>

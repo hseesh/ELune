@@ -37,7 +37,7 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
 
     @Override
     protected void initMaxId() {
-        Long maxId = jdbc.queryForObject("select max( ${table.primaryKey.name}) from ${table.name}", Long.class);
+        Long maxId = jdbc.queryForObject("select max( ${table.primaryKey.name}) from ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}", Long.class);
         AtomicLong base = null;
         if (maxId == null || maxId <= 0) {
             base = new AtomicLong(UniqueId.otherId(GameConfig.getServerId(), GameConfig.getServerType()));

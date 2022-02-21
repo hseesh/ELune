@@ -1,12 +1,12 @@
-package cn.daxiang.lyltd.gameserver.module.${table.name}.helper;
+package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.helper;
 
 import cn.daxiang.framework.protocal.DataPacket;
-import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)};
+import cn.daxiang.lyltd.gameserver.core.database.table.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)};
 import cn.daxiang.lyltd.gameserver.core.netty.channel.PlayerChannel;
-import cn.daxiang.lyltd.gameserver.module.${table.name}.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Cmd;
-import cn.daxiang.lyltd.gameserver.module.${table.name}.model.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO;
-import cn.daxiang.lyltd.gameserver.module.${table.name}.response.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DeleteResponse;
-import cn.daxiang.lyltd.gameserver.module.${table.name}.response.${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response;
+import cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.${table.name}Cmd;
+import cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.model.${table.name}VO;
+import cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.response.${table.name}DeleteResponse;
+import cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}.response.${table.name}Response;
 import cn.daxiang.shared.ModuleName;
 import com.google.common.collect.Lists;
 
@@ -21,37 +21,37 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
     /**
      * 推送${table.comment}信息
      *
-     * @param ${table.name}
+     * @param ${table.name} ${table.comment}对象
      */
-    public static void push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name}) {
-        push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(${table.name}.findFkId(), Lists.newArrayList(${table.name}));
+    public static void push${table.name}(${table.name} ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}) {
+        push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(${table.name}.findFkId(), Lists.newArrayList(${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}));
     }
 
     /**
      * 推送${table.comment}信息
      *
-     * @param actorId
-     * @param ${table.name}List
+     * @param actorId 玩家ID
+     * @param ${table.name}List ${table.comment}对象集合
      */
-    public static void push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}(long actorId, Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}> ${table.name}List) {
-        Collection<${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO> ${table.name}VOList = Lists.newArrayList();
-        for (${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} ${table.name} : ${table.name}List) {
-            ${table.name}VOList.add(${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}VO.valueOf(${table.name}));
+    public static void push${table.name}(long actorId, Collection<${table.name}}> ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}List) {
+        Collection<${table.name}VO> ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}VOList = Lists.newArrayList();
+        for (${table.name} ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)} : ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}List) {
+            ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}VOList.add(${table.name}VO.valueOf(${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}));
         }
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response response = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Response.valueOf(${table.name}VOList);
-        DataPacket packet = DataPacket.valueOf(ModuleName.${table.name.toUpperCase()}, ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Cmd.PUSH_${table.name.toUpperCase()}, response);
+        ${table.name}Response response = ${table.name}Response.valueOf(${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}VOList);
+        DataPacket packet = DataPacket.valueOf(ModuleName.${table.name.toUpperCase()}, ${table.name}Cmd.PUSH_${table.name.toUpperCase()}, response);
         PlayerChannel.push(actorId, packet);
     }
 
     /**
      * 推送删除${table.comment}信息
      *
-     * @param actorId
-     * @param ids
+     * @param actorId 玩家ID
+     * @param ids  ${table.comment}ID集合
      */
-    public static void push${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Delete(long actorId, Collection<Long> ids) {
-        ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DeleteResponse response = ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}DeleteResponse.valueOf(ids);
-        DataPacket packet = DataPacket.valueOf(ModuleName.${table.name.toUpperCase()}, ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Cmd.PUSH_DELETE_${table.name.toUpperCase()}_LIST, response);
+    public static void pushDelete${table.name}(long actorId, Collection<Long> ids) {
+        ${table.name}DeleteResponse response = ${table.name}DeleteResponse.valueOf(ids);
+        DataPacket packet = DataPacket.valueOf(ModuleName.${table.name.toUpperCase()}, ${table.name}Cmd.PUSH_DELETE_${table.name.toUpperCase()}_LIST, response);
         PlayerChannel.push(actorId, packet);
     }
 }

@@ -11,6 +11,7 @@ import cn.daxiang.shared.reward.RewardResult;
 public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}RewardResultResponse {
     /**
      * 奖励结果
+     * {@link RewardResult}
      */
     private RewardResult rewardResult;
 
