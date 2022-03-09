@@ -1,12 +1,9 @@
 package com.yatoufang.ui;
 
-import com.android.aapt.Resources;
-import com.google.common.collect.Maps;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
@@ -16,12 +13,10 @@ import com.intellij.util.ui.FormBuilder;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.FileNode;
 import com.yatoufang.entity.Table;
-import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import com.yatoufang.utils.SwingUtils;
@@ -35,9 +30,6 @@ import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -59,8 +51,13 @@ public class ModuleGeneratorDialog extends DialogWrapper {
     public ModuleGeneratorDialog(Table table,String rootPath) {
         super(Application.project, true, false);
         this.table = table;
+<<<<<<< Updated upstream
         this.table.setName(StringUtil.getUpperCaseVariable(table.getName()));
         this.rootPath = rootPath;
+=======
+        this.table.setName(StringUtil.getLowerCaseForFirstLetter(table.getName()));
+        this.rootPath = StringUtil.buildPath(rootPath,ProjectKeys.MODULE);
+>>>>>>> Stashed changes
         initComponent();
         init();
         setTitle("My Module");

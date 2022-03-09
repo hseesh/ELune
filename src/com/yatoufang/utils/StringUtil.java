@@ -53,11 +53,28 @@ public class StringUtil {
         return builder.toString();
     }
 
+    public static String getLowerCaseForFirstLetter(String variable){
+        StringBuilder builder = new StringBuilder();
+        char[] chars = variable.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if(i == 0){
+                if(chars[i] >= 65 && chars[i] < 97){
+                    builder.append(chars[i] += 32);
+                }else{
+                    builder.append(chars[i]);
+                }
+                continue;
+            }
+            builder.append(chars[i]);
+        }
+        return builder.toString();
+    }
+
     public static String toUpperCaseWithUnderLine(String variable) {
         StringBuilder builder = new StringBuilder();
         char[] chars = variable.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 65 && chars[i] <= 97) {
+            if (chars[i] >= 65 && chars[i] < 97) {
                 if (i != 0) {
                     builder.append("_");
                 }
@@ -77,7 +94,7 @@ public class StringUtil {
         StringBuilder builder = new StringBuilder();
         char[] chars = variable.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 65 && chars[i] <= 97) {
+            if (chars[i] >= 65 && chars[i] < 97) {
                 if (i != 0) {
                     builder.append("_");
                 }
@@ -164,7 +181,14 @@ public class StringUtil {
     }
 
     public static void main(String[] args) {
+<<<<<<< Updated upstream
         System.out.println(toUpper("cross_up"));
+=======
+        System.out.println(getLowerCaseForFirstLetter("RuneTest"));
+        System.out.println(toLowerCaseWithUnderLine("RuneTest"));
+        System.out.println(toLowerCaseWithUnderLine("TestTable"));
+        System.out.println(toUpper("RuneTest", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
+>>>>>>> Stashed changes
     }
 
 }

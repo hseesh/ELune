@@ -14,6 +14,8 @@ public class Table {
 
     private String name;
 
+    private String nickName;
+
     private String alias;
 
     private String comment;
@@ -48,6 +50,7 @@ public class Table {
             }
         }
         this.alias = StringUtil.toUpperCaseWithUnderLine(this.name);
+        this.nickName = StringUtil.toLowerCaseWithUnderLine(this.name);
     }
 
     public boolean isMultiEntity() {
@@ -81,6 +84,7 @@ public class Table {
     public void setName(String name) {
         this.name = name;
         this.alias = StringUtil.toUpperCaseWithUnderLine(name);
+        this.nickName = StringUtil.toLowerCaseWithUnderLine(name);
     }
 
     public String getComment() {
@@ -115,6 +119,13 @@ public class Table {
         this.alias = alias;
     }
 
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
 
     @Override
     public String toString() {

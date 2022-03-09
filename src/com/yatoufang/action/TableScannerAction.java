@@ -95,6 +95,7 @@ public class TableScannerAction extends AnAction {
         for (PsiMethod method : methods) {
             if (ProjectKeys.VALUE_OF.equals(method.getName())) {
                 table.setValueOf(method.getParameterList().getText());
+                break;
             }
         }
         for (PsiField classField : allFields) {
@@ -145,7 +146,7 @@ public class TableScannerAction extends AnAction {
             tableField.add(field);
         }
         Field field = new Field("updateTime", "timestamp");
-        field.setConstraint(" NOT　NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+        field.setConstraint(" NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
         tableField.add(field);
         table.setFields(tableField);
         table.setComment(PSIUtil.getDescription(aClass.getDocComment()));

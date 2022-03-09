@@ -56,7 +56,7 @@ public class Field extends Param {
 
     @Override
     public String toString() {
-        return this.getName() + " " + this.getTypeAlias() +
+        return "`" + this.getName() + "` " + this.getTypeAlias() +
                 this.constraint + (isPrimaryKey || isForeignKey ? " PRIMARY KEY " : StringUtil.EMPTY) +
                 (this.getDescription().isEmpty() ? "" : (" COMMENT '" + this.getDescription() + "'"));
     }
