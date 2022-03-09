@@ -73,7 +73,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
         if (fileMap.size() > 0) {
             fileMap.forEach((fileName, fileContent) -> {
                 String filePath = StringUtil.buildPath(rootPath, ProjectKeys.CONFIG_PATH, fileName + ProjectKeys.JAVA);
-                FileWrite.write(fileContent, filePath, false, true);
+                FileWrite.write(fileContent, filePath, true, false);
             });
         }
     }

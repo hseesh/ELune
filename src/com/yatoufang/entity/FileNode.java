@@ -64,7 +64,7 @@ public class FileNode extends DefaultMutableTreeNode {
         TreeNode[] path = super.getPath();
         StringBuilder builder = new StringBuilder(rootPath);
         for (TreeNode treeNode : path) {
-            builder.append("\\").append(String.valueOf(treeNode));
+            builder.append("/").append(treeNode);
         }
         return builder.toString();
     }
