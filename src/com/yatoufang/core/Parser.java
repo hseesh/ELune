@@ -9,18 +9,18 @@ import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiUtil;
+import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.entity.HttpState;
 import com.yatoufang.entity.Method;
-import com.yatoufang.entity.Param;
 import com.yatoufang.entity.ReferenceBox;
-import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
+import com.yatoufang.service.SearchScopeService;
 import com.yatoufang.templet.Annotations;
+import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
-import org.apache.commons.compress.utils.Lists;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -34,7 +34,6 @@ import java.util.Iterator;
  * @Date: 2021/1/23
  */
 public class Parser {
-
 
     public Method action(PsiMethod psiMethod, String baseUrl, String classUrl) {
         Method method = new Method();
@@ -70,18 +69,14 @@ public class Parser {
 
             @Override
             public void visitAnnotation(PsiAnnotation annotation) {
-                if (annotation.hasQualifiedName(Annotations.REQUESTMAPPING)
-                        || annotation.hasQualifiedName(Annotations.POSTMAPPING)
-                        || annotation.hasQualifiedName(Annotations.GETMAPPING)
-                        || annotation.hasQualifiedName(Annotations.DELETEMAPPING)
-                        || annotation.hasQualifiedName(Annotations.PUTMAPPING)) {
+                if (annotation.hasQualifiedName(Annotations.REQUESTMAPPING) || annotation.hasQualifiedName(Annotations.POSTMAPPING) || annotation
+                    .hasQualifiedName(Annotations.GETMAPPING) || annotation.hasQualifiedName(Annotations.DELETEMAPPING) || annotation.hasQualifiedName(Annotations.PUTMAPPING)) {
                     String methodUrl = PSIUtil.getMethodRequestUrl(annotation);
                     methodUrl = methodUrl.startsWith("/") ? methodUrl : "/" + methodUrl;
                     method.setUrl(classUrl + methodUrl);
                     method.setRequestMethod(PSIUtil.getMethodRequestType(annotation));
                 }
             }
-
 
             @Override
             public void visitReturnStatement(PsiReturnStatement statement) {
@@ -166,14 +161,10 @@ public class Parser {
                 httpState.setBodyType(PSIUtil.getContentType(list));
             }
 
-
             @Override
             public void visitAnnotation(PsiAnnotation annotation) {
-                if (annotation.hasQualifiedName(Annotations.REQUESTMAPPING)
-                        || annotation.hasQualifiedName(Annotations.POSTMAPPING)
-                        || annotation.hasQualifiedName(Annotations.GETMAPPING)
-                        || annotation.hasQualifiedName(Annotations.DELETEMAPPING)
-                        || annotation.hasQualifiedName(Annotations.PUTMAPPING)) {
+                if (annotation.hasQualifiedName(Annotations.REQUESTMAPPING) || annotation.hasQualifiedName(Annotations.POSTMAPPING) || annotation
+                    .hasQualifiedName(Annotations.GETMAPPING) || annotation.hasQualifiedName(Annotations.DELETEMAPPING) || annotation.hasQualifiedName(Annotations.PUTMAPPING)) {
                     String methodUrl = PSIUtil.getMethodRequestUrl(annotation);
                     methodUrl = methodUrl.startsWith("/") ? methodUrl : "/" + methodUrl;
                     httpState.setShortUrl(classUrl + methodUrl);
@@ -186,7 +177,6 @@ public class Parser {
                 super.visitCallExpression(callExpression);
             }
         });
-
 
         if (httpState.getDescription() == null) {
             httpState.setDescription(psiMethod.getName());
@@ -222,7 +212,7 @@ public class Parser {
                 String s = stringWriter.toString();
                 JsonObject jsonObject = new JsonParser().parse(s).getAsJsonObject();
                 Gson gson = new GsonBuilder().create();
-                defaultValue = gson.toJson(jsonObject);
+                defaultValue = gson.toJson(jsonObject).replace("\"{","{").replace("}\"","}").replace("*hse*", "\" \"");
                 return defaultValue;
             } catch (IOException e) {
                 NotifyService.notifyError("My API Document ResponseExample Builder");
@@ -422,11 +412,23 @@ public class Parser {
             case "void":
                 result = "void";
                 break;
+            case "Map":
+                result = "{*hse*:  }";
+                break;
             default:
                 result = NotifyKeys.PACKAGE;
                 break;
         }
         return result;
     }
-
 }
+//            if (aClass == null) {
+//                aClass = PsiUtil.resolveClassInType(psiType);
+//                if (aClass != null) {
+//                    PsiFile containingFile = aClass.getContainingFile();
+//                    ProjectSearchScope searchScope = SearchScopeService.getInstance();
+//                    if (!searchScope.contains(containingFile.getVirtualFile())) {
+//                        aClass = null;
+//                    }
+//                }
+//            }
