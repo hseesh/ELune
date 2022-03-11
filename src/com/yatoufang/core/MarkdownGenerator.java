@@ -123,7 +123,7 @@ public class MarkdownGenerator {
         int index = 1;
         addTitle(fileName, 1);
         for (TcpMethod method : methods) {
-            addContent(index++ + "." + method.getMethodName());
+            addTitle(index++ + "." + method.getMethodName(),3);
             Collection<Param> params = method.getParams();
             if(params.size() > 0){
                 addTableHead();

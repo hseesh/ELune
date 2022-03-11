@@ -1,6 +1,7 @@
 package com.yatoufang.utils;
 
 
+import com.yatoufang.templet.ProjectKeys;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
@@ -181,14 +182,11 @@ public class StringUtil {
     }
 
     public static void main(String[] args) {
-<<<<<<< Updated upstream
         System.out.println(toUpper("cross_up"));
-=======
         System.out.println(getLowerCaseForFirstLetter("RuneTest"));
         System.out.println(toLowerCaseWithUnderLine("RuneTest"));
         System.out.println(toLowerCaseWithUnderLine("TestTable"));
         System.out.println(toUpper("RuneTest", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
->>>>>>> Stashed changes
     }
 
 }

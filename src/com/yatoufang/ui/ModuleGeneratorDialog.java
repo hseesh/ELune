@@ -1,9 +1,11 @@
 package com.yatoufang.ui;
 
+import com.google.common.collect.Maps;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
@@ -13,10 +15,12 @@ import com.intellij.util.ui.FormBuilder;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.FileNode;
 import com.yatoufang.entity.Table;
+import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import com.yatoufang.utils.SwingUtils;
@@ -30,6 +34,7 @@ import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -51,13 +56,8 @@ public class ModuleGeneratorDialog extends DialogWrapper {
     public ModuleGeneratorDialog(Table table,String rootPath) {
         super(Application.project, true, false);
         this.table = table;
-<<<<<<< Updated upstream
-        this.table.setName(StringUtil.getUpperCaseVariable(table.getName()));
-        this.rootPath = rootPath;
-=======
         this.table.setName(StringUtil.getLowerCaseForFirstLetter(table.getName()));
         this.rootPath = StringUtil.buildPath(rootPath,ProjectKeys.MODULE);
->>>>>>> Stashed changes
         initComponent();
         init();
         setTitle("My Module");
@@ -395,46 +395,4 @@ public class ModuleGeneratorDialog extends DialogWrapper {
         return root;
     }
 
-    private void generateCode(String rootPath, Table table) {
-        table.getFields().removeIf(k -> k.getName().equals(ProjectKeys.UPDATE_TIME));
-        String moduleName = table.getName();
-        HashMap<String, File> fileMap = Maps.newHashMap();
-        String targetPath = StringUtil.buildPath(rootPath, ProjectKeys.MODULE + "_", moduleName.toUpperCase(Locale.ROOT));
-        ConsoleService consoleService = ConsoleService.getInstance();
-        File entityCmdFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKeys.CMD, ProjectKeys.JAVA)));
-        File entityHandlerFile = new File(StringUtil.buildPath(targetPath, StringUtil.toUpper(table.getName(), ProjectKeys.HANDLER, ProjectKeys.JAVA)));
-        File daoFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.DAO, StringUtil.toUpper(table.getName(), ProjectKeys.DAO, ProjectKeys.JAVA)));
-        File voFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.MODEL, StringUtil.toUpper(table.getName(), ProjectKeys.VO, ProjectKeys.JAVA)));
-        File entityFacadeFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.FACADE, StringUtil.toUpper(table.getName(), ProjectKeys.FACADE, ProjectKeys.JAVA)));
-        File entityResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKeys.RESPONSE, ProjectKeys.JAVA)));
-        File helperFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.HELPER, StringUtil.toUpper(table.getName(), ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA)));
-        File entityFacadeImplFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.FACADE, StringUtil.toUpper(table.getName(), ProjectKeys.FACADE, ProjectKeys.IMPL, ProjectKeys.JAVA)));
-        File daoImplFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.DAO, ProjectKeys.IMPL, StringUtil.toUpper(table.getName(), ProjectKeys.DAO, ProjectKeys.IMPL, ProjectKeys.JAVA)));
-        File entityDeleteResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKeys.DELETE, ProjectKeys.RESPONSE, ProjectKeys.JAVA)));
-        File entityRewardResponseFile = new File(StringUtil.buildPath(targetPath, ProjectKeys.RESPONSE, StringUtil.toUpper(table.getName(), ProjectKeys.REWARD, ProjectKeys.RESULT, ProjectKeys.RESPONSE, ProjectKeys.JAVA)));
-        if (table.isMultiEntity()) {
-            fileMap.put(ProjectKeys.MULTI_ENTITY_TEMPLATE, daoFile);
-            fileMap.put(ProjectKeys.MULTI_ENTITY_IMPL_TEMPLATE, daoImplFile);
-        } else {
-            fileMap.put(ProjectKeys.SINGLE_ENTITY_TEMPLATE, daoFile);
-            fileMap.put(ProjectKeys.SINGLE_ENTITY_IMPL_TEMPLATE, daoImplFile);
-        }
-        fileMap.put(ProjectKeys.ENTITY_VO_TEMPLATE, voFile);
-        fileMap.put(ProjectKeys.PUSH_HELP_TEMPLATE, helperFile);
-        fileMap.put(ProjectKeys.ENTITY_CMD_TEMPLATE, entityCmdFile);
-        fileMap.put(ProjectKeys.ENTITY_FACADE_TEMPLATE, entityFacadeFile);
-        fileMap.put(ProjectKeys.ENTITY_HANDLER_TEMPLATE, entityHandlerFile);
-        fileMap.put(ProjectKeys.ENTITY_RESPONSE_TEMPLATE, entityResponseFile);
-        fileMap.put(ProjectKeys.ENTITY_FACADE_IMPL_TEMPLATE, entityFacadeImplFile);
-        fileMap.put(ProjectKeys.ENTITY_REWARD_RESPONSE_TEMPLATE, entityRewardResponseFile);
-        fileMap.put(ProjectKeys.ENTITY_DELETE_RESPONSE_TEMPLATE, entityDeleteResponseFile);
-        fileMap.forEach((fileName, file) -> {
-            try {
-                FileUtil.writeToFile(file, velocityService.execute(fileName, table));
-                consoleService.print(file.getCanonicalPath() + " created successfully\n");
-            } catch (IOException e) {
-                consoleService.printError(ExceptionUtil.getExceptionInfo(e));
-            }
-        });
-    }
 }
