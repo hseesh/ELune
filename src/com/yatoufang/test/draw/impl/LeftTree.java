@@ -1,5 +1,7 @@
-package com.yatoufang.test.draw;
+package com.yatoufang.test.draw.impl;
 
+import com.yatoufang.test.draw.AbstractLayoutParser;
+import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.model.Element;
 
 import java.awt.*;
@@ -8,9 +10,7 @@ import java.awt.*;
  * @author GongHuang（hse）
  * @since 2022/1/11
  */
-public class RightTimeParser extends AbstractLayoutParser{
-
-
+public class LeftTree extends AbstractLayoutParser {
     /**
      * get element layout style type
      *
@@ -18,19 +18,18 @@ public class RightTimeParser extends AbstractLayoutParser{
      */
     @Override
     public LayoutType getType() {
-        return LayoutType.RIGHT_TIME;
+        return LayoutType.LEFT_TREE;
     }
 
     /**
      * calc max bounds for element(include all children)
      *
-     * @param element node element
+     * @param node node element
      * @return Point.x -- max width Point.y -- max height
      */
     @Override
-    public Rectangle onMeasure(Element element) {
-        System.out.println("onMeasure");
-        return null;
+    public void onMeasure(Element parent,Element node) {
+
     }
 
     /**
@@ -40,7 +39,7 @@ public class RightTimeParser extends AbstractLayoutParser{
      */
     @Override
     public void onLayout(Element element) {
-        System.out.println("onLayout");
+
     }
 
     /**
@@ -51,6 +50,6 @@ public class RightTimeParser extends AbstractLayoutParser{
      */
     @Override
     public void onDraw(Graphics2D graphics, Element element) {
-        System.out.println("onDraw");
+
     }
 }

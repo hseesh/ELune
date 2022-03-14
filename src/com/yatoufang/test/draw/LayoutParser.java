@@ -13,10 +13,9 @@ public interface LayoutParser {
     /**
      * calc max bounds for element(include all children)
      *
-     * @param element node element
-     * @return Point.x -- max width Point.y -- max height
+     * @param node node element
      */
-    Rectangle onMeasure(Element element);
+    void onMeasure(Element parent,Element node);
 
     /**
      * calc proper position for element

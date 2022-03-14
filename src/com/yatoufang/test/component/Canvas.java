@@ -2,6 +2,8 @@ package com.yatoufang.test.component;
 
 import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
+import com.yatoufang.test.draw.AbstractLayoutParser;
+import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.utils.StringUtil;
 
@@ -73,11 +75,11 @@ public class Canvas {
         return menu;
     }
 
-    public static Element createElement(Element element) {
-        Element rootElement = new Element(StringUtil.EMPTY, element);
-        Rectangle bounds = element.getBounds();
-        rootElement.setBounds(bounds.x + MindMapConfig.distance, bounds.y, bounds.width, bounds.height);
-        return rootElement;
+    public static Element createElement(Element superNode) {
+        Element node = new Element(StringUtil.EMPTY, superNode);
+        AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
+        parser.onMeasure(superNode,node);
+        return node;
     }
 
     public static void calcPrepareLine(Element source, Element target) {

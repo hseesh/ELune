@@ -21,8 +21,5 @@ public abstract class AbstractLayoutParser implements LayoutParser{
     public abstract LayoutType getType();
 
     public void parser(Element element, Graphics2D graphics){
-        onMeasure(element);
-        onLayout(element);
-        onDraw(graphics, element);
     }
 }

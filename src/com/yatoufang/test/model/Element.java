@@ -6,6 +6,7 @@ import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.controller.Drawable;
+import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.event.Context;
 
 import javax.swing.text.JTextComponent;
@@ -30,15 +31,17 @@ public class Element implements Drawable {
     public Font font;
 
     public ElementType type;
+    public LayoutType layoutType;
 
     protected Color fillColor;
     protected Color textColor;
     protected Color borderColor;
 
-    public Element(String text,Element element) {
+    public Element(String text, Element element) {
         this.text = text;
         this.parent = element;
-        this.font =new Font(null, Font.PLAIN, 25);
+        this.layoutType = LayoutType.RIGHT_TREE;
+        this.font = new Font(null, Font.PLAIN, 25);
         borderColor = MindMapConfig.elementBorderColor;
     }
 
@@ -122,9 +125,9 @@ public class Element implements Drawable {
             g.setColor(JBColor.BLUE);
         }
         Crayons.brush = g;
-        for (Element child : children) {
-            drwLinkLine(this.bounds, child.getBounds());
-            child.draw(g);
+        for (int i = children.size() - 1; i >= 0; i--) {
+            drwLinkLine(this.bounds, children.get(i).getBounds());
+            children.get(i).draw(g);
         }
         drawComponent();
     }
@@ -141,7 +144,7 @@ public class Element implements Drawable {
         int width = (int) this.bounds.getWidth() + 10;
         int height = (int) this.bounds.getHeight() + 10;
         Crayons.setStroke(2f, StrokeType.SOLID);
-        Crayons.drawRect(x,y,width,height,borderColor,fillColor);
+        Crayons.drawRect(x, y, width, height, borderColor, fillColor);
         final Shape shape = makeShape();
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
         Point point = Canvas.calcBestPosition(text, font, this.bounds);
@@ -150,7 +153,7 @@ public class Element implements Drawable {
 
 
     public void drwLinkLine(Rectangle2D source, Rectangle2D destination) {
-        Crayons.setStroke(2f, StrokeType.SOLID);
+        Crayons.setStroke(4f, StrokeType.SOLID);
 
         final double startX;
         if (destination.getCenterX() < source.getCenterX()) {
@@ -161,7 +164,7 @@ public class Element implements Drawable {
             startX = source.getCenterX() + source.getWidth() / 4;
         }
         Crayons.drawCurve(startX, source.getCenterY(), destination.getCenterX(), destination.getCenterY(), MindMapConfig.linkLineColor);
-
+        drawComponent();
     }
 
 

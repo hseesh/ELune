@@ -140,6 +140,7 @@ public class Crayons {
 
     public static void drawString(String text, int x, int y, Color color) {
         brush.setColor(color);
+        brush.setFont(new Font(null, Font.PLAIN, 25));
         brush.drawString(text, x, y);
     }
 

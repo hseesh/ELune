@@ -1,6 +1,9 @@
 package com.yatoufang.test.draw;
 
 import com.google.common.collect.Maps;
+import com.yatoufang.test.draw.impl.LeftTree;
+import com.yatoufang.test.draw.impl.RightTimeParser;
+import com.yatoufang.test.draw.impl.RightTreeParser;
 
 import java.util.Map;
 
@@ -14,6 +17,7 @@ public class LayoutContext {
 
     static {
         new RightTimeParser();
+        new RightTreeParser();
         new LeftTree();
     }
 

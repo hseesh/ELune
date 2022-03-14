@@ -2,6 +2,7 @@ package com.yatoufang.ui.customer.test;
 
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.controller.Drawable;
+import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.event.Context;
 import com.yatoufang.test.model.Element;
 
@@ -23,6 +24,7 @@ public class RootLayer extends JLayeredPane {
         setSize(800, 600);
         topic = new Element("EMPTY NODE",null);
         topic.setBounds(100,100,70,40);
+        topic.layoutType = LayoutType.RIGHT_TIME;
         Context.textArea.setBounds(100,100,70,40);
         Context.textArea.setEnabled(true);
         paint = topic;
