@@ -21,6 +21,7 @@ public class MyKeyBoardAdapter implements KeyListener {
      */
     @Override
     public void keyTyped(KeyEvent e) {
+        EventService.post(e, EventType.NONE);
     }
 
     /**

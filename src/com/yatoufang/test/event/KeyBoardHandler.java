@@ -21,12 +21,14 @@ public class KeyBoardHandler extends EventHandler{
                     Context.setSelect(element);
                     Context.textArea.setBounds(element.getBounds().x, element.getBounds().y, 70, 40);
                     Context.textAreaState.set(true);
-                    Context.rootPanel.topic.add(element);
+                    Context.addNode(element);
                     Context.pushUpdates(element);
                     break;
                 case DELETE_KEY:
                     break;
                 default:
+                    Context.tryUpdateText();
+                    Context.pushUpdates(Context.current);
                     break;
             }
         }

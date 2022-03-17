@@ -33,11 +33,12 @@ public class RightTimeParser extends AbstractLayoutParser {
     @Override
     public void onMeasure(Element parent, Element node) {
         int offset = MindMapConfig.distance;
+        Rectangle parentBounds = parent.getBounds();
         for (Element child : parent.children) {
             Rectangle bounds = child.getBounds();
             offset += bounds.width + MindMapConfig.distance;
         }
-        node.setBounds(parent.bounds.x + offset, parent.bounds.y, parent.bounds.width, parent.bounds.height);
+        node.setBounds(parentBounds.x + offset, parentBounds.y, parentBounds.width, parentBounds.height);
     }
 
     /**

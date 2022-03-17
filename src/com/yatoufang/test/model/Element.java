@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class Element implements Drawable {
     public Element parent;
-    public Rectangle bounds = new Rectangle();
+    private Rectangle bounds = new Rectangle();
 
     public List<Element> children = Lists.newArrayList();
 
@@ -145,6 +145,9 @@ public class Element implements Drawable {
         int height = (int) this.bounds.getHeight() + 10;
         Crayons.setStroke(2f, StrokeType.SOLID);
         Crayons.drawRect(x, y, width, height, borderColor, fillColor);
+        if(bounds.width != 70){
+            System.out.println("width = " + bounds.width);
+        }
         final Shape shape = makeShape();
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
         Point point = Canvas.calcBestPosition(text, font, this.bounds);
@@ -198,6 +201,9 @@ public class Element implements Drawable {
         return null;
     }
 
+    public void setBounds(Rectangle bounds) {
+        this.bounds = bounds;
+    }
 
     public Rectangle getBounds() {
         return bounds;

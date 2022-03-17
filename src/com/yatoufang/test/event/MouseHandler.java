@@ -18,7 +18,7 @@ public class MouseHandler extends EventHandler {
                     if (event.getButton() == 1) {
                         Context.textArea.setVisible(false);
                         Context.textArea.setEnabled(false);
-                        Context.current.fillText(Context.textArea,Context.textArea.getBounds());
+                        Context.current.fillText(Context.textArea,Context.current.getBounds());
                     }
                     break;
                 case MOUSE_DRAG:

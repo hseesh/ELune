@@ -4,6 +4,7 @@ import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
+import com.yatoufang.test.event.Context;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.utils.StringUtil;
 
@@ -29,6 +30,19 @@ public class Canvas {
         double x = (bounds.getWidth() - width) / 2;
         double y = bounds.getHeight() - (int) (height / 2);
         return new Point((int) (bounds.getX() + x), (int) (bounds.getY() + y));
+    }
+
+
+    public static void setTextBounds(Element element) {
+        int width = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getWidth();
+        int height = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getHeight();
+        Rectangle bounds = element.getBounds();
+        if (width > bounds.width * 2 / 3) {
+            System.out.println(" =- ");
+            System.out.println(bounds);
+            element.setBounds(bounds.x, bounds.y, bounds.width + 20, bounds.height);
+            Context.setTextAreaBounds(element.getBounds());
+        }
     }
 
 
@@ -78,21 +92,13 @@ public class Canvas {
     public static Element createElement(Element superNode) {
         Element node = new Element(StringUtil.EMPTY, superNode);
         AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
-        parser.onMeasure(superNode,node);
+        parser.onMeasure(superNode, node);
         return node;
     }
 
     public static void calcPrepareLine(Element source, Element target) {
         int index = 1;
-        if (source.bounds.x > target.bounds.x) {//1,2象限
-            if (source.bounds.y > target.bounds.y) {
-                index = 4;
-            } else {
-                index = 3;
-            }
-        } else {
 
-        }
     }
 }
         

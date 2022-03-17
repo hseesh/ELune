@@ -30,14 +30,13 @@ public class RightTreeParser extends AbstractLayoutParser {
      */
     @Override
     public void onMeasure(Element parent, Element node) {
-        Element superNode = parent;
         int offset = MindMapConfig.distance;
-        while (superNode.parent != null) {
-            Rectangle bounds = superNode.getBounds();
-            offset += bounds.height + MindMapConfig.distance;
-            superNode = superNode.parent;
+        Rectangle parentBounds = parent.getBounds();
+        for (Element child : parent.children) {
+            Rectangle bounds = child.getBounds();
+            offset += (child.children.size() + 1) * (bounds.height + MindMapConfig.distance);
         }
-        node.setBounds(parent.bounds.x , parent.bounds.y + offset, parent.bounds.width, parent.bounds.height);
+        node.setBounds(parentBounds.x + MindMapConfig.distance, parentBounds.y + offset, parentBounds.width, parentBounds.height);
     }
 
     /**
