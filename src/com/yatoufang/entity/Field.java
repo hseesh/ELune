@@ -9,6 +9,8 @@ import com.yatoufang.utils.StringUtil;
  */
 public class Field extends Param {
 
+    public Field parent;
+
     public Field(String paramName) {
         super(paramName);
         this.setDescription(StringUtil.EMPTY);

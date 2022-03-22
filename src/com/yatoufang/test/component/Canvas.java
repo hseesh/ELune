@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.awt.geom.RoundRectangle2D;
 
 /**
  * @author GongHuang（hse）
@@ -38,9 +39,7 @@ public class Canvas {
         int height = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getHeight();
         Rectangle bounds = element.getBounds();
         if (width > bounds.width * 2 / 3) {
-            System.out.println(" =- ");
-            System.out.println(bounds);
-            element.setBounds(bounds.x, bounds.y, bounds.width + 20, bounds.height);
+            element.setBounds(bounds.x, bounds.y, bounds.width + 25, bounds.height);
             Context.setTextAreaBounds(element.getBounds());
         }
     }
@@ -94,6 +93,19 @@ public class Canvas {
         AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
         parser.onMeasure(superNode, node);
         return node;
+    }
+
+
+    public static Shape makeShape(Element element, float x, float y) {
+        Rectangle bounds = element.getBounds();
+        final float round = 2.0f;
+        return new RoundRectangle2D.Double(bounds.x + x, bounds.y + y, bounds.getWidth(), bounds.getHeight(), round, round);
+    }
+
+    public static Shape makeShape(Element element) {
+        Rectangle bounds = element.getBounds();
+        final float round = 2.0f;
+        return new RoundRectangle2D.Double(bounds.x, bounds.y, bounds.getWidth(), bounds.getHeight(), round, round);
     }
 
     public static void calcPrepareLine(Element source, Element target) {

@@ -1,9 +1,14 @@
 package com.yatoufang.test.draw.impl;
 
+import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
+import com.yatoufang.test.component.Canvas;
+import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.model.Element;
+import com.yatoufang.test.model.Images;
+import com.yatoufang.test.model.StrokeType;
 
 import java.awt.*;
 
@@ -59,6 +64,17 @@ public class RightTimeParser extends AbstractLayoutParser {
      */
     @Override
     public void onDraw(Graphics2D graphics, Element element) {
-        System.out.println("onDraw");
+        graphics.setColor(JBColor.RED);
+        Rectangle bounds = element.getBounds();
+        int x = (int) bounds.getX() - 5;
+        int y = (int) bounds.getY() - 5;
+        int width = (int) bounds.getWidth() + 10;
+        int height = (int) bounds.getHeight() + 10;
+        Crayons.setStroke(2f, StrokeType.SOLID);
+        Crayons.drawRect(x, y, width, height, element.getBorderColor(), element.getFillColor());
+        Shape shape = Canvas.makeShape(element);
+        Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
+        Point point = Canvas.calcBestPosition(element.text, element.font, bounds);
+        Crayons.drawString(element.text, point.x, point.y, MindMapConfig.rootTextColor);
     }
 }

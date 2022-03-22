@@ -1,11 +1,19 @@
 package com.yatoufang.test.draw.impl;
 
 import com.yatoufang.config.MindMapConfig;
+import com.yatoufang.test.component.Canvas;
+import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.model.Element;
+import com.yatoufang.test.model.Images;
+import com.yatoufang.test.model.StrokeType;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * @author GongHuang（hse）
@@ -57,6 +65,19 @@ public class RightTreeParser extends AbstractLayoutParser {
      */
     @Override
     public void onDraw(Graphics2D graphics, Element element) {
+        Rectangle bounds = element.getBounds();
+        int x = (int) bounds.getX() - 5;
+        int y = (int) bounds.getY() - 5;
+        int width = (int) bounds.getWidth() + 10;
+        int height = (int) bounds.getHeight() + 10;
+        Crayons.setStroke(2f, StrokeType.SOLID);
+        Crayons.drawRect(x, y, width, height, element.getBorderColor(), element.getFillColor());
+        Shape shape = com.yatoufang.test.component.Canvas.makeShape(element);
+        Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
+        Point point = Canvas.calcBestPosition(element.text, element.font, bounds);
+        Crayons.drawString(element.text, point.x, point.y, MindMapConfig.rootTextColor);
+        Image image = Toolkit.getDefaultToolkit().getImage(Images.PUSH);
+        Crayons.drawImage(image, 200, 200);
 
     }
 }
