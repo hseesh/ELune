@@ -10,6 +10,8 @@ import com.yatoufang.utils.StringUtil;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -82,6 +84,10 @@ public class Canvas {
         String[] items = {"item", "item1", "item2", "item3", "item4"};
         for (String item : items) {
             JMenuItem menuItem = new JMenuItem(item);
+            menuItem.addActionListener(e -> {
+                JMenuItem source = (JMenuItem) e.getSource();
+                System.out.println("e = " + source.getText());
+            });
             menu.add(menuItem);
             menu.addSeparator();
         }

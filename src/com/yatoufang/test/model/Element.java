@@ -69,6 +69,20 @@ public class Element implements Drawable {
     }
 
 
+    public void drawComponent() {
+        int x = (int) this.bounds.getX() - 5;
+        int y = (int) this.bounds.getY() - 5;
+        int width = (int) this.bounds.getWidth() + 10;
+        int height = (int) this.bounds.getHeight() + 10;
+        Crayons.setStroke(2f, StrokeType.SOLID);
+        Crayons.drawRect(x,y,width,height,borderColor,fillColor);
+        final Shape shape = makeShape();
+        Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
+        Point point = Canvas.calcBestPosition(text, font, this.bounds);
+        Crayons.drawString(text, point.x, point.y, MindMapConfig.rootTextColor);
+    }
+
+
     public void drwLinkLine(Rectangle2D source, Rectangle2D destination) {
         Crayons.setStroke(4f, StrokeType.SOLID);
 
