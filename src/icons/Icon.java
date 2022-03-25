@@ -10,4 +10,5 @@ public interface Icon {
     javax.swing.Icon EDIT = IconLoader.getIcon("/icons/edit.svg", Icon.class);
     javax.swing.Icon CLEAR = IconLoader.getIcon("/icons/clear.svg", Icon.class);
     javax.swing.Icon RUN = IconLoader.getIcon("/icons/generator.svg", Icon.class);
+    javax.swing.Icon ROBOT = IconLoader.getIcon("/icons/robot.png", Icon.class);
 }

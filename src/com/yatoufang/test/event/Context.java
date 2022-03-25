@@ -1,10 +1,14 @@
 package com.yatoufang.test.event;
 
+import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.model.Element;
+import com.yatoufang.test.model.PopupMenuContext;
 import com.yatoufang.ui.customer.test.RootLayer;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -17,6 +21,8 @@ public class Context {
     public static Element current;
     public static JTextArea textArea = new JTextArea();
     public static RootLayer rootPanel = new RootLayer();
+    public static JPopupMenu popupMenu = Canvas.createMenu();
+    public static PopupMenuContext popupMenuContext = new PopupMenuContext();
     public static AtomicBoolean menuState = new AtomicBoolean(false);
     public static AtomicBoolean shouldUpdate = new AtomicBoolean(true);
     public static AtomicBoolean textAreaState = new AtomicBoolean(false);
@@ -52,6 +58,13 @@ public class Context {
         Context.textArea.requestFocus();
     }
 
-    public static void enablePopMenu() {
+    public static void enablePopMenu( ) {
+        popupMenu.show(popupMenuContext.getInvoke(),popupMenuContext.getX(),popupMenuContext.getY());
+    }
+
+    public static void enablePopMenu(MouseEvent event) {
+        popupMenuContext.setX(event.getX());
+        popupMenuContext.setY(event.getY());
+        popupMenuContext.setInvoke(event.getComponent());
     }
 }

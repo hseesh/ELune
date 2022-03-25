@@ -2,17 +2,20 @@ package com.yatoufang.test.model;
 
 import com.google.common.collect.Lists;
 import com.intellij.ui.JBColor;
+import com.intellij.util.IconUtil;
 import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.controller.Drawable;
 import com.yatoufang.test.event.Context;
+import icons.Icon;
 
 import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 /**
@@ -146,6 +149,8 @@ public class Element implements Drawable {
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
         Point point = Canvas.calcBestPosition(text, font, this.bounds);
         Crayons.drawString(text, point.x, point.y, MindMapConfig.rootTextColor);
+        Image image = IconUtil.toImage(Icon.ROBOT);
+        Crayons.drawImage(image,300,300);
     }
 
 
