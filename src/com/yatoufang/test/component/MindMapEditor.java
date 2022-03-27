@@ -1,6 +1,9 @@
 package com.yatoufang.test.component;
 
-import com.yatoufang.test.controller.MindMapController;
+import com.intellij.ui.components.JBScrollPane;
+import com.yatoufang.test.controller.MyKeyBoardAdapter;
+import com.yatoufang.test.controller.MyMouseAdapter;
+import com.yatoufang.test.event.Context;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,28 +14,29 @@ import java.awt.*;
  */
 public class MindMapEditor {
 
-    private JPanel rootPanel;
-    private MainView mainView;
-    private JScrollPane scrollPane;
+    private final JPanel rootPanel;
+    private final JScrollPane scrollPane;
 
 
     public MindMapEditor() {
-        init();
-    }
-
-    private void init() {
-        mainView = new MainView();
-        MindMapController mindMapController = new MindMapController(this);
-        mainView.addMouseListener(mindMapController);
         rootPanel = new JPanel(new BorderLayout());
-        rootPanel.add(mainView);
-        scrollPane = new JScrollPane(rootPanel);
+        MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
+        RootLayer rootLayer = Context.rootPanel;
+        rootLayer.setMinimumSize(new Dimension(1920, 1080));
+        rootLayer.addMouseListener(myMouseAdapter);
+        Font font = new Font(null, Font.PLAIN, 25);
 
+        Context.textArea.setFont(font);
+        Context.textArea.addKeyListener(new MyKeyBoardAdapter());
+
+        rootPanel.add(rootLayer);
+        rootLayer.add(Context.textArea);
+
+        scrollPane = new JBScrollPane(rootPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.getVerticalScrollBar().setBlockIncrement(128);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(16);
         scrollPane.getHorizontalScrollBar().setBlockIncrement(128);
-
         scrollPane.setWheelScrollingEnabled(true);
         scrollPane.setAutoscrolls(true);
     }
@@ -49,11 +53,4 @@ public class MindMapEditor {
         return scrollPane;
     }
 
-    public void reDrawBankGround() {
-        mainView.updateUI();
-    }
-
-    public MainView getMainView() {
-        return mainView;
-    }
 }

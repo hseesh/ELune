@@ -76,7 +76,7 @@ public class Element implements Drawable {
         int height = (int) this.bounds.getHeight() + 10;
         Crayons.setStroke(2f, StrokeType.SOLID);
         Crayons.drawRect(x,y,width,height,borderColor,fillColor);
-        final Shape shape = makeShape();
+        final Shape shape = Canvas.makeShape(this);
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
         Point point = Canvas.calcBestPosition(text, font, this.bounds);
         Crayons.drawString(text, point.x, point.y, MindMapConfig.rootTextColor);

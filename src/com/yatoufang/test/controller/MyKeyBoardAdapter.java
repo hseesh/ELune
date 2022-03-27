@@ -46,7 +46,6 @@ public class MyKeyBoardAdapter implements KeyListener {
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()){
             case KeyEvent.VK_INSERT:
-                System.out.println("insert type");
                 EventService.post(e, EventType.INSERT_KEY);
                 break;
             case KeyEvent.VK_DELETE:

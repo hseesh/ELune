@@ -1,10 +1,14 @@
 package com.yatoufang.test.event;
 
+import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.model.Element;
-import com.yatoufang.ui.customer.test.RootLayer;
+import com.yatoufang.test.model.PopupMenuContext;
+import com.yatoufang.test.component.RootLayer;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 

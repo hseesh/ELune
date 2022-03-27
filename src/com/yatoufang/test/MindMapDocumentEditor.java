@@ -136,4 +136,11 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     public <T> void putUserData(@NotNull Key<T> key, @Nullable T t) {
 
     }
+
+    @Override
+    public @Nullable VirtualFile getFile() {
+        return this.file;
+    }
+
+
 }

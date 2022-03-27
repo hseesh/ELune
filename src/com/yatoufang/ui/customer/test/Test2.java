@@ -1,5 +1,6 @@
 package com.yatoufang.ui.customer.test;
 
+import com.yatoufang.test.component.RootLayer;
 import com.yatoufang.test.controller.MyKeyBoardAdapter;
 import com.yatoufang.test.controller.MyMouseAdapter;
 import com.yatoufang.test.event.Context;

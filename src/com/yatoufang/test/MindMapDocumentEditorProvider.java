@@ -38,7 +38,7 @@ public class MindMapDocumentEditorProvider implements FileEditorProvider, DumbAw
     @Override
     public @NotNull
     FileEditorState readState(@NotNull Element sourceElement, @NotNull Project project, @NotNull VirtualFile file) {
-        return FileEditorProvider.super.readState(sourceElement, project, file);
+        return MindMapEditorState.DUMMY;
     }
 
     @Override
@@ -57,4 +57,6 @@ public class MindMapDocumentEditorProvider implements FileEditorProvider, DumbAw
     FileEditorPolicy getPolicy() {
         return FileEditorPolicy.HIDE_DEFAULT_EDITOR;
     }
+
+
 }

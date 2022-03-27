@@ -1,6 +1,5 @@
-package com.yatoufang.ui.customer.test;
+package com.yatoufang.test.component;
 
-import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.controller.Drawable;
 import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.event.Context;
@@ -20,7 +19,6 @@ public class RootLayer extends JLayeredPane {
     Drawable paint;
 
     public RootLayer() {
-        System.out.println("init ");
         setSize(800, 600);
         topic = new Element("EMPTY NODE",null);
         topic.setBounds(100,100,70,40);
