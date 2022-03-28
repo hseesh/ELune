@@ -75,13 +75,9 @@ public class RightTreeParser extends AbstractLayoutParser {
         int height = (int) bounds.getHeight() + 10;
         Crayons.setStroke(2f, StrokeType.SOLID);
         Crayons.drawRect(x, y, width, height, element.getBorderColor(), element.getFillColor());
-        Shape shape = com.yatoufang.test.component.Canvas.makeShape(element);
+        Shape shape = Canvas.makeShape(element);
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
         Point point = Canvas.calcBestPosition(element.text, element.font, bounds);
         Crayons.drawString(element.text, point.x, point.y, MindMapConfig.rootTextColor);
-        BufferedImage bufferedImage = IconUtil.toBufferedImage(Icon.PUSH);
-        Crayons.drawImage(bufferedImage, 200, 200);
-
-
     }
 }

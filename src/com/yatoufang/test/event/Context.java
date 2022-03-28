@@ -52,6 +52,11 @@ public class Context {
         updates.add(last);
     }
 
+    public static void addNode(Element element){
+        last.add(element);
+    }
+
+
     public static void enableTextArea() {
         Context.textArea.setVisible(true);
         Context.textArea.setEnabled(true);
