@@ -2,7 +2,7 @@ package com.yatoufang.test.component;
 
 import com.yatoufang.test.controller.Drawable;
 import com.yatoufang.test.draw.LayoutType;
-import com.yatoufang.test.event.Context;
+import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
 
 import javax.swing.*;
@@ -23,8 +23,8 @@ public class RootLayer extends JLayeredPane {
         topic = new Element("EMPTY NODE",null);
         topic.setBounds(100,100,70,40);
         topic.layoutType = LayoutType.RIGHT_TIME;
-        Context.textArea.setBounds(100,100,70,40);
-        Context.textArea.setEnabled(true);
+        EditorContext.textArea.setBounds(100,100,70,40);
+        EditorContext.textArea.setEnabled(true);
         paint = topic;
     }
 

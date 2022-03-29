@@ -3,7 +3,7 @@ package com.yatoufang.ui.customer.test;
 import com.yatoufang.test.component.RootLayer;
 import com.yatoufang.test.controller.MyKeyBoardAdapter;
 import com.yatoufang.test.controller.MyMouseAdapter;
-import com.yatoufang.test.event.Context;
+import com.yatoufang.test.event.EditorContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,10 +18,10 @@ public class Test2 {
         JFrame frame = new JFrame("MindMap");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        RootLayer rootLayer = Context.rootPanel;
-        rootLayer.add(Context.textArea);
-        Context.textArea.setFont(new Font(null, Font.PLAIN, 25));
-        Context.textArea.addKeyListener(new MyKeyBoardAdapter());
+        RootLayer rootLayer = EditorContext.rootPanel;
+        rootLayer.add(EditorContext.textArea);
+        EditorContext.textArea.setFont(new Font(null, Font.PLAIN, 25));
+        EditorContext.textArea.addKeyListener(new MyKeyBoardAdapter());
         MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
         rootLayer.addMouseListener(myMouseAdapter);
         frame.getContentPane().add(rootLayer);

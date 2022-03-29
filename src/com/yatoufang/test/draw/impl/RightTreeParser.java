@@ -1,22 +1,14 @@
 package com.yatoufang.test.draw.impl;
 
-import com.intellij.util.IconUtil;
 import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.model.Element;
-import com.yatoufang.test.model.Images;
-import com.yatoufang.test.model.ScalableIcon;
 import com.yatoufang.test.model.StrokeType;
-import icons.Icon;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author GongHuang（hse）

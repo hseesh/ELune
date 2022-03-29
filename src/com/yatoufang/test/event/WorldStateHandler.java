@@ -10,11 +10,11 @@ public class WorldStateHandler extends EventHandler{
 
     @Override
     public void invoke(InputEvent event,EventType eventType) {
-        if(Context.textAreaState.getAndSet(false)){
-            Context.enableTextArea();
+        if(EditorContext.textAreaState.getAndSet(false)){
+            EditorContext.enableTextArea();
         }
-        if(Context.menuState.getAndSet(false)){
-            Context.enablePopMenu();
+        if(EditorContext.menuState.getAndSet(false)){
+            EditorContext.enablePopMenu();
         }
         handler.invoke(event,eventType);
     }

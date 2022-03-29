@@ -17,13 +17,13 @@ public class ContextHandler extends EventHandler{
         if (inputEvent instanceof MouseEvent) {
             MouseEvent event = (MouseEvent) inputEvent;
             Point point = event.getPoint();
-            Element result = Context.rootPanel.topic.find(point);
+            Element result = EditorContext.rootPanel.topic.find(point);
             if(result != null){
-                Context.setSelect(result);
-                Context.textArea.setText(result.text);
-                Context.textArea.setBounds(result.getBounds());
-                Context.textAreaState.set(true);
-                Context.pushUpdates(result);
+                EditorContext.setSelect(result);
+                EditorContext.textArea.setText(result.text);
+                EditorContext.textArea.setBounds(result.getBounds());
+                EditorContext.textAreaState.set(true);
+                EditorContext.pushUpdates(result);
             }
         }
         handler.invoke(inputEvent,eventType);

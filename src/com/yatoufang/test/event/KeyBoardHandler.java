@@ -17,18 +17,18 @@ public class KeyBoardHandler extends EventHandler{
         if(event instanceof KeyEvent){
             switch (eventType){
                 case INSERT_KEY:
-                    Element element = Canvas.createElement(Context.current);
-                    Context.setSelect(element);
-                    Context.addNode(element);
-                    Context.textArea.setBounds(element.getBounds().x, element.getBounds().y, 70, 40);
-                    Context.textAreaState.set(true);
-                    Context.pushUpdates(element);
+                    Element element = Canvas.createElement(EditorContext.current);
+                    EditorContext.setSelect(element);
+                    EditorContext.addNode(element);
+                    EditorContext.textArea.setBounds(element.getBounds().x, element.getBounds().y, 70, 40);
+                    EditorContext.textAreaState.set(true);
+                    EditorContext.pushUpdates(element);
                     break;
                 case DELETE_KEY:
                     break;
                 default:
-                    Context.tryUpdateText();
-                    Context.pushUpdates(Context.current);
+                    EditorContext.tryUpdateText();
+                    EditorContext.pushUpdates(EditorContext.current);
                     break;
             }
         }

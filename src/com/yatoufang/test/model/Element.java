@@ -1,7 +1,6 @@
 package com.yatoufang.test.model;
 
 import com.google.common.collect.Lists;
-import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.Crayons;
@@ -9,13 +8,11 @@ import com.yatoufang.test.controller.Drawable;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.draw.LayoutType;
-import com.yatoufang.test.event.Context;
+import com.yatoufang.test.style.NodeType;
 
 import javax.swing.text.JTextComponent;
 import java.awt.*;
-import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,7 +30,7 @@ public class Element implements Drawable {
 
     public Font font;
 
-    public ElementType type;
+    public NodeType type;
     public LayoutType layoutType;
 
     protected Color fillColor;
@@ -50,6 +47,13 @@ public class Element implements Drawable {
 
     public void add(Element element) {
         this.children.add(element);
+    }
+
+    public void delete(Element element) {
+        if (element.parent == null) {
+            return;
+        }
+        element.parent.children.remove(element);
     }
 
     @Override
@@ -75,7 +79,7 @@ public class Element implements Drawable {
         int width = (int) this.bounds.getWidth() + 10;
         int height = (int) this.bounds.getHeight() + 10;
         Crayons.setStroke(2f, StrokeType.SOLID);
-        Crayons.drawRect(x,y,width,height,borderColor,fillColor);
+        Crayons.drawRect(x, y, width, height, borderColor, fillColor);
         final Shape shape = Canvas.makeShape(this);
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
         Point point = Canvas.calcBestPosition(text, font, this.bounds);

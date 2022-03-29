@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author GongHuang（hse）
  * @since 2022/1/2 0002
  */
-public class Context {
+public class EditorContext {
     public static Element last;
     public static Element current;
     public static JTextArea textArea = new JTextArea();
@@ -58,9 +58,9 @@ public class Context {
 
 
     public static void enableTextArea() {
-        Context.textArea.setVisible(true);
-        Context.textArea.setEnabled(true);
-        Context.textArea.requestFocus();
+        EditorContext.textArea.setVisible(true);
+        EditorContext.textArea.setEnabled(true);
+        EditorContext.textArea.requestFocus();
     }
 
     public static void enablePopMenu( ) {
@@ -74,7 +74,7 @@ public class Context {
     }
 
     public static void tryUpdateText() {
-        if(Context.textArea.hasFocus()){
+        if(EditorContext.textArea.hasFocus()){
             current.fillText(textArea, current.getBounds());
             Canvas.setTextBounds(current);
         }

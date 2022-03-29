@@ -11,6 +11,6 @@ public class UpdateHandler extends EventHandler{
 
     @Override
     public void invoke(InputEvent event,EventType eventType) {
-        Context.updateUI();
+        EditorContext.updateUI();
     }
 }

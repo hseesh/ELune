@@ -1,17 +1,14 @@
 package com.yatoufang.test.component;
 
 import com.intellij.ui.JBColor;
-import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
-import com.yatoufang.test.event.Context;
+import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.utils.StringUtil;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
@@ -42,7 +39,7 @@ public class Canvas {
         Rectangle bounds = element.getBounds();
         if (width > bounds.width * 2 / 3) {
             element.setBounds(bounds.x, bounds.y, bounds.width + 25, bounds.height);
-            Context.setTextAreaBounds(element.getBounds());
+            EditorContext.setTextAreaBounds(element.getBounds());
         }
     }
 
@@ -96,6 +93,7 @@ public class Canvas {
 
     public static Element createElement(Element superNode) {
         Element node = new Element(StringUtil.EMPTY, superNode);
+        EditorContext.textArea.setText(StringUtil.EMPTY);
         AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
         parser.onMeasure(superNode, node);
         return node;

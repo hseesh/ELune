@@ -17,15 +17,15 @@ public class MouseHandler extends EventHandler {
                 case MOUSE_CLICK:
                     switch (event.getButton()) {
                         case MouseEvent.BUTTON1:
-                            Context.textArea.setVisible(false);
-                            Context.textArea.setEnabled(false);
-                            Context.popupMenu.setVisible(false);
-                            Context.popupMenu.setEnabled(false);
-                            Context.current.fillText(Context.textArea, Context.textArea.getBounds());
+                            EditorContext.textArea.setVisible(false);
+                            EditorContext.textArea.setEnabled(false);
+                            EditorContext.popupMenu.setVisible(false);
+                            EditorContext.popupMenu.setEnabled(false);
+                            EditorContext.current.fillText(EditorContext.textArea, EditorContext.textArea.getBounds());
                             break;
                         case MouseEvent.BUTTON3:
-                            Context.menuState.set(true);
-                            Context.enablePopMenu(event);
+                            EditorContext.menuState.set(true);
+                            EditorContext.enablePopMenu(event);
                             break;
                         default:
                             break;
