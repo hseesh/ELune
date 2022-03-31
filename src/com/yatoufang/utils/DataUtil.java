@@ -1,5 +1,10 @@
 package com.yatoufang.utils;
 
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
+
+import javax.swing.*;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -30,6 +35,18 @@ public class DataUtil {
             num = (int) (Math.random() * 10);
         }
         return num;
+    }
+
+    public static Timer createTimer(@NotNull final String name, int delay, @NotNull ActionListener listener) {
+        return new Timer(delay, listener) {
+            public String toString() {
+                return name;
+            }
+        };
+    }
+
+    public static Timer createTimer(int delay, @NotNull ActionListener listener) {
+        return new Timer(delay, listener);
     }
 
 }

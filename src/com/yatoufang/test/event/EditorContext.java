@@ -26,6 +26,7 @@ public class EditorContext {
     public static AtomicBoolean menuState = new AtomicBoolean(false);
     public static AtomicBoolean shouldUpdate = new AtomicBoolean(true);
     public static AtomicBoolean textAreaState = new AtomicBoolean(false);
+    public static AtomicBoolean draggingState = new AtomicBoolean(false);
     private static final Collection<Element> updates = Lists.newArrayList();
 
     static {
@@ -78,6 +79,19 @@ public class EditorContext {
             current.fillText(textArea, current.getBounds());
             Canvas.setTextBounds(current);
         }
+    }
+
+    public static Element setEditingNode(MouseEvent event) {
+        Point point = event.getPoint();
+        Element result = EditorContext.rootPanel.topic.find(point);
+        if(result != null){
+            EditorContext.setSelect(result);
+            EditorContext.textArea.setText(result.text);
+            EditorContext.textArea.setBounds(result.getBounds());
+            EditorContext.textAreaState.set(true);
+            EditorContext.pushUpdates(result);
+        }
+        return  result;
     }
 
     public static void setTextAreaBounds(Rectangle bounds) {

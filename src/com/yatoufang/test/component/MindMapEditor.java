@@ -3,6 +3,7 @@ package com.yatoufang.test.component;
 import com.intellij.ui.components.JBScrollPane;
 import com.yatoufang.test.controller.MyKeyBoardAdapter;
 import com.yatoufang.test.controller.MyMouseAdapter;
+import com.yatoufang.test.controller.MyMouseMotionAdapter;
 import com.yatoufang.test.event.EditorContext;
 
 import javax.swing.*;
@@ -20,10 +21,12 @@ public class MindMapEditor {
 
     public MindMapEditor() {
         rootPanel = new JPanel(new BorderLayout());
-        MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
+        MyMouseAdapter mouseAdapter = new MyMouseAdapter();
+        MyMouseMotionAdapter mouseMotionAdapter = new MyMouseMotionAdapter();
         RootLayer rootLayer = EditorContext.rootPanel;
         rootLayer.setMinimumSize(new Dimension(1920, 1080));
-        rootLayer.addMouseListener(myMouseAdapter);
+        rootLayer.addMouseListener(mouseAdapter);
+        rootLayer.addMouseMotionListener(mouseMotionAdapter);
         Font font = new Font(null, Font.PLAIN, 25);
 
         EditorContext.textArea.setFont(font);

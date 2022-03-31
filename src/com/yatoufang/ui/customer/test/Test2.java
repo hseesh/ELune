@@ -3,6 +3,7 @@ package com.yatoufang.ui.customer.test;
 import com.yatoufang.test.component.RootLayer;
 import com.yatoufang.test.controller.MyKeyBoardAdapter;
 import com.yatoufang.test.controller.MyMouseAdapter;
+import com.yatoufang.test.controller.MyMouseMotionAdapter;
 import com.yatoufang.test.event.EditorContext;
 
 import javax.swing.*;
@@ -22,8 +23,10 @@ public class Test2 {
         rootLayer.add(EditorContext.textArea);
         EditorContext.textArea.setFont(new Font(null, Font.PLAIN, 25));
         EditorContext.textArea.addKeyListener(new MyKeyBoardAdapter());
-        MyMouseAdapter myMouseAdapter = new MyMouseAdapter();
-        rootLayer.addMouseListener(myMouseAdapter);
+        MyMouseAdapter mouseAdapter = new MyMouseAdapter();
+        MyMouseMotionAdapter mouseMotionAdapter = new MyMouseMotionAdapter();
+        rootLayer.addMouseListener(mouseAdapter);
+        rootLayer.addMouseMotionListener(mouseMotionAdapter);
         frame.getContentPane().add(rootLayer);
         frame.setVisible(true);
     }
