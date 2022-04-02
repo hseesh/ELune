@@ -7,6 +7,7 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.javadoc.PsiDocTagValue;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
+import com.intellij.psi.util.PsiUtil;
 import com.yatoufang.entity.Param;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.service.SearchScopeService;
@@ -610,4 +611,27 @@ public class PSIUtil {
         }
         return null;
     }
+
+    public static PsiField createField(PsiElement element){
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        PsiType psiType = factory.createTypeFromText("HitState", element);
+        PsiField field = factory.createField("HSE", psiType);
+       // PsiUtil.setModifierProperty(field, PsiModifier.PRIVATE, true);
+        return field;
+    }
+
+    public static PsiMethod createMethod(PsiElement element){
+        String content = "actionStoreHelper";
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        PsiType psiType = factory.createTypeFromText("HitState", element);
+        PsiMethod method = factory.createMethod(content, psiType);
+        return method;
+    }
+
+    public static void addComment(PsiElement element, String strComment) {
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        PsiComment comment = factory.createCommentFromText(strComment, null);
+        element.addBefore(comment, element.getFirstChild());
+    }
+
 }
