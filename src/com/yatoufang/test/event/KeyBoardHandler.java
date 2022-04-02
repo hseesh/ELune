@@ -25,6 +25,7 @@ public class KeyBoardHandler extends EventHandler{
                     EditorContext.pushUpdates(element);
                     break;
                 case DELETE_KEY:
+                    EditorContext.removeCurrent();
                     break;
                 default:
                     EditorContext.tryUpdateText();

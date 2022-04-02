@@ -1,9 +1,9 @@
 package com.yatoufang.test.event;
 
 import com.yatoufang.test.component.Canvas;
+import com.yatoufang.test.component.RootLayer;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.test.model.PopupMenuContext;
-import com.yatoufang.test.component.RootLayer;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.swing.*;
@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class EditorContext {
     public static Element last;
     public static Element current;
+    private static JScrollPane mainView;
+    private static Point lastDraggingPoint;
     public static JTextArea textArea = new JTextArea();
     public static RootLayer rootPanel = new RootLayer();
     public static JPopupMenu popupMenu = Canvas.createMenu();
@@ -53,10 +55,9 @@ public class EditorContext {
         updates.add(last);
     }
 
-    public static void addNode(Element element){
+    public static void addNode(Element element) {
         last.add(element);
     }
-
 
     public static void enableTextArea() {
         EditorContext.textArea.setVisible(true);
@@ -64,8 +65,8 @@ public class EditorContext {
         EditorContext.textArea.requestFocus();
     }
 
-    public static void enablePopMenu( ) {
-        popupMenu.show(popupMenuContext.getInvoke(),popupMenuContext.getX(),popupMenuContext.getY());
+    public static void enablePopMenu() {
+        popupMenu.show(popupMenuContext.getInvoke(), popupMenuContext.getX(), popupMenuContext.getY());
     }
 
     public static void enablePopMenu(MouseEvent event) {
@@ -75,7 +76,7 @@ public class EditorContext {
     }
 
     public static void tryUpdateText() {
-        if(EditorContext.textArea.hasFocus()){
+        if (EditorContext.textArea.hasFocus()) {
             current.fillText(textArea, current.getBounds());
             Canvas.setTextBounds(current);
         }
@@ -84,17 +85,56 @@ public class EditorContext {
     public static Element setEditingNode(MouseEvent event) {
         Point point = event.getPoint();
         Element result = EditorContext.rootPanel.topic.find(point);
-        if(result != null){
+        if (result != null) {
             EditorContext.setSelect(result);
             EditorContext.textArea.setText(result.text);
             EditorContext.textArea.setBounds(result.getBounds());
             EditorContext.textAreaState.set(true);
             EditorContext.pushUpdates(result);
         }
-        return  result;
+        return result;
     }
 
     public static void setTextAreaBounds(Rectangle bounds) {
         textArea.setBounds(bounds);
+    }
+
+    public static void setViewPoint(MouseEvent event) {
+        if (mainView == null) {
+            return;
+        }
+
+        Rectangle viewBounds = mainView.getVisibleRect();
+        mainView.scrollRectToVisible(viewBounds);
+        mainView.revalidate();
+        mainView.repaint();
+    }
+
+    public static void bindingView(JScrollPane scrollPane) {
+        mainView = scrollPane;
+    }
+
+    public static void removeCurrent() {
+        if (textArea.hasFocus()) {
+            Element parent = current.parent;
+            if (parent == null) {
+                return;
+            }
+            parent.delete(current);
+            setSelect(parent);
+            textArea.setBounds(parent.getBounds());
+            shouldUpdate.set(true);
+        }
+    }
+
+    public static boolean couldDragging(Point point, Rectangle bounds) {
+        if (lastDraggingPoint == null) {
+            return false;
+        }
+        if (bounds.contains(lastDraggingPoint)) {
+            return true;
+        }
+        EditorContext.lastDraggingPoint = point;
+        return false;
     }
 }

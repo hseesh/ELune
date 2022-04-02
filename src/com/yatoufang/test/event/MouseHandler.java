@@ -1,5 +1,6 @@
 package com.yatoufang.test.event;
 
+import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.utils.DataUtil;
 
@@ -35,19 +36,16 @@ public class MouseHandler extends EventHandler {
                     if (!EditorContext.draggingState.get()) {
                         Element result = EditorContext.setEditingNode(event);
                         if (result == null) {
+                            EditorContext.setViewPoint(event);
                             return;
                         }
                         disableInput();
                         Rectangle bounds = result.getBounds();
-                        Rectangle newBounds = new Rectangle(event.getX(), event.getY(), (int) bounds.getWidth(), (int) bounds.getHeight());
+                        Rectangle newBounds = Canvas.calcTopLeftPoint(event.getPoint(),bounds);
                         result.setBounds(newBounds);
-                        System.out.println("newBounds = " + newBounds);
                         EditorContext.textArea.setBounds(newBounds);
                         EditorContext.pushUpdates(result);
-                        EditorContext.draggingState.set(true);
-                        DataUtil.createTimer(10, e -> {
-                            EditorContext.draggingState.set(false);
-                        }).start();
+                        enableDraggingState();
                     } else {
                         return;
                     }
@@ -56,10 +54,16 @@ public class MouseHandler extends EventHandler {
                     break;
                 default:
                     break;
-
             }
         }
         handler.invoke(inputEvent, eventType);
+    }
+
+    private void enableDraggingState() {
+        EditorContext.draggingState.set(true);
+        DataUtil.createTimer(10, e -> {
+            EditorContext.draggingState.set(false);
+        }).start();
     }
 
     private void disableInput() {

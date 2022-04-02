@@ -124,7 +124,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     @Override
     public void dispose() {
-
+        mindMapEditor = null;
     }
 
     @Override

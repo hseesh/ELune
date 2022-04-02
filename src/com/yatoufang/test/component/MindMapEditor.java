@@ -42,6 +42,7 @@ public class MindMapEditor {
         scrollPane.getHorizontalScrollBar().setBlockIncrement(128);
         scrollPane.setWheelScrollingEnabled(true);
         scrollPane.setAutoscrolls(true);
+        EditorContext.bindingView(scrollPane);
     }
 
     public JComponent getComponent() {

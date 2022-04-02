@@ -32,7 +32,6 @@ public class Canvas {
         return new Point((int) (bounds.getX() + x), (int) (bounds.getY() + y));
     }
 
-
     public static void setTextBounds(Element element) {
         int width = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getWidth();
         int height = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getHeight();
@@ -42,7 +41,6 @@ public class Canvas {
             EditorContext.setTextAreaBounds(element.getBounds());
         }
     }
-
 
     public static void drawBankGround(Graphics brush) {
         Rectangle clipBounds = brush.getClipBounds();
@@ -84,6 +82,7 @@ public class Canvas {
             menuItem.addActionListener(e -> {
                 JMenuItem source = (JMenuItem) e.getSource();
                 System.out.println("e = " + source.getText());
+                EditorContext.updateUI();
             });
             menu.add(menuItem);
             menu.addSeparator();
@@ -93,12 +92,10 @@ public class Canvas {
 
     public static Element createElement(Element superNode) {
         Element node = new Element(StringUtil.EMPTY, superNode);
-        EditorContext.textArea.setText(StringUtil.EMPTY);
         AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
         parser.onMeasure(superNode, node);
         return node;
     }
-
 
     public static Shape makeShape(Element element, float x, float y) {
         Rectangle bounds = element.getBounds();
@@ -114,7 +111,12 @@ public class Canvas {
 
     public static void calcPrepareLine(Element source, Element target) {
         int index = 1;
+    }
 
+    public static Rectangle calcTopLeftPoint(Point point, Rectangle bounds) {
+        int newX = point.x - bounds.width / 2;
+        int newY = point.y - bounds.height / 2;
+        return new Rectangle(newX, newY, bounds.width, bounds.height);
     }
 }
         
