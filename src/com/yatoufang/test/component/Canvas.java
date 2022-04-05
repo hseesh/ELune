@@ -6,6 +6,7 @@ import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.utils.StringUtil;
+import icons.Icon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -76,9 +77,9 @@ public class Canvas {
 
     public static JPopupMenu createMenu() {
         JPopupMenu menu = new JPopupMenu();
-        String[] items = {"item", "item1", "item2", "item3", "item4"};
+        String[] items = {"Preview current", "Preview all", "item2", "item3", "item4"};
         for (String item : items) {
-            JMenuItem menuItem = new JMenuItem(item);
+            JMenuItem menuItem = new JMenuItem(item, Icon.PUSH);
             menuItem.addActionListener(e -> {
                 JMenuItem source = (JMenuItem) e.getSource();
                 System.out.println("e = " + source.getText());

@@ -33,22 +33,21 @@ public class MouseHandler extends EventHandler {
                     }
                     break;
                 case MOUSE_DRAG:
-                    if (!EditorContext.draggingState.get()) {
-                        Element result = EditorContext.setEditingNode(event);
-                        if (result == null) {
-                            EditorContext.setViewPoint(event);
-                            return;
-                        }
-                        disableInput();
-                        Rectangle bounds = result.getBounds();
-                        Rectangle newBounds = Canvas.calcTopLeftPoint(event.getPoint(),bounds);
-                        result.setBounds(newBounds);
-                        EditorContext.textArea.setBounds(newBounds);
-                        EditorContext.pushUpdates(result);
-                        enableDraggingState();
-                    } else {
+                    if(EditorContext.draggingState.get()){
                         return;
                     }
+                    Element result = EditorContext.setEditingNode(event);
+                    if (result == null) {
+                        EditorContext.setViewPoint(event);
+                        return;
+                    }
+                    disableInput();
+                    Rectangle bounds = result.getBounds();
+                    Rectangle newBounds = Canvas.calcTopLeftPoint(event.getPoint(),bounds);
+                    result.setBounds(newBounds);
+                    EditorContext.textArea.setBounds(newBounds);
+                    EditorContext.pushUpdates(result);
+                    enableDraggingState();
                     break;
                 case MOUSE_MOVE:
                     break;

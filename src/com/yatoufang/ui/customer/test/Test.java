@@ -8,50 +8,93 @@ import com.yatoufang.ui.customer.model.Node;
 import com.yatoufang.ui.customer.model.Option;
 import com.yatoufang.ui.customer.view.MindmapView;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
 
 public class Test {
-	
 	public static void main(String[] args) {
-		JFrame frame=new JFrame("MindMap");
-		frame.setSize(800,600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(createCenterPanel()	);
-		frame.setResizable(false);
-		frame.setVisible(true);
+		new Test();
 	}
 
-	protected static JComponent createCenterPanel() {
-		Option option=new Option();
-		option.setMapArea(0, 0, 800, 600);
-		Mindmap mindmap=new Mindmap(option);
-		//init nodes
-		Node root=mindmap.addRootNode("Test");
-		Node model_=mindmap.addNode(root, "model");
-		Node view_=mindmap.addNode(root, "view");
-		Node controller_=mindmap.addNode(root, "controller");
-		Node listener_=mindmap.addNode(root, "listener");
-		mindmap.addNode(model_, "Mindmap");
-		mindmap.addNode(model_, "Node");
-		mindmap.addNode(model_, "Line");
-		mindmap.addNode(model_, "Option");
-		mindmap.addNode(model_, "Paintable");
-		mindmap.addNode(view_, "MindmapView");
-		mindmap.addNode(controller_, "MindmapController");
-		mindmap.addNode(listener_, "PaintListener");
-		//create view
-		MindmapView view=new MindmapView();
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(50,50,70,40);
-		textArea.setText("hello text ");
+	public Test() {
+		EventQueue.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+				} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+					ex.printStackTrace();
+				}
 
-		view.add(textArea	);
-		//create controller
-		MindmapController controller=new MindmapController(view, mindmap);
-		mindmap.addListener(controller);
-		view.addMouseListener(controller);
-		view.addMouseMotionListener(controller);
-		return view;
+				JFrame frame = new JFrame("Testing");
+				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				frame.add(new TestPane());
+				frame.pack();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+			}
+		});
+	}
+
+	public class TestPane extends JPanel {
+
+		private JLabel map;
+
+		public TestPane() {
+			setLayout(new BorderLayout());
+			try {
+				map = new JLabel(new ImageIcon(ImageIO.read(new File("C:\\Users\\Administrator\\Desktop\\2Ybi2q.jpg"))));
+				map.setAutoscrolls(true);
+				add(new JScrollPane(map));
+
+				MouseAdapter ma = new MouseAdapter() {
+
+					private Point origin;
+
+					@Override
+					public void mousePressed(MouseEvent e) {
+						origin = new Point(e.getPoint());
+					}
+
+					@Override
+					public void mouseReleased(MouseEvent e) {
+					}
+
+					@Override
+					public void mouseDragged(MouseEvent e) {
+						if (origin != null) {
+							JViewport viewPort = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, map);
+							if (viewPort != null) {
+								int deltaX = origin.x - e.getX();
+								int deltaY = origin.y - e.getY();
+
+								Rectangle view = viewPort.getViewRect();
+								view.x += deltaX;
+								view.y += deltaY;
+
+								map.scrollRectToVisible(view);
+							}
+						}
+					}
+
+				};
+
+				map.addMouseListener(ma);
+				map.addMouseMotionListener(ma);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		@Override
+		public Dimension getPreferredSize() {
+			return new Dimension(200, 200);
+		}
+
 	}
 }

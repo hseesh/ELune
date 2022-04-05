@@ -103,9 +103,20 @@ public class EditorContext {
         if (mainView == null) {
             return;
         }
-
-        Rectangle viewBounds = mainView.getVisibleRect();
-        mainView.scrollRectToVisible(viewBounds);
+        if(lastDraggingPoint == null){
+            lastDraggingPoint = event.getPoint();
+            return;
+        }
+        int offsetX = lastDraggingPoint.x - event.getX() ;
+        int offsetY = lastDraggingPoint.y - event.getY() ;
+        lastDraggingPoint = event.getPoint();
+        if(offsetX == 0 && offsetY == 0){
+            return;
+        }
+        JViewport viewport = mainView.getViewport();
+        Rectangle viewRect = viewport.getViewRect();
+        viewRect.setLocation(1900,1900);
+        rootPanel.scrollRectToVisible(viewRect);
         mainView.revalidate();
         mainView.repaint();
     }

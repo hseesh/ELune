@@ -12,7 +12,7 @@ import java.awt.*;
  * @author GongHuang（hse）
  * @since 2021/12/30
  */
-public class RootLayer extends JLayeredPane {
+public class RootLayer extends JComponent {
 
     public Element topic;
 

@@ -21,7 +21,6 @@ public class MyMouseMotionAdapter extends MouseMotionAdapter {
      */
     @Override
     public void mouseDragged(MouseEvent e) {
-        System.out.println("e = " + e.getPoint());
         EventService.post(e,EventType.MOUSE_DRAG);
     }
 
