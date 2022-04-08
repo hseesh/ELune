@@ -87,7 +87,7 @@ public class Element implements Drawable {
     }
 
 
-    public void drwLinkLine(Rectangle2D source, Rectangle2D destination) {
+    public void drwLinkLine(Rectangle source, Rectangle destination) {
         Crayons.setStroke(4f, StrokeType.SOLID);
 
         final double startX;
@@ -98,7 +98,10 @@ public class Element implements Drawable {
             // right
             startX = source.getCenterX() + source.getWidth() / 4;
         }
-        Crayons.drawCurve(startX, source.getCenterY(), destination.getCenterX(), destination.getCenterY(), MindMapConfig.linkLineColor);
+        Point jumpPoint = new Point((int) source.getCenterX(), (int) destination.getCenterY());
+        Crayons.drawLine((int) source.getCenterX(), (int) source.getCenterY(), jumpPoint.x, jumpPoint.y, MindMapConfig.linkLineColor);
+        Crayons.drawLine( jumpPoint.x, jumpPoint.y,(int) destination.getCenterX(), (int) destination.getCenterY(), MindMapConfig.linkLineColor);
+       // Crayons.drawCurve(startX, source.getCenterY(), destination.getCenterX(), destination.getCenterY(), MindMapConfig.linkLineColor);
     }
 
 

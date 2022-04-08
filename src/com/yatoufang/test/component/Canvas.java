@@ -78,16 +78,22 @@ public class Canvas {
     public static JPopupMenu createMenu() {
         JPopupMenu menu = new JPopupMenu();
         String[] items = {"Preview current", "Preview all", "item2", "item3", "item4"};
-        for (String item : items) {
-            JMenuItem menuItem = new JMenuItem(item, Icon.PUSH);
-            menuItem.addActionListener(e -> {
-                JMenuItem source = (JMenuItem) e.getSource();
-                System.out.println("e = " + source.getText());
-                EditorContext.updateUI();
-            });
-            menu.add(menuItem);
-            menu.addSeparator();
-        }
+        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.CAMERA);
+        JMenuItem previewALL = new JMenuItem("Preview current", Icon.AIR_BLOWER);
+        JMenuItem dragonFruit = new JMenuItem("Dragon fruit", Icon.DRAGON_FRUIT);
+        JMenuItem airBlower = new JMenuItem("Air blower", Icon.PUSH);
+        JMenuItem print = new JMenuItem("Dragon fruit", Icon.PRINT);
+        menu.add(previewCurrent);
+        menu.addSeparator();
+        menu.add(previewALL);
+        menu.addSeparator();
+        menu.add(dragonFruit);
+        menu.addSeparator();
+        menu.add(airBlower);
+        menu.addSeparator();
+        menu.add(print);
+        menu.addSeparator();
+
         return menu;
     }
 
@@ -119,6 +125,80 @@ public class Canvas {
         int newY = point.y - bounds.height / 2;
         return new Rectangle(newX, newY, bounds.width, bounds.height);
     }
+
+    /**
+     * @param p1 pont 1
+     * @param p2 pont 2
+     * @return direction of two point
+     * <p>
+     * 7   0   1
+     * 6       2
+     * 5   4   3
+     */
+    public static int getDirection(Rectangle p1, Rectangle p2) {
+        double angle = Math.atan((p2.getCenterY() - p2.getCenterY()) / -(p2.getCenterX() - p1.getCenterX()));
+        double angle22d5 = Math.PI / 8;
+        double angle67d5 = Math.PI / 2 - angle22d5;
+        if (angle > -angle22d5 && angle <= angle22d5) {
+            if (p1.getCenterX() < p2.getCenterX()) {
+                return 2;
+            } else {
+                return 6;
+            }
+        } else if (angle > angle22d5 && angle <= angle67d5) {
+            if (p1.getCenterX() < p2.getCenterX()) {
+                return 1;
+            } else {
+                return 5;
+            }
+        } else if (angle > -angle67d5 && angle <= -angle22d5) {
+            if (p1.getCenterX() < p2.getCenterX()) {
+                return 3;
+            } else {
+                return 7;
+            }
+        } else {
+            if (p2.getCenterY() < p2.getCenterY()) {
+                return 4;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * @param p1 pont 1
+     * @param p2 pont 2
+     * @return direction of two point
+     * <p>
+     * 7   0   1
+     * 6       2
+     * 5   4   3
+     */
+    public static Point getDirectionPoint(Rectangle p1, Rectangle p2) {
+        int direction = getDirection(p1, p2);
+        switch (direction) {
+            case 0:
+                return new Point((int) p1.getCenterX(), p1.y);
+            case 1:
+                return new Point(p1.x + p1.width, p1.y);
+            case 2:
+                return new Point((int) (p1.getCenterX() + p1.width / 2), (int) p1.getCenterY());
+            case 3:
+                return new Point(p1.x + p1.width, p1.y + p1.height);
+            case 4:
+                return new Point((int) p1.getCenterX(), p1.y + p1.height);
+            case 5:
+                return new Point(p1.x, p1.y + p1.height);
+            case 6:
+                return new Point(p1.x, (int) p1.getCenterY());
+            case 7:
+                return new Point(p1.x, p1.y);
+            default:
+                return new Point((int)p1.getCenterX(), (int)p1.getCenterY());
+        }
+    }
+
 }
         
 
