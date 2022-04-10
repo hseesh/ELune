@@ -20,6 +20,10 @@ public enum NodeType {
     OPERATION_TYPE_NODE(12),
     LOCK_TYPE_NODE(13),
     UNLOCK_TYPE_NODE(14),
+    GLOBAL_CONSTANT_KEY(15),
+    FIELDS_NODE(16),
+    INTERFACE_NODE(17),
+
     NONE(0);
 
     private final int ID;
@@ -28,9 +32,9 @@ public enum NodeType {
         this.ID = id;
     }
 
-    public NodeType getType() {
+    public static NodeType getType(int id) {
         for (NodeType type : NodeType.values()) {
-            if (type.getID() == ID) {
+            if (type.getID() == id) {
                 return type;
             }
         }

@@ -39,7 +39,7 @@ public class LeftTree extends AbstractLayoutParser {
      */
     @Override
     public void onLayout(Element element) {
-
+        super.onLayout(element);
     }
 
     /**

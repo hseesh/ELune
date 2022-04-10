@@ -43,6 +43,15 @@ public class Canvas {
         }
     }
 
+    public static void setElementBounds(Element element) {
+        int width = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getWidth();
+        int height = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getHeight();
+        Rectangle bounds = element.getBounds();
+        if (width > bounds.width) {
+            element.setBounds(bounds.x, bounds.y, width + 25, bounds.height);
+        }
+    }
+
     public static void drawBankGround(Graphics brush) {
         Rectangle clipBounds = brush.getClipBounds();
 

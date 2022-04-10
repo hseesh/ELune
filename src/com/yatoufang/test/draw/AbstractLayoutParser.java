@@ -1,7 +1,11 @@
 package com.yatoufang.test.draw;
 
 
+import com.yatoufang.config.MindMapConfig;
+import com.yatoufang.test.component.Canvas;
+import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.model.Element;
+import com.yatoufang.test.model.StrokeType;
 
 import java.awt.*;
 
@@ -20,6 +24,34 @@ public abstract class AbstractLayoutParser implements LayoutParser{
      */
     public abstract LayoutType getType();
 
-    public void parser(Element element, Graphics2D graphics){
+    @Override
+    public void onLayout(Element element) {
+        Canvas.setElementBounds(element);
+    }
+
+    public void parser(Graphics2D graphics, Element element){
+        for (int i = element.children.size() - 1; i >= 0; i--) {
+            drwLinkLine(element.getBounds(), element.children.get(i).getBounds());
+            element.children.get(i).draw(graphics);
+        }
+        onLayout(element);
+        onDraw(graphics, element);
+    }
+
+    public void drwLinkLine(Rectangle source, Rectangle destination) {
+        Crayons.setStroke(4f, StrokeType.SOLID);
+
+        final double startX;
+        if (destination.getCenterX() < source.getCenterX()) {
+            // left
+            startX = source.getCenterX() - source.getWidth() / 4;
+        } else {
+            // right
+            startX = source.getCenterX() + source.getWidth() / 4;
+        }
+        Point jumpPoint = new Point((int) source.getCenterX(), (int) destination.getCenterY());
+        Crayons.drawLine((int) source.getCenterX(), (int) source.getCenterY(), jumpPoint.x, jumpPoint.y, MindMapConfig.linkLineColor);
+        Crayons.drawLine( jumpPoint.x, jumpPoint.y,(int) destination.getCenterX(), (int) destination.getCenterY(), MindMapConfig.linkLineColor);
+        // Crayons.drawCurve(startX, source.getCenterY(), destination.getCenterX(), destination.getCenterY(), MindMapConfig.linkLineColor);
     }
 }

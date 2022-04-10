@@ -49,7 +49,7 @@ public class RightTreeParser extends AbstractLayoutParser {
      */
     @Override
     public void onLayout(Element element) {
-
+        super.onLayout(element);
     }
 
     /**

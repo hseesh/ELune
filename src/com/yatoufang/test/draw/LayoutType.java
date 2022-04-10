@@ -17,6 +17,19 @@ public enum LayoutType {
 
     private final int ID;
 
+    public int getID() {
+        return ID;
+    }
+
+    public static LayoutType getType(int id) {
+        for (LayoutType type : LayoutType.values()) {
+            if (type.getID() == id) {
+                return type;
+            }
+        }
+        return NONE;
+    }
+
     LayoutType(int id) {
         this.ID = id;
     }

@@ -34,8 +34,12 @@ public class Element implements Drawable {
     public LayoutType layoutType;
 
     protected Color fillColor;
-    protected Color textColor;
-    protected Color borderColor;
+    public Color borderColor;
+    public Color linkLineColor;
+
+    public float scaleCoefficient;
+    public String icon;
+
 
     public Element(String text, Element element) {
         this.text = text;
@@ -60,48 +64,12 @@ public class Element implements Drawable {
     public void draw(Graphics2D g) {
         AbstractLayoutParser parser = LayoutContext.getParser(this.layoutType);
         Crayons.brush = g;
-        for (int i = children.size() - 1; i >= 0; i--) {
-            drwLinkLine(this.bounds, children.get(i).getBounds());
-            children.get(i).draw(g);
-        }
-        parser.onDraw(g, this);
+        parser.parser(g, this);
     }
 
 
     public void setBounds(int x, int y, int x1, int y1) {
         this.bounds.setFrame(x, y, x1, y1);
-    }
-
-
-    public void drawComponent() {
-        int x = (int) this.bounds.getX() - 5;
-        int y = (int) this.bounds.getY() - 5;
-        int width = (int) this.bounds.getWidth() + 10;
-        int height = (int) this.bounds.getHeight() + 10;
-        Crayons.setStroke(2f, StrokeType.SOLID);
-        Crayons.drawRect(x, y, width, height, borderColor, fillColor);
-        final Shape shape = Canvas.makeShape(this);
-        Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
-        Point point = Canvas.calcBestPosition(text, font, this.bounds);
-        Crayons.drawString(text, point.x, point.y, MindMapConfig.rootTextColor);
-    }
-
-
-    public void drwLinkLine(Rectangle source, Rectangle destination) {
-        Crayons.setStroke(4f, StrokeType.SOLID);
-
-        final double startX;
-        if (destination.getCenterX() < source.getCenterX()) {
-            // left
-            startX = source.getCenterX() - source.getWidth() / 4;
-        } else {
-            // right
-            startX = source.getCenterX() + source.getWidth() / 4;
-        }
-        Point jumpPoint = new Point((int) source.getCenterX(), (int) destination.getCenterY());
-        Crayons.drawLine((int) source.getCenterX(), (int) source.getCenterY(), jumpPoint.x, jumpPoint.y, MindMapConfig.linkLineColor);
-        Crayons.drawLine( jumpPoint.x, jumpPoint.y,(int) destination.getCenterX(), (int) destination.getCenterY(), MindMapConfig.linkLineColor);
-       // Crayons.drawCurve(startX, source.getCenterY(), destination.getCenterX(), destination.getCenterY(), MindMapConfig.linkLineColor);
     }
 
 

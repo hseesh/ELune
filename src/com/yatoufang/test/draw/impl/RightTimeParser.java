@@ -53,7 +53,7 @@ public class RightTimeParser extends AbstractLayoutParser {
      */
     @Override
     public void onLayout(Element element) {
-        System.out.println("onLayout");
+        super.onLayout(element);
     }
 
     /**
