@@ -2,6 +2,7 @@ package com.yatoufang.test.draw;
 
 import com.google.common.collect.Maps;
 import com.yatoufang.test.draw.impl.LeftTree;
+import com.yatoufang.test.draw.impl.NormalParser;
 import com.yatoufang.test.draw.impl.RightTimeParser;
 import com.yatoufang.test.draw.impl.RightTreeParser;
 
@@ -19,6 +20,7 @@ public class LayoutContext {
         new RightTimeParser();
         new RightTreeParser();
         new LeftTree();
+        new NormalParser();
     }
 
     public static void register(LayoutType layoutType, AbstractLayoutParser parser){

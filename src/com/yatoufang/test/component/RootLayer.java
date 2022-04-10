@@ -26,11 +26,13 @@ public class RootLayer extends JComponent {
         topic = new Element("EMPTY NODE", null);
         topic.setBounds(100, 100, 70, 40);
         topic.layoutType = LayoutType.RIGHT_TIME;
-        topic.type = NodeType.NONE;
+        topic.type = NodeType.TOP_ROOT;
         EditorContext.textArea.setBounds(100, 100, 70, 40);
         EditorContext.textArea.setEnabled(true);
-        AbstractStyleParser parser = StyleContext.getParser(NodeType.NONE);
-        parser.onCreate(topic);
+        AbstractStyleParser parser = StyleContext.getParser(NodeType.TOP_ROOT);
+        if(parser != null){
+            parser.onCreate(topic);
+        }
         paint = topic;
     }
 

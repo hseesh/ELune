@@ -1,0 +1,166 @@
+[
+  {
+    "type": 1,
+    "insertOrder": 0,
+    "children": [
+      5,
+      4,
+      6
+    ],
+    "layoutStyle": 1,
+    "scaleCoefficient": 0.5,
+    "borderColor": "green"
+  },
+  {
+    "type": 4,
+    "name": "Config",
+    "insertOrder": 0,
+    "children": [
+      15,
+      14,
+      13,
+      12,
+      11
+    ],
+    "layoutStyle": 1,
+    "scaleCoefficient": 0,
+    "borderColor": "green",
+    "linkLineColor": "orange"
+  },
+  {
+    "type": 5,
+    "name": "Table",
+    "insertOrder": 0,
+    "children": [
+      16
+    ],
+    "layoutStyle": 1,
+    "scaleCoefficient": 0,
+    "borderColor": "darkGray",
+    "linkLineColor": "pink"
+  },
+  {
+    "type": 6,
+    "name": "Protocol",
+    "insertOrder": 0,
+    "children": [
+      17,
+      11,
+      10,
+      9
+    ],
+    "layoutStyle": 1,
+    "scaleCoefficient": 0,
+    "borderColor": "gray",
+    "linkLineColor": "blue"
+  },
+  {
+    "type": 7,
+    "name": "Content",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0,
+    "borderColor": "gray",
+    "linkLineColor": "blue"
+  },
+  {
+    "type": 8,
+    "name": "Push",
+    "icon": "Push",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 9,
+    "name": "Request",
+    "icon": "Request",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 10,
+    "name": "Response",
+    "icon": "Response",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 11,
+    "name": "ConfigKey",
+    "icon": "ConfigKey",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 12,
+    "name": "OperationType",
+    "icon": "OperationType",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 13,
+    "name": "LockType",
+    "icon": "LockType",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 14,
+    "name": "UnLockType",
+    "icon": "UnLockType",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 15,
+    "name": "GlobalConstant",
+    "icon": "GlobalConstant",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 16,
+    "name": "Filed",
+    "icon": "Filed",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 16,
+    "name": "Field",
+    "icon": "Field",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 17,
+    "name": "Interface",
+    "icon": "Interface",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  }
+]

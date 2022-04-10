@@ -23,16 +23,17 @@ public class NodeStyleParser extends AbstractStyleParser {
 
     @Override
     public NodeType getType() {
-        return NodeType.NONE;
+        return NodeType.TOP_ROOT;
     }
 
     private void parser(NodeConfig config, Element element) {
         if (config == null) {
             return;
         }
-        Element node = Canvas.createElement(element);
+        Element node = Canvas.createElement(element,config.getName(), LayoutType.getType(config.getLayoutStyle()));
         if (config.getName() != null && !config.getName().isEmpty()) {
             node.text = config.getName();
+            Canvas.setElementBounds(node);
         }
         if (config.getLinkLineColor() != null && !config.getLinkLineColor().isEmpty()) {
             node.linkLineColor = ColorBox.getColor(config.getLinkLineColor());

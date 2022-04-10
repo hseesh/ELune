@@ -34,7 +34,6 @@ public abstract class AbstractLayoutParser implements LayoutParser{
             drwLinkLine(element.getBounds(), element.children.get(i).getBounds());
             element.children.get(i).draw(graphics);
         }
-        onLayout(element);
         onDraw(graphics, element);
     }
 

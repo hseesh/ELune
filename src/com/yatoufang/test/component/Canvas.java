@@ -3,6 +3,7 @@ package com.yatoufang.test.component;
 import com.intellij.ui.JBColor;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
+import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.utils.StringUtil;
@@ -110,6 +111,19 @@ public class Canvas {
         Element node = new Element(StringUtil.EMPTY, superNode);
         AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
         parser.onMeasure(superNode, node);
+        return node;
+    }
+
+
+    public static Element createElement(Element superNode, String name, LayoutType layoutType) {
+        name = name == null ? StringUtil.EMPTY : name;
+        Element node = new Element(name, superNode);
+        AbstractLayoutParser parser = LayoutContext.getParser(layoutType);
+        if(parser == null){
+            return node;
+        }
+        parser.onMeasure(superNode, node);
+        setElementBounds(node);
         return node;
     }
 
