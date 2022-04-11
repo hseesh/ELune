@@ -46,6 +46,7 @@ public class Element implements Drawable {
         this.parent = element;
         this.layoutType = LayoutType.RIGHT_TREE;
         this.font = new Font(null, Font.PLAIN, 25);
+        this.bounds.setBounds(0, 0, MindMapConfig.element_width, MindMapConfig.element_height);
         borderColor = MindMapConfig.elementBorderColor;
     }
 

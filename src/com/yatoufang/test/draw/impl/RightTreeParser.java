@@ -5,6 +5,7 @@ import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutType;
+import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.test.model.StrokeType;
 
@@ -32,14 +33,8 @@ public class RightTreeParser extends AbstractLayoutParser {
      * @param node   node element
      */
     @Override
-    public void onMeasure(Element parent, Element node) {
-        int offset = MindMapConfig.distance;
-        Rectangle parentBounds = parent.getBounds();
-        for (Element child : parent.children) {
-            Rectangle bounds = child.getBounds();
-            offset += (child.children.size() + 1) * (bounds.height + MindMapConfig.distance);
-        }
-        node.setBounds(parentBounds.x + MindMapConfig.distance, parentBounds.y + offset, parentBounds.width, parentBounds.height);
+    public void onMeasure(Element node) {
+        super.onMeasure(node);
     }
 
     /**
@@ -48,8 +43,14 @@ public class RightTreeParser extends AbstractLayoutParser {
      * @param element node element
      */
     @Override
-    public void onLayout(Element element) {
-        super.onLayout(element);
+    public void onLayout(Element parent, Element node) {
+        int offset = MindMapConfig.distance;
+        Rectangle parentBounds = parent.getBounds();
+        for (Element child : parent.children) {
+            Rectangle bounds = child.getBounds();
+            offset += (child.children.size() + 1) * (bounds.height + MindMapConfig.distance);
+        }
+        node.setBounds(parentBounds.x + MindMapConfig.distance, parentBounds.y + offset, parentBounds.width, parentBounds.height);
     }
 
     /**

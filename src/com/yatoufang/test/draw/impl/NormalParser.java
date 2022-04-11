@@ -32,14 +32,8 @@ public class NormalParser extends AbstractLayoutParser {
      * @param node   node element
      */
     @Override
-    public void onMeasure(Element parent, Element node) {
-        int offset = MindMapConfig.distance;
-        Rectangle parentBounds = parent.getBounds();
-        for (Element child : parent.children) {
-            Rectangle bounds = child.getBounds();
-            offset += (child.children.size() + 1) * (bounds.height + MindMapConfig.distance);
-        }
-        node.setBounds(parentBounds.x + MindMapConfig.distance, parentBounds.y + offset, parentBounds.width, parentBounds.height);
+    public void onMeasure(Element parent) {
+        super.onMeasure(parent);
     }
 
     /**
@@ -48,8 +42,17 @@ public class NormalParser extends AbstractLayoutParser {
      * @param element node element
      */
     @Override
-    public void onLayout(Element element) {
-        super.onLayout(element);
+    public void onLayout(Element parent, Element node) {
+        if(parent == null){
+            return;
+        }
+        int offset = MindMapConfig.distance;
+        Rectangle parentBounds = parent.getBounds();
+        for (Element child : parent.children) {
+            Rectangle bounds = child.getBounds();
+            offset += (child.children.size() + 1) * (bounds.height + MindMapConfig.distance);
+        }
+        node.setBounds(parentBounds.x + MindMapConfig.distance, parentBounds.y + offset, parentBounds.width, parentBounds.height);
     }
 
     /**

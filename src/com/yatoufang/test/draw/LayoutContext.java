@@ -5,6 +5,8 @@ import com.yatoufang.test.draw.impl.LeftTree;
 import com.yatoufang.test.draw.impl.NormalParser;
 import com.yatoufang.test.draw.impl.RightTimeParser;
 import com.yatoufang.test.draw.impl.RightTreeParser;
+import com.yatoufang.test.model.Element;
+import com.yatoufang.utils.StringUtil;
 
 import java.util.Map;
 
@@ -33,7 +35,7 @@ public class LayoutContext {
 
     public static void main(String[] args) {
         System.out.println(PARSERS.size());
-        PARSERS.get(LayoutType.RIGHT_TIME).parser(null,null);
+        PARSERS.get(LayoutType.RIGHT_TIME).parser(null,new Element(StringUtil.EMPTY,null));
     }
 
 }

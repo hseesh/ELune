@@ -28,7 +28,7 @@ public class LeftTree extends AbstractLayoutParser {
      * @return Point.x -- max width Point.y -- max height
      */
     @Override
-    public void onMeasure(Element parent,Element node) {
+    public void onMeasure(Element node) {
 
     }
 
@@ -38,8 +38,8 @@ public class LeftTree extends AbstractLayoutParser {
      * @param element node element
      */
     @Override
-    public void onLayout(Element element) {
-        super.onLayout(element);
+    public void onLayout(Element parent, Element element) {
+
     }
 
     /**

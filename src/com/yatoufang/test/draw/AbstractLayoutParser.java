@@ -24,18 +24,26 @@ public abstract class AbstractLayoutParser implements LayoutParser{
      */
     public abstract LayoutType getType();
 
+
     @Override
-    public void onLayout(Element element) {
-        Canvas.setElementBounds(element);
+    public void onMeasure(Element node) {
+        Canvas.setElementBounds(node);
     }
 
     public void parser(Graphics2D graphics, Element element){
+        if(element.parent != null){
+            onMeasure(element);
+            onLayout(element.parent, element);
+        }
+
         for (int i = element.children.size() - 1; i >= 0; i--) {
-            drwLinkLine(element.getBounds(), element.children.get(i).getBounds());
-            element.children.get(i).draw(graphics);
+            Element child = element.children.get(i);
+            drwLinkLine(element.getBounds(), child.getBounds());
+            child.draw(graphics);
         }
         onDraw(graphics, element);
     }
+
 
     public void drwLinkLine(Rectangle source, Rectangle destination) {
         Crayons.setStroke(4f, StrokeType.SOLID);

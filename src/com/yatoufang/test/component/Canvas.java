@@ -49,7 +49,7 @@ public class Canvas {
         int height = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getHeight();
         Rectangle bounds = element.getBounds();
         if (width > bounds.width) {
-            element.setBounds(bounds.x, bounds.y, width + 25, bounds.height);
+            element.setBounds(bounds.x, bounds.y, width + 30, bounds.height);
         }
     }
 
@@ -108,23 +108,16 @@ public class Canvas {
     }
 
     public static Element createElement(Element superNode) {
-        Element node = new Element(StringUtil.EMPTY, superNode);
+        Element element = new Element(StringUtil.EMPTY, superNode);
         AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
-        parser.onMeasure(superNode, node);
-        return node;
+        parser.onLayout(superNode,element);
+        return element;
     }
 
 
     public static Element createElement(Element superNode, String name, LayoutType layoutType) {
         name = name == null ? StringUtil.EMPTY : name;
-        Element node = new Element(name, superNode);
-        AbstractLayoutParser parser = LayoutContext.getParser(layoutType);
-        if(parser == null){
-            return node;
-        }
-        parser.onMeasure(superNode, node);
-        setElementBounds(node);
-        return node;
+        return new Element(name, superNode);
     }
 
     public static Shape makeShape(Element element, float x, float y) {

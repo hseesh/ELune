@@ -15,14 +15,14 @@ public interface LayoutParser {
      *
      * @param node node element
      */
-    void onMeasure(Element parent,Element node);
+    void onMeasure(Element node);
 
     /**
      * calc proper position for element
      *
      * @param element node element
      */
-    void onLayout(Element element);
+    void onLayout(Element parent, Element element);
 
     /**
      * draw component

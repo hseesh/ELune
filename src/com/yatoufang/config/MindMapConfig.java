@@ -51,5 +51,5 @@ public class MindMapConfig {
     public static int element_height = 40;
 
 
-
+    public static Rectangle defaultBounds = new Rectangle(100,100,element_width,element_height);
 }
