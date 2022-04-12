@@ -35,7 +35,7 @@ public class LayoutContext {
 
     public static void main(String[] args) {
         System.out.println(PARSERS.size());
-        PARSERS.get(LayoutType.RIGHT_TIME).parser(null,new Element(StringUtil.EMPTY,null));
+        PARSERS.get(LayoutType.RIGHT_TIME).parser(new Element(StringUtil.EMPTY,null));
     }
 
 }
