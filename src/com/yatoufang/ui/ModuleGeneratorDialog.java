@@ -1,6 +1,5 @@
 package com.yatoufang.ui;
 
-import com.android.aapt.Resources;
 import com.google.common.collect.Maps;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -35,9 +34,7 @@ import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -59,7 +56,7 @@ public class ModuleGeneratorDialog extends DialogWrapper {
     public ModuleGeneratorDialog(Table table,String rootPath) {
         super(Application.project, true, false);
         this.table = table;
-        this.table.setName(StringUtil.getUpperCaseVariable(table.getName()));
+        this.table.setName(StringUtil.getLowerCaseForFirstLetter(table.getName()));
         this.rootPath = StringUtil.buildPath(rootPath,ProjectKeys.MODULE);
         initComponent();
         init();
@@ -328,8 +325,9 @@ public class ModuleGeneratorDialog extends DialogWrapper {
             paths.add(file.getFilePath(rootPath));
         }
         dispose();
+        System.out.println(paths);
         for (int i = 0; i < files.size(); i++) {
-            FileWrite.write(files.get(i).content,paths.get(i),true,false);
+            FileWrite.write(paths.get(i),files.get(i).content,true,false);
         }
     }
 

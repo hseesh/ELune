@@ -41,12 +41,8 @@ public class StringUtil {
         char[] chars = variable.toCharArray();
         boolean needUpper = true;
         for (int i = 0; i < chars.length; i++) {
-            if (needUpper) {
-                if(chars[i] > 96 && chars[i] < 123){
-                    builder.append(chars[i] -= 32);
-                }else{
-                    builder.append(chars[i]);
-                }
+            if (needUpper && chars[i] > 96 && chars[i] < 123) {
+                builder.append(chars[i] -= 32);
                 needUpper = false;
                 continue;
             } else if (chars[i] == '_') {
@@ -58,11 +54,28 @@ public class StringUtil {
         return builder.toString();
     }
 
+    public static String getLowerCaseForFirstLetter(String variable){
+        StringBuilder builder = new StringBuilder();
+        char[] chars = variable.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if(i == 0){
+                if(chars[i] >= 65 && chars[i] < 97){
+                    builder.append(chars[i] += 32);
+                }else{
+                    builder.append(chars[i]);
+                }
+                continue;
+            }
+            builder.append(chars[i]);
+        }
+        return builder.toString();
+    }
+
     public static String toUpperCaseWithUnderLine(String variable) {
         StringBuilder builder = new StringBuilder();
         char[] chars = variable.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 65 && chars[i] <= 97) {
+            if (chars[i] >= 65 && chars[i] < 97) {
                 if (i != 0) {
                     builder.append("_");
                 }
@@ -82,7 +95,7 @@ public class StringUtil {
         StringBuilder builder = new StringBuilder();
         char[] chars = variable.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 65 && chars[i] <= 97) {
+            if (chars[i] >= 65 && chars[i] < 97) {
                 if (i != 0) {
                     builder.append("_");
                 }
@@ -169,8 +182,11 @@ public class StringUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(getUpperCaseVariable("Rune"));
-        System.out.println(toUpper("Rune", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
+        System.out.println(toUpper("cross_up"));
+        System.out.println(getLowerCaseForFirstLetter("RuneTest"));
+        System.out.println(toLowerCaseWithUnderLine("RuneTest"));
+        System.out.println(toLowerCaseWithUnderLine("TestTable"));
+        System.out.println(toUpper("RuneTest", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
     }
 
 }
