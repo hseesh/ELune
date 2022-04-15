@@ -1,14 +1,12 @@
 package com.yatoufang.test.style;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.test.model.entity.NodeConfig;
 import com.yatoufang.test.style.impl.NodeStyleParser;
-import com.yatoufang.ui.customer.test.Test4;
-import com.yatoufang.utils.StringUtil;
+import purejavacomm.testsuite.Test4;
 
 import java.io.IOException;
 import java.io.InputStream;

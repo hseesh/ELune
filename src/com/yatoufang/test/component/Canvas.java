@@ -88,11 +88,11 @@ public class Canvas {
     public static JPopupMenu createMenu() {
         JPopupMenu menu = new JPopupMenu();
         String[] items = {"Preview current", "Preview all", "item2", "item3", "item4"};
-        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.CAMERA);
-        JMenuItem previewALL = new JMenuItem("Preview current", Icon.AIR_BLOWER);
-        JMenuItem dragonFruit = new JMenuItem("Dragon fruit", Icon.DRAGON_FRUIT);
+        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.PUSH);
+        JMenuItem previewALL = new JMenuItem("Preview current", Icon.PUSH);
+        JMenuItem dragonFruit = new JMenuItem("Dragon fruit", Icon.PUSH);
         JMenuItem airBlower = new JMenuItem("Air blower", Icon.PUSH);
-        JMenuItem print = new JMenuItem("Dragon fruit", Icon.PRINT);
+        JMenuItem print = new JMenuItem("Dragon fruit", Icon.PUSH);
         menu.add(previewCurrent);
         menu.addSeparator();
         menu.add(previewALL);
