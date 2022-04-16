@@ -7,8 +7,6 @@ import com.google.gson.reflect.TypeToken;
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.test.model.entity.NodeConfig;
 import com.yatoufang.test.style.impl.NodeStyleParser;
-import com.yatoufang.ui.customer.test.Test4;
-import com.yatoufang.utils.StringUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +37,7 @@ public class StyleContext {
 
     static {
         try {
-            InputStream resourceAsStream = Test4.class.getResourceAsStream("/config/node_config.json");
+            InputStream resourceAsStream = StyleContext.class.getResourceAsStream("/config/node_config.json");
             if (resourceAsStream != null) {
                 String config = FileUtil.loadTextAndClose(resourceAsStream);
                 if (!config.isEmpty()) {

@@ -23,6 +23,7 @@ public class KeyBoardHandler extends EventHandler{
                     EditorContext.textArea.setBounds(element.getBounds().x, element.getBounds().y, 70, 40);
                     EditorContext.textAreaState.set(true);
                     EditorContext.pushUpdates(element);
+                    EditorContext.refreshViewableRange(element.getBounds());
                     break;
                 case DELETE_KEY:
                     EditorContext.removeCurrent();

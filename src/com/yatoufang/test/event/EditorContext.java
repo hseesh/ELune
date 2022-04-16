@@ -19,7 +19,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class EditorContext {
     public static Element last;
     public static Element current;
-    private static JScrollPane mainView;
+    //indicates area taken up by graphics
+    private static final Dimension area;
     private static Point lastDraggingPoint;
     public static JTextArea textArea = new JTextArea();
     public static RootLayer rootPanel = new RootLayer();
@@ -32,6 +33,7 @@ public class EditorContext {
     private static final Collection<Element> updates = Lists.newArrayList();
 
     static {
+        area = new Dimension(0, 0);
         last = rootPanel.topic;
         current = rootPanel.topic;
         current.fillText(textArea, current.getBounds());
@@ -100,29 +102,37 @@ public class EditorContext {
     }
 
     public static void setViewPoint(MouseEvent event) {
-        if (mainView == null) {
-            return;
-        }
-        if(lastDraggingPoint == null){
+        if (lastDraggingPoint == null) {
             lastDraggingPoint = event.getPoint();
             return;
         }
-        int offsetX = lastDraggingPoint.x - event.getX() ;
-        int offsetY = lastDraggingPoint.y - event.getY() ;
+        int offsetX = lastDraggingPoint.x - event.getX();
+        int offsetY = lastDraggingPoint.y - event.getY();
         lastDraggingPoint = event.getPoint();
-        if(offsetX == 0 && offsetY == 0){
+        if (offsetX == 0 && offsetY == 0) {
             return;
         }
-        JViewport viewport = mainView.getViewport();
-        Rectangle viewRect = viewport.getViewRect();
-        viewRect.setLocation(1900,1900);
-        rootPanel.scrollRectToVisible(viewRect);
-        mainView.revalidate();
-        mainView.repaint();
     }
 
-    public static void bindingView(JScrollPane scrollPane) {
-        mainView = scrollPane;
+
+    public static void refreshViewableRange(Rectangle bounds) {
+        boolean changed = false;
+        Point point = bounds.getLocation();
+        rootPanel.scrollRectToVisible(bounds);
+        int this_width = (point.x + 200);
+        if (this_width > area.width) {
+            area.width = this_width;
+            changed = true;
+        }
+        int this_height = (point.y + 200);
+        if (this_height > area.height) {
+            area.height = this_height;
+            changed = true;
+        }
+        if (changed) {
+            rootPanel.setPreferredSize(area);
+            rootPanel.revalidate();
+        }
     }
 
     public static void removeCurrent() {

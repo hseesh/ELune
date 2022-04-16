@@ -1,6 +1,5 @@
 package com.yatoufang.test.component;
 
-import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
 import com.yatoufang.test.controller.MyKeyBoardAdapter;
 import com.yatoufang.test.controller.MyMouseAdapter;
@@ -45,12 +44,7 @@ public class MindMapEditor implements AdjustmentListener {
         scrollPane.setWheelScrollingEnabled(true);
         scrollPane.setAutoscrolls(true);
 
-        scrollPane.getHorizontalScrollBar().addAdjustmentListener(this);
-        scrollPane.getVerticalScrollBar().addAdjustmentListener(this);
-
-        EditorContext.bindingView(scrollPane);
-
-        rootPanel = new JBPanel(new BorderLayout());
+        rootPanel = new JPanel(new BorderLayout());
         rootPanel.add(scrollPane, BorderLayout.CENTER);
     }
 
