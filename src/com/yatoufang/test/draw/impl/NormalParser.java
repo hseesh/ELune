@@ -25,6 +25,11 @@ public class NormalParser extends AbstractLayoutParser {
         return LayoutType.NONE;
     }
 
+    @Override
+    public void onCreate(Element node) {
+
+    }
+
     /**
      * calc max bounds for element(include all children)
      *

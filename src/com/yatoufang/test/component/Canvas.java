@@ -51,6 +51,9 @@ public class Canvas {
         if (width > bounds.width) {
             element.setBounds(bounds.x, bounds.y, width + 25, bounds.height);
         }
+        if (height > bounds.height) {
+            element.setBounds(bounds.x, bounds.y, width, bounds.height + 10);
+        }
     }
 
     public static void drawBankGround(Graphics brush) {
@@ -88,11 +91,11 @@ public class Canvas {
     public static JPopupMenu createMenu() {
         JPopupMenu menu = new JPopupMenu();
         String[] items = {"Preview current", "Preview all", "item2", "item3", "item4"};
-        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.CAMERA);
-        JMenuItem previewALL = new JMenuItem("Preview current", Icon.AIR_BLOWER);
-        JMenuItem dragonFruit = new JMenuItem("Dragon fruit", Icon.DRAGON_FRUIT);
+        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.PUSH);
+        JMenuItem previewALL = new JMenuItem("Preview current", Icon.PUSH);
+        JMenuItem dragonFruit = new JMenuItem("Dragon fruit", Icon.PUSH);
         JMenuItem airBlower = new JMenuItem("Air blower", Icon.PUSH);
-        JMenuItem print = new JMenuItem("Dragon fruit", Icon.PRINT);
+        JMenuItem print = new JMenuItem("Dragon fruit", Icon.PUSH);
         menu.add(previewCurrent);
         menu.addSeparator();
         menu.add(previewALL);
@@ -118,11 +121,6 @@ public class Canvas {
     public static Element createElement(Element superNode, String name, LayoutType layoutType) {
         name = name == null ? StringUtil.EMPTY : name;
         Element node = new Element(name, superNode);
-        AbstractLayoutParser parser = LayoutContext.getParser(layoutType);
-        if(parser == null){
-            return node;
-        }
-        parser.onMeasure(superNode, node);
         setElementBounds(node);
         return node;
     }
@@ -148,6 +146,37 @@ public class Canvas {
         int newY = point.y - bounds.height / 2;
         return new Rectangle(newX, newY, bounds.width, bounds.height);
     }
+
+    public static void getNodeArea(Element node, Dimension area){
+        int levelWidth = node.getSelfWidth();
+        int levelHeight = node.getSelfHeight();
+        for (Element child : node.children) {
+            if(child.getSelfWidth() > levelWidth){
+                levelWidth = child.getSelfWidth();
+            }
+            if (child.getSelfHeight() >levelHeight) {
+                levelHeight = child.getSelfHeight();
+            }
+            getNodeArea(child,area);
+        }
+        if(node.children.size() == 0){
+            return;
+        }
+        area.width += levelWidth;
+        area.height += levelHeight;
+    }
+
+    public static void main(String[] args) {
+        Element parent = new Element("", null);
+        Element c1 = new Element("c1", parent);
+        c1.setBounds(0,0,100,50);
+        Element c2 = new Element("c2", c1);
+        new Element("c2", c1);
+        Dimension dimension = new Dimension();
+        getNodeArea(parent, dimension);
+        System.out.println("dimension = " + dimension);
+    }
+
 
     /**
      * @param p1 pont 1
@@ -218,7 +247,7 @@ public class Canvas {
             case 7:
                 return new Point(p1.x, p1.y);
             default:
-                return new Point((int)p1.getCenterX(), (int)p1.getCenterY());
+                return new Point((int) p1.getCenterX(), (int) p1.getCenterY());
         }
     }
 

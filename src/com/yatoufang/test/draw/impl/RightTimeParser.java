@@ -5,6 +5,7 @@ import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.draw.AbstractLayoutParser;
+import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.test.model.Images;
@@ -27,6 +28,21 @@ public class RightTimeParser extends AbstractLayoutParser {
     @Override
     public LayoutType getType() {
         return LayoutType.RIGHT_TIME;
+    }
+
+    @Override
+    public void onCreate(Element node) {
+        Rectangle bounds = node.getBounds();
+        int offset = MindMapConfig.element_width;
+        for (Element child : node.children) {
+            Dimension dimension = new Dimension();
+            Canvas.getNodeArea(child, dimension);
+            offset += dimension.width;
+            Rectangle selfBounds = child.getBounds();
+            child.setBounds(bounds.x + offset, bounds.y, selfBounds.width, selfBounds.height);
+            AbstractLayoutParser parser = LayoutContext.getParser(child.layoutType);
+            parser.onCreate(child);
+        }
     }
 
     /**

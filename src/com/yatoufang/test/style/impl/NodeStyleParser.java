@@ -1,6 +1,8 @@
 package com.yatoufang.test.style.impl;
 
 import com.yatoufang.test.component.Canvas;
+import com.yatoufang.test.draw.AbstractLayoutParser;
+import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.model.ColorBox;
 import com.yatoufang.test.model.Element;
@@ -16,9 +18,24 @@ import com.yatoufang.test.style.StyleContext;
 public class NodeStyleParser extends AbstractStyleParser {
 
     @Override
+    public void create(Element element) {
+        NodeConfig config = StyleContext.getConfig(NodeType.INIT_NODE.getID());
+        for (Integer child : config.getChildren()) {
+            parser(StyleContext.getConfig(child), element);
+        }
+    }
+
+    /**
+     * crate a element
+     *
+     * @param element element node
+     */
+    @Override
     public void onCreate(Element element) {
-        NodeConfig config = StyleContext.getConfig(element.type.getID());
-        parser(config, element);
+//        int measuredWidth = element.getMeasuredWidth(0);
+//        int measuredHeight = element.getMeasuredHeight(0);
+//        EditorContext.setPreferredSize(measuredWidth,measuredHeight);
+        parser(element);
     }
 
     @Override
@@ -33,7 +50,6 @@ public class NodeStyleParser extends AbstractStyleParser {
         Element node = Canvas.createElement(element,config.getName(), LayoutType.getType(config.getLayoutStyle()));
         if (config.getName() != null && !config.getName().isEmpty()) {
             node.text = config.getName();
-            Canvas.setElementBounds(node);
         }
         if (config.getLinkLineColor() != null && !config.getLinkLineColor().isEmpty()) {
             node.linkLineColor = ColorBox.getColor(config.getLinkLineColor());
@@ -49,5 +65,13 @@ public class NodeStyleParser extends AbstractStyleParser {
         for (Integer child : config.getChildren()) {
             parser(StyleContext.getConfig(child), node);
         }
+    }
+
+    private void parser(Element element){
+        AbstractLayoutParser parser = LayoutContext.getParser(element.layoutType);
+        parser.onCreate(element);
+//        for (Element child : element.children) {
+//            parser(child);
+//        }
     }
 }

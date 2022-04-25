@@ -29,11 +29,15 @@ public class RootLayer extends JComponent {
         topic.type = NodeType.TOP_ROOT;
         EditorContext.textArea.setBounds(100, 100, 70, 40);
         EditorContext.textArea.setEnabled(true);
-        AbstractStyleParser parser = StyleContext.getParser(NodeType.TOP_ROOT);
-        if(parser != null){
-            parser.onCreate(topic);
-        }
         paint = topic;
+    }
+
+    public void init() {
+        AbstractStyleParser parser = StyleContext.getParser(NodeType.TOP_ROOT);
+        if (parser != null) {
+            parser.create(topic);
+           parser.onCreate(topic);
+        }
     }
 
 
@@ -53,6 +57,7 @@ public class RootLayer extends JComponent {
     public void paintComponent(Graphics graphics) {
         if (paint != null) {
             Graphics2D brush = (Graphics2D) graphics;
+            Crayons.brush = brush;
             Canvas.drawBankGround(brush);
             brush.setStroke(new BasicStroke(2, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL));
             brush.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

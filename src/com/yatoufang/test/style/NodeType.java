@@ -6,6 +6,7 @@ package com.yatoufang.test.style;
  */
 public enum NodeType {
 
+    INIT_NODE(-1),
     TOP_ROOT(1),
     ROOT(2),
     NORMAL(3),

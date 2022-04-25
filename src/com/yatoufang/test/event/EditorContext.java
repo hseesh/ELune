@@ -20,7 +20,6 @@ public class EditorContext {
     public static Element last;
     public static Element current;
     //indicates area taken up by graphics
-    private static final Dimension area;
     private static Point lastDraggingPoint;
     public static JTextArea textArea = new JTextArea();
     public static RootLayer rootPanel = new RootLayer();
@@ -30,10 +29,12 @@ public class EditorContext {
     public static AtomicBoolean shouldUpdate = new AtomicBoolean(true);
     public static AtomicBoolean textAreaState = new AtomicBoolean(false);
     public static AtomicBoolean draggingState = new AtomicBoolean(false);
+    private static final Dimension area;
     private static final Collection<Element> updates = Lists.newArrayList();
 
     static {
         area = new Dimension(0, 0);
+        rootPanel.init();
         last = rootPanel.topic;
         current = rootPanel.topic;
         current.fillText(textArea, current.getBounds());
@@ -157,5 +158,13 @@ public class EditorContext {
         }
         EditorContext.lastDraggingPoint = point;
         return false;
+    }
+
+    public static void setPreferredSize(int measuredWidth, int measuredHeight) {
+        if (measuredWidth <= 0 && measuredHeight <= 0) {
+            return;
+        }
+        area.setSize(measuredWidth, measuredHeight);
+        rootPanel.setPreferredSize(area);
     }
 }

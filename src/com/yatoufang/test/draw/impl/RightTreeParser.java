@@ -25,6 +25,11 @@ public class RightTreeParser extends AbstractLayoutParser {
         return LayoutType.RIGHT_TREE;
     }
 
+    @Override
+    public void onCreate(Element node) {
+
+    }
+
     /**
      * calc max bounds for element(include all children)
      *

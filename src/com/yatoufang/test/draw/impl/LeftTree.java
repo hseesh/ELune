@@ -21,6 +21,11 @@ public class LeftTree extends AbstractLayoutParser {
         return LayoutType.LEFT_TREE;
     }
 
+    @Override
+    public void onCreate(Element node) {
+
+    }
+
     /**
      * calc max bounds for element(include all children)
      *

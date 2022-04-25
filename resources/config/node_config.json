@@ -1,13 +1,13 @@
 [
   {
-    "type": 1,
+    "type": -1,
     "insertOrder": 0,
     "children": [
       5,
       4,
       6
     ],
-    "layoutStyle": 1,
+    "layoutStyle": 2,
     "scaleCoefficient": 0.5,
     "borderColor": "green"
   },
@@ -22,7 +22,7 @@
       12,
       11
     ],
-    "layoutStyle": 1,
+    "layoutStyle": 2,
     "scaleCoefficient": 0,
     "borderColor": "green",
     "linkLineColor": "orange"
@@ -34,7 +34,7 @@
     "children": [
       16
     ],
-    "layoutStyle": 1,
+    "layoutStyle": 2,
     "scaleCoefficient": 0,
     "borderColor": "darkGray",
     "linkLineColor": "pink"
@@ -49,7 +49,7 @@
       10,
       9
     ],
-    "layoutStyle": 1,
+    "layoutStyle": 2,
     "scaleCoefficient": 0,
     "borderColor": "gray",
     "linkLineColor": "blue"

@@ -10,6 +10,9 @@ import java.awt.*;
  */
 public interface LayoutParser {
 
+
+    void onCreate(Element node);
+
     /**
      * calc max bounds for element(include all children)
      *

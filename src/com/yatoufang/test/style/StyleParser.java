@@ -12,5 +12,12 @@ public interface StyleParser {
      *  crate a element
      * @param element element node
      */
+    void create(Element element);
+
+
+    /**
+     *  crate a element
+     * @param element element node
+     */
     void onCreate(Element element);
 }
