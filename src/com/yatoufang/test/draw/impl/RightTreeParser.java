@@ -48,8 +48,9 @@ public class RightTreeParser extends AbstractLayoutParser {
      * @param node node element
      */
     @Override
-    public void onMeasure(Element node) {
-        EditorContext.reMeasure();
+    public void  onMeasure(Element node) {
+        Rectangle bounds = node.getBounds();
+        EditorContext.addHorizontalOffset(bounds.x,node.getSelfWidth());
     }
 
     /**

@@ -171,6 +171,18 @@ public class Element implements Drawable {
         this.bounds.setFrame(x, y, x1, y1);
     }
 
+    public void setLocation(int x, int y){
+        this.bounds.setLocation(x,y);
+    }
+
+
+    public void addOffset(int x1, int x, int y){
+        if(this.bounds.x <= x1){
+            return;
+        }
+        Point location = this.bounds.getLocation();
+        this.bounds.setLocation(location.x + x,location.y + y);
+    }
 
     public void setBounds(Rectangle bounds) {
         this.bounds = bounds;

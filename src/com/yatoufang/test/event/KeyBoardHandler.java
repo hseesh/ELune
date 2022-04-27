@@ -20,7 +20,6 @@ public class KeyBoardHandler extends EventHandler{
                 case INSERT_KEY:
                     Element element = Canvas.createElement(EditorContext.current);
                     EditorContext.setSelect(element);
-                    EditorContext.addNode(element);
                     Rectangle bounds = element.getBounds();
                     EditorContext.textArea.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
                     EditorContext.textAreaState.set(true);

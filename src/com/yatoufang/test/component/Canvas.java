@@ -148,57 +148,64 @@ public class Canvas {
         return new Rectangle(newX, newY, bounds.width, bounds.height);
     }
 
-    public static void getNodeArea(Element node, Dimension area){
+    public static void getNodeArea(Element node, Dimension area) {
         int levelWidth = node.getSelfWidth();
         int levelHeight = node.getSelfHeight();
         for (Element child : node.children) {
-            if(child.getSelfWidth() > levelWidth){
+            if (child.getSelfWidth() > levelWidth) {
                 levelWidth = child.getSelfWidth();
             }
-            if (child.getSelfHeight() >levelHeight) {
+            if (child.getSelfHeight() > levelHeight) {
                 levelHeight = child.getSelfHeight();
             }
-            getNodeArea(child,area);
+            getNodeArea(child, area);
         }
-        if(node.children.size() == 0){
+        if (node.children.size() == 0) {
             return;
         }
         area.width += levelWidth;
         area.height += levelHeight;
     }
 
-    public static void getNodeWidth(Element node, Dimension area){
+    public static void getNodeWidth(Element node, Dimension area) {
         int levelWidth = node.getSelfWidth();
         for (Element child : node.children) {
-            if(child.getSelfWidth() > levelWidth){
+            if (child.getSelfWidth() > levelWidth) {
                 levelWidth = child.getSelfWidth();
             }
-            getNodeWidth(child,area);
+            getNodeWidth(child, area);
         }
-        if(node.children.size() == 0){
+        if (node.children.size() == 0) {
             return;
         }
         area.width += levelWidth;
     }
 
-    public static void getNodeHeight(Element node, Dimension area){
+    public static void getNodeHeight(Element node, Dimension area) {
         int levelHeight = node.getSelfHeight();
         for (Element child : node.children) {
-            if (child.getSelfHeight() >levelHeight) {
+            if (child.getSelfHeight() > levelHeight) {
                 levelHeight = child.getSelfHeight();
             }
-            getNodeHeight(child,area);
+            getNodeHeight(child, area);
         }
-        if(node.children.size() == 0){
+        if (node.children.size() == 0) {
             return;
         }
         area.height += levelHeight;
+    }
+
+    public static void setNodeOffset(int x1, int x, int y, Element node) {
+        node.addOffset(x1, x, y);
+        for (Element child : node.children) {
+            setNodeOffset(x1, x, y, child);
+        }
     }
 
     public static void main(String[] args) {
         Element parent = new Element("", null);
         Element c1 = new Element("c1", parent);
-        c1.setBounds(0,0,100,50);
+        c1.setBounds(0, 0, 100, 50);
         Element c2 = new Element("c2", c1);
         new Element("c2", c1);
         Dimension dimension = new Dimension();

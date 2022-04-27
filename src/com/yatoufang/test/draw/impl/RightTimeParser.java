@@ -51,7 +51,6 @@ public class RightTimeParser extends AbstractLayoutParser {
      */
     @Override
     public void onMeasure(Element node) {
-        EditorContext.reMeasure();
     }
 
     /**
@@ -62,7 +61,7 @@ public class RightTimeParser extends AbstractLayoutParser {
      */
     @Override
     public void onLayout(Element parent, Element node) {
-        int offset = MindMapConfig.element_width;
+        int offset = MindMapConfig.element_width * 2;
         Dimension dimension = new Dimension();
         Canvas.getNodeWidth(parent, dimension);
         Rectangle bounds = parent.getBounds();

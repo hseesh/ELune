@@ -171,4 +171,8 @@ public class EditorContext {
         area.setSize(measuredWidth, measuredHeight);
         rootPanel.setPreferredSize(area);
     }
+
+    public static void addHorizontalOffset(int x, int selfWidth) {
+        Canvas.setNodeOffset(x,selfWidth,0,rootPanel.topic);
+    }
 }
