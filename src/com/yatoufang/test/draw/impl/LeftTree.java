@@ -30,21 +30,21 @@ public class LeftTree extends AbstractLayoutParser {
      * calc max bounds for element(include all children)
      *
      * @param node node element
-     * @return Point.x -- max width Point.y -- max height
      */
     @Override
-    public void onMeasure(Element parent,Element node) {
+    public void onMeasure(Element node) {
 
     }
 
     /**
-     * calc proper position for element
+     * layout node
      *
-     * @param element node element
+     * @param parent parent node
+     * @param node   current node
      */
     @Override
-    public void onLayout(Element element) {
-        super.onLayout(element);
+    public void onLayout(Element parent, Element node) {
+
     }
 
     /**

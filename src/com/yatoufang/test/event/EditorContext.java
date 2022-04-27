@@ -149,6 +149,10 @@ public class EditorContext {
         }
     }
 
+    public static void reMeasure(){
+        rootPanel.reMeasure();
+    }
+
     public static boolean couldDragging(Point point, Rectangle bounds) {
         if (lastDraggingPoint == null) {
             return false;

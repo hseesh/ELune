@@ -32,10 +32,8 @@ public class NodeStyleParser extends AbstractStyleParser {
      */
     @Override
     public void onCreate(Element element) {
-//        int measuredWidth = element.getMeasuredWidth(0);
-//        int measuredHeight = element.getMeasuredHeight(0);
-//        EditorContext.setPreferredSize(measuredWidth,measuredHeight);
-        parser(element);
+        AbstractLayoutParser parser = LayoutContext.getParser(element.layoutType);
+        parser.onCreate(element);
     }
 
     @Override
@@ -67,11 +65,4 @@ public class NodeStyleParser extends AbstractStyleParser {
         }
     }
 
-    private void parser(Element element){
-        AbstractLayoutParser parser = LayoutContext.getParser(element.layoutType);
-        parser.onCreate(element);
-//        for (Element child : element.children) {
-//            parser(child);
-//        }
-    }
 }

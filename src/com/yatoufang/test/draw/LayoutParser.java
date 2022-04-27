@@ -10,7 +10,10 @@ import java.awt.*;
  */
 public interface LayoutParser {
 
-
+    /**
+     *  create node
+     * @param node new node
+     */
     void onCreate(Element node);
 
     /**
@@ -18,17 +21,17 @@ public interface LayoutParser {
      *
      * @param node node element
      */
-    void onMeasure(Element parent,Element node);
+    void onMeasure(Element node);
 
     /**
-     * calc proper position for element
-     *
-     * @param element node element
+     *  layout node
+     * @param parent parent node
+     * @param node current node
      */
-    void onLayout(Element element);
+    void onLayout(Element parent,Element node);
 
     /**
-     * draw component
+     * draw node
      *
      * @param graphics Graphics2D object
      * @param element  node element

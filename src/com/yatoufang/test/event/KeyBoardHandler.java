@@ -3,6 +3,7 @@ package com.yatoufang.test.event;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.model.Element;
 
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
@@ -20,7 +21,8 @@ public class KeyBoardHandler extends EventHandler{
                     Element element = Canvas.createElement(EditorContext.current);
                     EditorContext.setSelect(element);
                     EditorContext.addNode(element);
-                    EditorContext.textArea.setBounds(element.getBounds().x, element.getBounds().y, 70, 40);
+                    Rectangle bounds = element.getBounds();
+                    EditorContext.textArea.setBounds(bounds.x, bounds.y, bounds.width, bounds.height);
                     EditorContext.textAreaState.set(true);
                     EditorContext.pushUpdates(element);
                     EditorContext.refreshViewableRange(element.getBounds());

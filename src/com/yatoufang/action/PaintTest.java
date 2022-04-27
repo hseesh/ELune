@@ -18,7 +18,10 @@ import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.utils.BuildUtil;
 import com.yatoufang.utils.PSIUtil;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.io.IOUtils;
 
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class PaintTest extends AnAction {
@@ -69,24 +72,29 @@ public class PaintTest extends AnAction {
 
     private void test() {
         PsiExpressionStatement psiExpressionStatement;
-    }
-
-    private void CMDtest() {
-        ArrayList<String> commands = Lists.newArrayList();
-        commands.add("C:\\WINDOWS\\system32\\cmd.exe");
-        GeneralCommandLine commandLine = new GeneralCommandLine("cmd", "/c", "svn status D:\\main\\doc\\程序调用表");
-        try {
-            String processOutput = ScriptRunnerUtil.getProcessOutput(commandLine);
-            System.out.println(processOutput);
-        } catch (ExecutionException executionException) {
-            executionException.printStackTrace();
-        }
         FindInProjectManager instance = FindInProjectManager.getInstance(Application.project);
         instance.findInProject(SimpleDataContext.getProjectContext(Application.project), null);
     }
 
+    private static  void CMDtest() {
+
+
+        GeneralCommandLine commandLine = new GeneralCommandLine("cmd", "/c", "git log origin/release/1.0.43 -10  --author= --pretty=format:\"%s\"");
+        commandLine.setWorkDirectory("D:\\LYLTD");
+        try {
+            Process process = commandLine.createProcess();
+            InputStream inputStream = process.getInputStream();
+            String s = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            System.out.println(s);
+            process.waitFor();
+            process.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args) {
-        String level = String.format("%1$s = builder.%1$s;", "starLevel");
-        System.out.println(level);
+        CMDtest();
     }
 }

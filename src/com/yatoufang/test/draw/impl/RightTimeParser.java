@@ -7,8 +7,8 @@ import com.yatoufang.test.component.Crayons;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.draw.LayoutType;
+import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
-import com.yatoufang.test.model.Images;
 import com.yatoufang.test.model.StrokeType;
 
 import java.awt.*;
@@ -18,7 +18,6 @@ import java.awt.*;
  * @since 2022/1/11
  */
 public class RightTimeParser extends AbstractLayoutParser {
-
 
     /**
      * get element layout style type
@@ -36,7 +35,7 @@ public class RightTimeParser extends AbstractLayoutParser {
         int offset = MindMapConfig.element_width;
         for (Element child : node.children) {
             Dimension dimension = new Dimension();
-            Canvas.getNodeArea(child, dimension);
+            Canvas.getNodeWidth(child, dimension);
             offset += dimension.width;
             Rectangle selfBounds = child.getBounds();
             child.setBounds(bounds.x + offset, bounds.y, selfBounds.width, selfBounds.height);
@@ -49,27 +48,26 @@ public class RightTimeParser extends AbstractLayoutParser {
      * calc max bounds for element(include all children)
      *
      * @param node node element
-     * @return Point.x -- max width Point.y -- max height
      */
     @Override
-    public void onMeasure(Element parent, Element node) {
-        int offset = MindMapConfig.distance;
-        Rectangle parentBounds = parent.getBounds();
-        for (Element child : parent.children) {
-            Rectangle bounds = child.getBounds();
-            offset += bounds.width + MindMapConfig.distance;
-        }
-        node.setBounds(parentBounds.x + offset, parentBounds.y, parentBounds.width, parentBounds.height);
+    public void onMeasure(Element node) {
+        EditorContext.reMeasure();
     }
 
     /**
-     * calc proper position for element
+     * layout node
      *
-     * @param element node element
+     * @param parent parent node
+     * @param node   current node
      */
     @Override
-    public void onLayout(Element element) {
-        super.onLayout(element);
+    public void onLayout(Element parent, Element node) {
+        int offset = MindMapConfig.element_width;
+        Dimension dimension = new Dimension();
+        Canvas.getNodeWidth(parent, dimension);
+        Rectangle bounds = parent.getBounds();
+        offset += dimension.width;
+        node.setBounds(bounds.x + offset, bounds.y, bounds.width, bounds.height);
     }
 
     /**

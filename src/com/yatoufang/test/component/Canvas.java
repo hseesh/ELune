@@ -113,7 +113,8 @@ public class Canvas {
     public static Element createElement(Element superNode) {
         Element node = new Element(StringUtil.EMPTY, superNode);
         AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
-        parser.onMeasure(superNode, node);
+        parser.onLayout(superNode, node);
+        parser.onMeasure(node);
         return node;
     }
 
@@ -163,6 +164,34 @@ public class Canvas {
             return;
         }
         area.width += levelWidth;
+        area.height += levelHeight;
+    }
+
+    public static void getNodeWidth(Element node, Dimension area){
+        int levelWidth = node.getSelfWidth();
+        for (Element child : node.children) {
+            if(child.getSelfWidth() > levelWidth){
+                levelWidth = child.getSelfWidth();
+            }
+            getNodeWidth(child,area);
+        }
+        if(node.children.size() == 0){
+            return;
+        }
+        area.width += levelWidth;
+    }
+
+    public static void getNodeHeight(Element node, Dimension area){
+        int levelHeight = node.getSelfHeight();
+        for (Element child : node.children) {
+            if (child.getSelfHeight() >levelHeight) {
+                levelHeight = child.getSelfHeight();
+            }
+            getNodeHeight(child,area);
+        }
+        if(node.children.size() == 0){
+            return;
+        }
         area.height += levelHeight;
     }
 

@@ -1,6 +1,8 @@
 package com.yatoufang.test.component;
 
 import com.yatoufang.test.controller.Drawable;
+import com.yatoufang.test.draw.AbstractLayoutParser;
+import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
@@ -33,13 +35,17 @@ public class RootLayer extends JComponent {
     }
 
     public void init() {
-        AbstractStyleParser parser = StyleContext.getParser(NodeType.TOP_ROOT);
+        AbstractStyleParser parser = StyleContext.getParser(topic.type);
         if (parser != null) {
             parser.create(topic);
-           parser.onCreate(topic);
+            parser.onCreate(topic);
         }
     }
 
+    public void reMeasure() {
+        AbstractLayoutParser parser = LayoutContext.getParser(topic.layoutType);
+        parser.onCreate(topic);
+    }
 
     public void create(Drawable drawable) {
         this.paint = drawable;
@@ -64,6 +70,5 @@ public class RootLayer extends JComponent {
             paint.draw(brush);
         }
     }
-
 
 }
