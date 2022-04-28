@@ -18,6 +18,6 @@ public class WorldStateHandler extends EventHandler{
         if(EditorContext.menuState.getAndSet(false)){
             EditorContext.enablePopMenu();
         }
-        handler.invoke(event,eventType);
+        EditorContext.updateUI();
     }
 }

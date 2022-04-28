@@ -17,8 +17,8 @@ public class EventService {
     static {
         CONTEXT_HANDLER.handler = MOUSE_HANDLER;
         MOUSE_HANDLER.handler = KEY_BOARD_HANDLER;
-        KEY_BOARD_HANDLER.handler = WORLD_STATE_HANDLER;
-        WORLD_STATE_HANDLER.handler = UPDATE_HANDLER;
+        KEY_BOARD_HANDLER.handler = UPDATE_HANDLER;
+        UPDATE_HANDLER.handler = WORLD_STATE_HANDLER;
     }
 
     public static void post(InputEvent event, EventType eventType) {
