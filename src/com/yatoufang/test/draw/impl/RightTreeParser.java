@@ -34,9 +34,9 @@ public class RightTreeParser extends AbstractLayoutParser {
         Dimension dimension = new Dimension();
         for (Element child : node.children) {
             Canvas.getNodeHeight(child, dimension);
-            offset += dimension.height + MindMapConfig.element_height;
+            offset += dimension.height * 2 + MindMapConfig.distance;
             Rectangle selfBounds = child.getBounds();
-            child.setBounds(bounds.x, bounds.y + offset, selfBounds.width, selfBounds.height);
+            child.setBounds(bounds.x + bounds.width / 2 + MindMapConfig.element_width, bounds.y + offset, selfBounds.width, selfBounds.height);
             AbstractLayoutParser parser = LayoutContext.getParser(child.layoutType);
             parser.onCreate(child);
         }
@@ -61,9 +61,10 @@ public class RightTreeParser extends AbstractLayoutParser {
      */
     @Override
     public void onLayout(Element parent, Element node) {
-        int offset = MindMapConfig.distance;
         Rectangle parentBounds = parent.getBounds();
-        node.setBounds(parentBounds.x + MindMapConfig.distance, parentBounds.y + offset, parentBounds.width, parentBounds.height);
+        Dimension dimension = new Dimension(MindMapConfig.distance,MindMapConfig.distance);
+        Canvas.getNodeHeight(parent,dimension);
+        node.setBounds(parentBounds.x + MindMapConfig.distance, parentBounds.y + dimension.height, parentBounds.width, parentBounds.height);
     }
 
     /**

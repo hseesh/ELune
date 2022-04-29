@@ -59,7 +59,6 @@ public class NodeStyleParser extends AbstractStyleParser {
         node.layoutType = LayoutType.getType(config.getLayoutStyle());
         node.icon = config.getIcon();
         node.scaleCoefficient = config.getScaleCoefficient();
-        element.add(node);
         for (Integer child : config.getChildren()) {
             parser(StyleContext.getConfig(child), node);
         }

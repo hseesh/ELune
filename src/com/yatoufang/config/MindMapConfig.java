@@ -44,7 +44,7 @@ public class MindMapConfig {
     public static  double scale = 1.0d;
     public static boolean dropShadow = true;
 
-    public static int distance = 100;
+    public static int distance = 120;
 
     public static int element_width = 120;
 

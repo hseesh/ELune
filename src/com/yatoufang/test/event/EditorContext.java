@@ -2,6 +2,8 @@ package com.yatoufang.test.event;
 
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.RootLayer;
+import com.yatoufang.test.draw.AbstractLayoutParser;
+import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.test.model.PopupMenuContext;
 import org.apache.commons.compress.utils.Lists;
@@ -174,5 +176,14 @@ public class EditorContext {
 
     public static void addHorizontalOffset(int x, int selfWidth) {
         Canvas.setNodeOffset(x,selfWidth,0,rootPanel.topic);
+    }
+
+    public static Element getRootElement(){
+        return rootPanel.topic;
+    }
+
+    public static void refresh(){
+        AbstractLayoutParser parser = LayoutContext.getParser(rootPanel.topic.layoutType);
+        parser.onCreate(rootPanel.topic);
     }
 }

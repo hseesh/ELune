@@ -90,31 +90,29 @@ public class Canvas {
 
     public static JPopupMenu createMenu() {
         JPopupMenu menu = new JPopupMenu();
-        String[] items = {"Preview current", "Preview all", "item2", "item3", "item4"};
-        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.PUSH);
-        JMenuItem previewALL = new JMenuItem("Preview current", Icon.PUSH);
-        JMenuItem dragonFruit = new JMenuItem("Dragon fruit", Icon.PUSH);
-        JMenuItem airBlower = new JMenuItem("Air blower", Icon.PUSH);
-        JMenuItem print = new JMenuItem("Dragon fruit", Icon.PUSH);
-        menu.add(previewCurrent);
-        menu.addSeparator();
-        menu.add(previewALL);
-        menu.addSeparator();
-        menu.add(dragonFruit);
-        menu.addSeparator();
-        menu.add(airBlower);
-        menu.addSeparator();
-        menu.add(print);
-        menu.addSeparator();
 
+//        String[] items = {"Preview current", "Preview all", "item2", "item3", "item4"};
+//        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.PUSH);
+//        JMenuItem previewALL = new JMenuItem("Preview current", Icon.PUSH);
+//        JMenuItem dragonFruit = new JMenuItem("Add Node", Icon.PUSH);
+//        JMenuItem airBlower = new JMenuItem("Air blower", Icon.PUSH);
+//        JMenuItem print = new JMenuItem("Dragon fruit", Icon.PUSH);
+//        menu.add(previewCurrent);
+//        menu.addSeparator();
+//        menu.add(previewALL);
+//        menu.addSeparator();
+//        menu.add(dragonFruit);
+//        menu.addSeparator();
+//        menu.add(airBlower);
+//        menu.addSeparator();
+//        menu.add(print);
+//        menu.addSeparator();
         return menu;
     }
 
     public static Element createElement(Element superNode) {
         Element node = new Element(StringUtil.EMPTY, superNode);
-        AbstractLayoutParser parser = LayoutContext.getParser(superNode.layoutType);
-        parser.onLayout(superNode, node);
-        parser.onMeasure(node);
+        EditorContext.refresh();
         return node;
     }
 
@@ -212,7 +210,6 @@ public class Canvas {
         getNodeArea(parent, dimension);
         System.out.println("dimension = " + dimension);
     }
-
 
     /**
      * @param p1 pont 1

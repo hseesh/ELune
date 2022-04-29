@@ -1,6 +1,7 @@
 package com.yatoufang.test.draw.impl;
 
 import com.intellij.ui.JBColor;
+import com.intellij.util.IconUtil;
 import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.Crayons;
@@ -10,6 +11,7 @@ import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.test.model.StrokeType;
+import icons.Icon;
 
 import java.awt.*;
 
@@ -31,16 +33,17 @@ public class RightTimeParser extends AbstractLayoutParser {
 
     @Override
     public void onCreate(Element node) {
-        Rectangle bounds = node.getBounds();
-        int offset = MindMapConfig.element_width;
+        Element rootElement = EditorContext.getRootElement();
+        Rectangle rootBounds = rootElement.getBounds();
+        int offset = MindMapConfig.distance * 2;
         for (Element child : node.children) {
             Dimension dimension = new Dimension();
             Canvas.getNodeWidth(child, dimension);
-            offset += dimension.width;
             Rectangle selfBounds = child.getBounds();
-            child.setBounds(bounds.x + offset, bounds.y, selfBounds.width, selfBounds.height);
+            child.setBounds(rootBounds.x + offset, rootBounds.y, selfBounds.width, selfBounds.height);
             AbstractLayoutParser parser = LayoutContext.getParser(child.layoutType);
             parser.onCreate(child);
+            offset += dimension.width;
         }
     }
 
@@ -89,5 +92,7 @@ public class RightTimeParser extends AbstractLayoutParser {
         Crayons.draw(shape, MindMapConfig.elementBorderColor, MindMapConfig.rootBackgroundColor);
         Point point = Canvas.calcBestPosition(element.text, element.font, bounds);
         Crayons.drawString(element.text, point.x, point.y, MindMapConfig.rootTextColor);
+        Image image = IconUtil.toImage(Icon.EDIT);
+        Crayons.drawImage(image, x - 20, y + 20);
     }
 }
