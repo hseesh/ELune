@@ -35,7 +35,7 @@ public class RightTimeParser extends AbstractLayoutParser {
     public void onCreate(Element node) {
         Element rootElement = EditorContext.getRootElement();
         Rectangle rootBounds = rootElement.getBounds();
-        int offset = MindMapConfig.distance * 2;
+        int offset = MindMapConfig.fix_width;
         for (Element child : node.children) {
             Dimension dimension = new Dimension();
             Canvas.getNodeWidth(child, dimension);
@@ -43,8 +43,9 @@ public class RightTimeParser extends AbstractLayoutParser {
             child.setBounds(rootBounds.x + offset, rootBounds.y, selfBounds.width, selfBounds.height);
             AbstractLayoutParser parser = LayoutContext.getParser(child.layoutType);
             parser.onCreate(child);
-            offset += dimension.width;
+            offset += dimension.width + MindMapConfig.element_width;
         }
+        EditorContext.setPreferredSize((int) (offset * 1.2),offset);
     }
 
     /**

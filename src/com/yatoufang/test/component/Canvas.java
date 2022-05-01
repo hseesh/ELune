@@ -1,6 +1,7 @@
 package com.yatoufang.test.component;
 
 import com.intellij.ui.JBColor;
+import com.yatoufang.config.MindMapConfig;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.draw.LayoutType;
@@ -166,31 +167,28 @@ public class Canvas {
     }
 
     public static void getNodeWidth(Element node, Dimension area) {
-        int levelWidth = node.getSelfWidth();
-        for (Element child : node.children) {
-            if (child.getSelfWidth() > levelWidth) {
-                levelWidth = child.getSelfWidth();
-            }
-            getNodeWidth(child, area);
-        }
         if (node.children.size() == 0) {
             return;
         }
-        area.width += levelWidth;
+        int levelWidth = node.getBounds().width;
+        for (Element child : node.children) {
+            if (child.getBounds().width > levelWidth) {
+                levelWidth = child.getBounds().width;
+            }
+            getNodeWidth(child, area);
+        }
+        if(levelWidth < node.parent.getBounds().width){
+            return;
+        }
+        area.width += levelWidth + 100;
     }
 
     public static void getNodeHeight(Element node, Dimension area) {
         int levelHeight = node.getSelfHeight();
         for (Element child : node.children) {
-            if (child.getSelfHeight() > levelHeight) {
-                levelHeight = child.getSelfHeight();
-            }
+            area.height += levelHeight + MindMapConfig.VERTICAL_OFFSET;
             getNodeHeight(child, area);
         }
-        if (node.children.size() == 0) {
-            return;
-        }
-        area.height += levelHeight;
     }
 
     public static void setNodeOffset(int x1, int x, int y, Element node) {

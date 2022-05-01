@@ -46,9 +46,14 @@ public class MindMapConfig {
 
     public static int distance = 120;
 
+    public static int fix_width = 160;
+
     public static int element_width = 120;
 
-    public static int element_height = 40;
+    public static int element_height = 120;
+
+    public static int VERTICAL_OFFSET = 120;
+    public static int HORIZONTAL_OFFSET = 100;
 
 
 

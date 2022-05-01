@@ -201,9 +201,12 @@ public class Element implements Drawable {
     }
 
     public int getSelfWidth() {
-        return getBounds().width/ 2 + MindMapConfig.element_width + MindMapConfig.distance;
+        return getBounds().width  + MindMapConfig.fix_width;
     }
 
+    public int getWidthBetweenParent(){
+        return getBounds().width  + MindMapConfig.element_width;
+    }
 
     public int getSelfHeight() {
         return getBounds().height + MindMapConfig.element_height;
