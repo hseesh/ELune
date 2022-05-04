@@ -7,12 +7,11 @@ import com.intellij.openapi.fileEditor.FileEditorLocation;
 import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.test.component.MindMapEditor;
-import com.yatoufang.ui.customer.controller.MindmapController;
-import com.yatoufang.ui.customer.model.Mindmap;
-import com.yatoufang.ui.customer.model.Node;
-import com.yatoufang.ui.customer.model.Option;
-import com.yatoufang.ui.customer.view.MindmapView;
+import com.yatoufang.test.event.EditorContext;
+import com.yatoufang.utils.DataUtil;
+import com.yatoufang.utils.StringUtil;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +38,19 @@ public class MindMapDocumentEditor implements DocumentsEditor {
         final Document document = FileDocumentManager.getInstance().getDocument(this.file);
         this.documents = new Document[] {document};
         mindMapEditor = new MindMapEditor();
+        String canonicalPath = this.file.getCanonicalPath();
+        if(canonicalPath == null){
+            return;
+        }
+        String rootPath = StringUtil.EMPTY;
+        if (canonicalPath.contains(ProjectKeys.GAME_SERVER)) {
+            rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.GAME_SERVER);
+        } else if (canonicalPath.contains(ProjectKeys.WORLD_SERVER)) {
+            rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.WORLD_SERVER);
+        } else if (canonicalPath.contains(ProjectKeys.BATTLE_SERVER)) {
+            rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.BATTLE_SERVER);
+        }
+        EditorContext.setFilePath(rootPath);
     }
 
     @Override
@@ -50,36 +62,6 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     public @NotNull JComponent getComponent() {
         return mindMapEditor.getComponent();
     }
-
-    private JComponent test() {
-        Option option=new Option();
-        option.setMapArea(0, 0, 800, 600);
-        Mindmap mindmap=new Mindmap(option);
-        //init nodes
-        Node root=mindmap.addRootNode("Test");
-        Node model_=mindmap.addNode(root, "model");
-        Node view_=mindmap.addNode(root, "view");
-        Node controller_=mindmap.addNode(root, "controller");
-        Node listener_=mindmap.addNode(root, "listener");
-        mindmap.addNode(model_, "Mindmap");
-        mindmap.addNode(model_, "Node");
-        mindmap.addNode(model_, "Line");
-        mindmap.addNode(model_, "Option");
-        mindmap.addNode(model_, "Paintable");
-        mindmap.addNode(view_, "MindmapView");
-        mindmap.addNode(controller_, "MindmapController");
-        mindmap.addNode(listener_, "PaintListener");
-        //create view
-        MindmapView view=new MindmapView();
-        //create controller
-        MindmapController controller=new MindmapController(view, mindmap);
-        mindmap.addListener(controller);
-        view.addMouseListener(controller);
-        view.addMouseMotionListener(controller);
-        return view;
-    }
-
-
 
     @Override
     public @Nullable JComponent getPreferredFocusedComponent() {

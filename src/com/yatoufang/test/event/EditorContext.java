@@ -34,6 +34,7 @@ public class EditorContext {
     public static JPopupMenu popupMenu = Canvas.createMenu();
     public static PopupMenuContext popupMenuContext = new PopupMenuContext();
     public static boolean clearMenuItemState = false;
+    public static String filePath;
     public static final Designer designer;
     public static AtomicBoolean menuState = new AtomicBoolean(false);
     public static AtomicBoolean shouldUpdate = new AtomicBoolean(true);
@@ -156,7 +157,7 @@ public class EditorContext {
         }
     }
 
-    public static void reMeasure(){
+    public static void reMeasure() {
         rootPanel.reMeasure();
     }
 
@@ -180,14 +181,14 @@ public class EditorContext {
     }
 
     public static void addHorizontalOffset(int x, int selfWidth) {
-        Canvas.setNodeOffset(x,selfWidth,0,rootPanel.topic);
+        Canvas.setNodeOffset(x, selfWidth, 0, rootPanel.topic);
     }
 
-    public static Element getRootElement(){
+    public static Element getRootElement() {
         return rootPanel.topic;
     }
 
-    public static void refresh(){
+    public static void refresh() {
         AbstractLayoutParser parser = LayoutContext.getParser(rootPanel.topic.layoutType);
         parser.onCreate(rootPanel.topic);
     }
@@ -195,7 +196,7 @@ public class EditorContext {
     public static void setDesigner(String content) {
         designer.setTableContent(content);
         PsiClass aClass = BuildUtil.createClass(content);
-        if(aClass == null){
+        if (aClass == null) {
             return;
         }
         Table table = new TableScannerAction().getTable(aClass);
@@ -205,4 +206,10 @@ public class EditorContext {
     public static void setDesigner(Map<String, String> fileMap) {
         designer.setConfigContentMap(fileMap);
     }
+
+    public static void setFilePath(String rootPath) {
+        filePath = rootPath;
+    }
+
+
 }

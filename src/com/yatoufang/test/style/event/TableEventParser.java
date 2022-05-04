@@ -31,7 +31,7 @@ public class TableEventParser extends AbstractNodeEventParser {
     @Override
     public void onExecute() {
         JBPopupFactory instance = JBPopupFactory.getInstance();
-        TableTemplateDialog dialog = new TableTemplateDialog("","workSpace");
+        TableTemplateDialog dialog = new TableTemplateDialog(EditorContext.filePath,"workSpace");
         instance.createComponentPopupBuilder(dialog.getRootPanel(), dialog.preferableFocusComponent())
                 .setTitle("My Table")
                 .setMovable(true)

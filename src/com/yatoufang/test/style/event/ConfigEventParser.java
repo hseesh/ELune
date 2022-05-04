@@ -1,5 +1,6 @@
 package com.yatoufang.test.style.event;
 
+import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.style.AbstractNodeEventParser;
 import com.yatoufang.test.style.NodeType;
 import com.yatoufang.ui.ConfigTemplateDialog;
@@ -21,7 +22,7 @@ public class ConfigEventParser extends AbstractNodeEventParser {
 
     @Override
     public void onExecute() {
-        new ConfigTemplateDialog("","").show();
+        new ConfigTemplateDialog(EditorContext.filePath,"").show();
     }
 
     @Override

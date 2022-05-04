@@ -1,6 +1,5 @@
 package com.yatoufang.utils;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -35,6 +34,16 @@ public class DataUtil {
             num = (int) (Math.random() * 10);
         }
         return num;
+    }
+
+    public static String getRootPath(String canonicalPath, String key) {
+        String[] split = canonicalPath.split(key);
+        if (split.length == 1 || split.length == 2) {
+            return split[0] + key + "/src/main/java/cn/daxiang/lyltd/" + key;
+        }else if (split.length == 3) {
+            return split[0] + key + split[1] + key;
+        }
+        return null;
     }
 
     public static Timer createTimer(@NotNull final String name, int delay, @NotNull ActionListener listener) {
