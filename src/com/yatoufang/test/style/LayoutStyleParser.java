@@ -6,7 +6,7 @@ import com.yatoufang.test.model.Element;
  * @author GongHuang（hse）
  * @since 2022/3/29 0029
  */
-public interface StyleParser {
+public interface LayoutStyleParser {
 
     /**
      *  crate a element

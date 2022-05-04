@@ -1,5 +1,6 @@
 package com.yatoufang.utils;
 
+import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiUtil;
 import com.yatoufang.templet.Application;
@@ -70,4 +71,16 @@ public class BuildUtil {
         }
         return  FACTORY.createImportStatement(classWithShortName[0]);
     }
+
+
+    public static PsiClass createClass(String text){
+        PsiJavaFile fileFromText = (PsiJavaFile) PsiFileFactory.getInstance(Application.project).createFileFromText("tts.java", JavaFileType.INSTANCE, text);
+        PsiClass[] classes = fileFromText.getClasses();
+        if(classes.length == 0){
+            return null;
+        }
+        return classes[0];
+    }
+
+
 }

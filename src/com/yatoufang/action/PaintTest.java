@@ -26,10 +26,20 @@ import java.util.ArrayList;
 
 public class PaintTest extends AnAction {
 
-    private final int age = 10;
+    private int age = 10;
 
     @Override
     public void actionPerformed(AnActionEvent e) {
+//        PsiClass test = BuildUtil.createClass();
+//        if(test != null){
+//            System.out.println(age);
+//            PsiField[] fields = test.getFields();
+//            for (PsiField field : fields) {
+//                System.out.println(field);
+//            }
+//            return;
+//        }
+        System.out.println(--age);
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
             NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);

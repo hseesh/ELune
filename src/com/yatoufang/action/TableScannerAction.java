@@ -61,7 +61,7 @@ public class TableScannerAction extends AnAction {
     }
 
     @Nullable
-    private Table getTable(PsiClass aClass) {
+    public Table getTable(PsiClass aClass) {
         PsiAnnotation annotation = aClass.getAnnotation(Annotations.TABLE);
         if (annotation == null) {
             NotifyService.notifyWarning(NotifyKeys.NO_TABLE_SELECTED);

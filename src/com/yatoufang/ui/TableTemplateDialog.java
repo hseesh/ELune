@@ -340,4 +340,7 @@ public class TableTemplateDialog {
 
     }
 
+    public String getContent() {
+        return editor.getText();
+    }
 }

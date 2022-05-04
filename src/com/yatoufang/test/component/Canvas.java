@@ -2,6 +2,7 @@ package com.yatoufang.test.component;
 
 import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
+import com.yatoufang.test.controller.PopMenuListener;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.draw.LayoutType;
@@ -91,23 +92,26 @@ public class Canvas {
 
     public static JPopupMenu createMenu() {
         JPopupMenu menu = new JPopupMenu();
-
-//        String[] items = {"Preview current", "Preview all", "item2", "item3", "item4"};
-//        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.PUSH);
-//        JMenuItem previewALL = new JMenuItem("Preview current", Icon.PUSH);
-//        JMenuItem dragonFruit = new JMenuItem("Add Node", Icon.PUSH);
-//        JMenuItem airBlower = new JMenuItem("Air blower", Icon.PUSH);
-//        JMenuItem print = new JMenuItem("Dragon fruit", Icon.PUSH);
-//        menu.add(previewCurrent);
-//        menu.addSeparator();
-//        menu.add(previewALL);
-//        menu.addSeparator();
-//        menu.add(dragonFruit);
-//        menu.addSeparator();
-//        menu.add(airBlower);
-//        menu.addSeparator();
-//        menu.add(print);
-//        menu.addSeparator();
+        PopMenuListener listener = new PopMenuListener();
+        JMenuItem edit = new JMenuItem("Edit current", Icon.EDITOR);
+        JMenuItem previewCurrent = new JMenuItem("Preview current", Icon.VIEW);
+        JMenuItem previewALL = new JMenuItem("Preview current", Icon.VIEW_ALL);
+        JMenuItem shortCut = new JMenuItem("Short cut", Icon.SHORT_CUT);
+        JMenuItem airBlower = new JMenuItem("Add Child", Icon.ADD_CHILD);
+        previewCurrent.addActionListener(listener);
+        shortCut.addActionListener(listener);
+        airBlower.addActionListener(listener);
+        edit.addActionListener(listener);
+        edit.setVisible(false);
+        menu.add(edit);
+        menu.addSeparator();
+        menu.add(previewCurrent);
+        menu.addSeparator();
+        menu.add(previewALL);
+        menu.addSeparator();
+        menu.add(airBlower);
+        menu.addSeparator();
+        menu.add(shortCut);
         return menu;
     }
 

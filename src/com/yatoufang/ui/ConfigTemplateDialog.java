@@ -232,6 +232,10 @@ public class ConfigTemplateDialog extends DialogWrapper {
     }
 
 
+    public Map<String, String> getFileMap() {
+        return fileMap;
+    }
+
     static class BankGroundTask implements Callable<HashSet<ConfigParam>> {
 
         /**
@@ -320,5 +324,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
             }
         }
     }
+
+
 
 }

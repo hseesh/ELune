@@ -1,17 +1,23 @@
 package com.yatoufang.test.event;
 
+import com.intellij.psi.PsiClass;
+import com.yatoufang.action.TableScannerAction;
+import com.yatoufang.entity.Table;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.RootLayer;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.model.Element;
 import com.yatoufang.test.model.PopupMenuContext;
+import com.yatoufang.test.model.entity.Designer;
+import com.yatoufang.utils.BuildUtil;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -27,6 +33,8 @@ public class EditorContext {
     public static RootLayer rootPanel = new RootLayer();
     public static JPopupMenu popupMenu = Canvas.createMenu();
     public static PopupMenuContext popupMenuContext = new PopupMenuContext();
+    public static boolean clearMenuItemState = false;
+    public static final Designer designer;
     public static AtomicBoolean menuState = new AtomicBoolean(false);
     public static AtomicBoolean shouldUpdate = new AtomicBoolean(true);
     public static AtomicBoolean textAreaState = new AtomicBoolean(false);
@@ -40,6 +48,7 @@ public class EditorContext {
         last = rootPanel.topic;
         current = rootPanel.topic;
         current.fillText(textArea, current.getBounds());
+        designer = new Designer();
     }
 
     public static void updateUI() {
@@ -58,10 +67,6 @@ public class EditorContext {
         current = element;
         last.fillText(textArea, last.getBounds());
         updates.add(last);
-    }
-
-    public static void addNode(Element element) {
-        last.add(element);
     }
 
     public static void enableTextArea() {
@@ -185,5 +190,19 @@ public class EditorContext {
     public static void refresh(){
         AbstractLayoutParser parser = LayoutContext.getParser(rootPanel.topic.layoutType);
         parser.onCreate(rootPanel.topic);
+    }
+
+    public static void setDesigner(String content) {
+        designer.setTableContent(content);
+        PsiClass aClass = BuildUtil.createClass(content);
+        if(aClass == null){
+            return;
+        }
+        Table table = new TableScannerAction().getTable(aClass);
+        designer.setTable(table);
+    }
+
+    public static void setDesigner(Map<String, String> fileMap) {
+        designer.setConfigContentMap(fileMap);
     }
 }

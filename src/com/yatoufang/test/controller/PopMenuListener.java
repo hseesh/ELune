@@ -1,5 +1,9 @@
 package com.yatoufang.test.controller;
 
+import com.yatoufang.test.event.EditorContext;
+import com.yatoufang.test.style.AbstractNodeEventParser;
+import com.yatoufang.test.style.StyleContext;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +25,18 @@ public class PopMenuListener implements ActionListener {
             JMenuItem menuItem = (JMenuItem) sourceObject;
             switch (menuItem.getText()){
                 case "Preview current":
-                    
+                    AbstractNodeEventParser click = (AbstractNodeEventParser) StyleContext.getParser(EditorContext.current.type);
+                    if(click == null){
+                        return;
+                    }
+                    click.preview();
+                    break;
+                case "Edit current":
+                    AbstractNodeEventParser execute = (AbstractNodeEventParser) StyleContext.getParser(EditorContext.current.type);
+                    if(execute == null){
+                        return;
+                    }
+                    execute.onExecute();
                     break;
                 default:break;
             }

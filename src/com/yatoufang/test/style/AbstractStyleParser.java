@@ -2,9 +2,9 @@ package com.yatoufang.test.style;
 
 /**
  * @author GongHuang（hse）
- * @since 2022/3/29 0029
+ * @since 2022/5/1 0001
  */
-public abstract class AbstractStyleParser implements StyleParser{
+public abstract class AbstractStyleParser implements LayoutStyleParser {
 
     protected AbstractStyleParser(){
         StyleContext.register(getType(),this);

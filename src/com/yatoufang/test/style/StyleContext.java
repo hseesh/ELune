@@ -1,12 +1,13 @@
 package com.yatoufang.test.style;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.test.model.entity.NodeConfig;
-import com.yatoufang.test.style.impl.NodeStyleParser;
+import com.yatoufang.test.style.event.ConfigEventParser;
+import com.yatoufang.test.style.event.TableEventParser;
+import com.yatoufang.test.style.impl.NodeLayoutStyleParser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,7 +53,9 @@ public class StyleContext {
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
-        new NodeStyleParser();
+        new NodeLayoutStyleParser();
+        new ConfigEventParser();
+        new TableEventParser();
     }
 
 

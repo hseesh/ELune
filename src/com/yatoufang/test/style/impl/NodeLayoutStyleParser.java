@@ -15,7 +15,7 @@ import com.yatoufang.test.style.StyleContext;
  * @author GongHuang（hse）
  * @since 2022/4/9 0009
  */
-public class NodeStyleParser extends AbstractStyleParser {
+public class NodeLayoutStyleParser extends AbstractStyleParser {
 
     @Override
     public void create(Element element) {
