@@ -47,7 +47,6 @@ public class TableTemplateDialog {
 
     private EditorTextField editor;
 
-
     private final VelocityService velocityService;
 
     private final Map<String, Field> fieldMap = Maps.newHashMap();
@@ -56,7 +55,13 @@ public class TableTemplateDialog {
 
 
     public TableTemplateDialog(String rootPath, String workSpace) {
-        initData(workSpace);
+        initData(workSpace,null);
+        drawPanel(rootPath);
+        velocityService = VelocityService.getInstance();
+    }
+
+    public TableTemplateDialog(String rootPath, String workSpace,String content) {
+        initData(workSpace,content);
         drawPanel(rootPath);
         velocityService = VelocityService.getInstance();
     }
@@ -238,7 +243,7 @@ public class TableTemplateDialog {
     }
 
 
-    private void initData(String workSpace) {
+    private void initData(String workSpace,String content) {
         table = new Table("tableName", "");
         table.setMultiEntity(true);
         table.setWorkSpace(workSpace);
@@ -316,14 +321,18 @@ public class TableTemplateDialog {
 
 
         String text = "";
-        try {
-            InputStream resourceAsStream = VelocityService.class.getResourceAsStream(ProjectKeys.MULTI_TEMPLATE);
-            if (resourceAsStream == null) {
-                return;
+        if(content == null){
+            try {
+                InputStream resourceAsStream = VelocityService.class.getResourceAsStream(ProjectKeys.MULTI_TEMPLATE);
+                if (resourceAsStream == null) {
+                    return;
+                }
+                text = FileUtil.loadTextAndClose(resourceAsStream);
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
-            text = FileUtil.loadTextAndClose(resourceAsStream);
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
+        }else{
+            text = content;
         }
 
         editor = new EditorTextField(text, Application.project, JavaClassFileType.INSTANCE) {

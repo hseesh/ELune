@@ -45,7 +45,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
     private String rootPath;
     private String workSpace;
 
-    private final Map<String, String> fileMap = Maps.newHashMap();
+    private Map<String, String> fileMap = Maps.newHashMap();
     private HashSet<ConfigParam> params = new HashSet<>();
 
     private VelocityService velocityService;
@@ -65,6 +65,22 @@ public class ConfigTemplateDialog extends DialogWrapper {
         this.workSpace = workSpace;
         velocityService = VelocityService.getInstance();
         initData();
+        init();
+    }
+
+    public ConfigTemplateDialog(String rootPath, String workSpace,Map<String, String> fileMap) {
+        super(Application.project, true);
+        try {
+            params = new BankGroundTask().call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.fileMap = fileMap;
+        this.rootPath = rootPath;
+        this.workSpace = workSpace;
+        velocityService = VelocityService.getInstance();
+        editor = SwingUtils.createEditor("");
+        editor.setFont(new Font(null, Font.PLAIN, 14));
         init();
     }
 

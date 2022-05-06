@@ -22,7 +22,7 @@ public class ConfigEventParser extends AbstractNodeEventParser {
 
     @Override
     public void onExecute() {
-        new ConfigTemplateDialog(EditorContext.filePath,"").show();
+        new ConfigTemplateDialog(EditorContext.filePath, "", EditorContext.designer.getConfigContentMap()).show();
     }
 
     @Override
