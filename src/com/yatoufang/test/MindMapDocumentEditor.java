@@ -37,7 +37,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     private void initConfig() {
         final Document document = FileDocumentManager.getInstance().getDocument(this.file);
         this.documents = new Document[] {document};
-        mindMapEditor = new MindMapEditor();
+        mindMapEditor = new  MindMapEditor();
         String canonicalPath = this.file.getCanonicalPath();
         if(canonicalPath == null){
             return;
@@ -51,6 +51,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
             rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.BATTLE_SERVER);
         }
         EditorContext.setFilePath(rootPath);
+        EditorContext.setDocument(documents[0]);
     }
 
     @Override

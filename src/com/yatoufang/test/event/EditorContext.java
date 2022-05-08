@@ -1,8 +1,12 @@
 package com.yatoufang.test.event;
 
+import com.google.gson.Gson;
+import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiClass;
 import com.yatoufang.action.TableScannerAction;
 import com.yatoufang.entity.Table;
+import com.yatoufang.templet.Application;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.RootLayer;
 import com.yatoufang.test.draw.AbstractLayoutParser;
@@ -11,6 +15,7 @@ import com.yatoufang.test.model.Element;
 import com.yatoufang.test.model.PopupMenuContext;
 import com.yatoufang.test.model.entity.Designer;
 import com.yatoufang.utils.BuildUtil;
+import com.yatoufang.utils.DataUtil;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.swing.*;
@@ -35,11 +40,13 @@ public class EditorContext {
     public static PopupMenuContext popupMenuContext = new PopupMenuContext();
     public static boolean clearMenuItemState = false;
     public static String filePath;
-    public static final Designer designer;
+    public static  Designer designer;
     public static AtomicBoolean menuState = new AtomicBoolean(false);
+    public static AtomicBoolean saveState = new AtomicBoolean(true);
     public static AtomicBoolean shouldUpdate = new AtomicBoolean(true);
     public static AtomicBoolean textAreaState = new AtomicBoolean(false);
     public static AtomicBoolean draggingState = new AtomicBoolean(false);
+    private static Document document;
     private static final Dimension area;
     private static final Collection<Element> updates = Lists.newArrayList();
 
@@ -53,10 +60,30 @@ public class EditorContext {
     }
 
     public static void updateUI() {
-        if (updates.size() > 0 || shouldUpdate.getAndSet(false)) {
+        if (updates.size() > 0 ) {
             rootPanel.create(rootPanel.topic);
+            shouldUpdate.set(false);
             updates.clear();
+            save();
         }
+        if( shouldUpdate.getAndSet(false)){
+            rootPanel.create(rootPanel.topic);
+        }
+    }
+
+    public static void save() {
+       if(saveState.get()){
+           WriteCommandAction.runWriteCommandAction(Application.project, () ->{
+               Gson gson = new Gson();
+               String content = gson.toJson(designer);
+               document.deleteString(0,document.getText().length());
+               document.insertString(0,content);
+               saveState.set(false);
+               DataUtil.createTimer(2000, e ->{
+                   saveState.set(true);
+               });
+           });
+       }
     }
 
     public static void pushUpdates(Element element) {
@@ -212,4 +239,16 @@ public class EditorContext {
     }
 
 
+    public static void setDocument(Document newDocument) {
+        document = newDocument;
+        if(document.getText().length() > 0){
+            try {
+                Gson gson = new Gson();
+                designer = gson.fromJson(document.getText(), Designer.class);
+                designer.setElement(rootPanel.topic);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
 }

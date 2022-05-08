@@ -53,6 +53,6 @@ public class MindMapFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return AllIcons.Idea_logo_welcome;
+        return AllIcons.Nodes.SortBySeverity;
     }
 }

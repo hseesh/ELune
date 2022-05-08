@@ -29,6 +29,9 @@ public class KeyBoardHandler extends EventHandler{
                 case DELETE_KEY:
                     EditorContext.removeCurrent();
                     break;
+                case CTRL_S_KEY:
+                    EditorContext.saveState.set(true);
+                    EditorContext.save();
                 default:
                     EditorContext.tryUpdateText();
                     EditorContext.pushUpdates(EditorContext.current);

@@ -37,9 +37,6 @@ public class Element implements Drawable {
     public float scaleCoefficient;
     public String icon;
 
-    private int layoutWidth;
-    private int layoutHeight;
-
 
     public Element(String text, Element element) {
         this.text = text;
@@ -52,68 +49,6 @@ public class Element implements Drawable {
         this.bounds.setBounds(0,0,70,40);
         borderColor = MindMapConfig.elementBorderColor;
     }
-
-
-    public Dimension getDimension(Dimension dimension) {
-        if (getBounds().width > dimension.width) {
-            dimension.width = getBounds().width;
-        }
-        if (getBounds().height > dimension.height) {
-            dimension.height = getBounds().height;
-        }
-        Dimension current = new Dimension();
-        for (Element child : this.children) {
-
-        }
-        return null;
-    }
-
-    public void setMeasuredWidth(int oldWidth) {
-        Element parent = this.parent;
-        if (parent != null && getSelfWidth() > parent.getLayoutWidth()) {
-            int offset = getSelfWidth() - oldWidth;
-            while (parent != null) {
-                parent.layoutWidth += offset;
-                parent = parent.parent;
-            }
-        }
-    }
-
-
-    public void setMeasuredHeight(int value) {
-        Element parent = this.parent;
-        if (parent != null && getSelfWidth() > parent.getLayoutWidth()) {
-            int offset = getSelfHeight() - value;
-            while (parent != null) {
-                parent.layoutHeight += offset;
-                parent = parent.parent;
-            }
-        }
-    }
-
-
-
-    public int getMeasuredWidth(int maxWidth) {
-        int totalWith = getSelfWidth();
-        if (maxWidth < totalWith) {
-            maxWidth = totalWith;
-        }
-        for (Element child : this.children) {
-            child.getMeasuredWidth(totalWith);
-        }
-        layoutWidth = maxWidth + totalWith;
-        return layoutWidth;
-    }
-
-    public int getMeasuredHeight(int maxHeight) {
-        int totalHeight = getSelfHeight();
-        for (Element child : this.children) {
-            child.getMeasuredHeight(totalHeight);
-        }
-        layoutHeight = totalHeight + maxHeight;
-        return layoutHeight;
-    }
-
 
     public Element find(Point point) {
         if (this.bounds.contains(point)) {
@@ -210,22 +145,5 @@ public class Element implements Drawable {
 
     public int getSelfHeight() {
         return getBounds().height + MindMapConfig.element_height;
-    }
-
-
-    public int getLayoutWidth() {
-        return layoutWidth;
-    }
-
-    public void setLayoutWidth(int layoutWidth) {
-        this.layoutWidth = layoutWidth;
-    }
-
-    public int getLayoutHeight() {
-        return layoutHeight;
-    }
-
-    public void setLayoutHeight(int layoutHeight) {
-        this.layoutHeight = layoutHeight;
     }
 }

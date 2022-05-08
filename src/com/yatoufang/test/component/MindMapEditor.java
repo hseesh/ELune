@@ -67,7 +67,6 @@ public class MindMapEditor implements AdjustmentListener {
      */
     @Override
     public void adjustmentValueChanged(AdjustmentEvent e) {
-        System.out.println("e = " + e);
         rootPanel.repaint();
     }
 }
