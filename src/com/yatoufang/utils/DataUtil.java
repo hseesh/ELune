@@ -1,5 +1,6 @@
 package com.yatoufang.utils;
 
+import com.yatoufang.test.model.Element;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -58,4 +59,10 @@ public class DataUtil {
         return new Timer(delay, listener);
     }
 
+    public static void initialise(Element element) {
+        for (Element child : element.children) {
+            child.parent = element;
+            initialise(child);
+        }
+    }
 }

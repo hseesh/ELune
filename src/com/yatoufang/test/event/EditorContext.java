@@ -52,7 +52,6 @@ public class EditorContext {
 
     static {
         area = new Dimension(0, 0);
-        rootPanel.init();
         last = rootPanel.topic;
         current = rootPanel.topic;
         current.fillText(textArea, current.getBounds());
@@ -76,6 +75,9 @@ public class EditorContext {
            WriteCommandAction.runWriteCommandAction(Application.project, () ->{
                Gson gson = new Gson();
                String content = gson.toJson(designer);
+               if(content == null || content.length() == 0){
+                   return;
+               }
                document.deleteString(0,document.getText().length());
                document.insertString(0,content);
                saveState.set(false);
@@ -179,6 +181,7 @@ public class EditorContext {
             }
             parent.delete(current);
             setSelect(parent);
+            textArea.setText(parent.text);
             textArea.setBounds(parent.getBounds());
             shouldUpdate.set(true);
         }
@@ -245,10 +248,13 @@ public class EditorContext {
             try {
                 Gson gson = new Gson();
                 designer = gson.fromJson(document.getText(), Designer.class);
-                designer.setElement(rootPanel.topic);
+                Element element = designer.getElement();
+                DataUtil.initialise(element);
+                rootPanel.topic = element;
             }catch (Exception e){
                 e.printStackTrace();
             }
         }
+        rootPanel.init();
     }
 }

@@ -32,6 +32,7 @@ public class KeyBoardHandler extends EventHandler{
                 case CTRL_S_KEY:
                     EditorContext.saveState.set(true);
                     EditorContext.save();
+                    break;
                 default:
                     EditorContext.tryUpdateText();
                     EditorContext.pushUpdates(EditorContext.current);

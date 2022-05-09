@@ -35,6 +35,7 @@ public class RootLayer extends JComponent {
     }
 
     public void init() {
+        System.out.println("init = ");
         AbstractStyleParser parser = StyleContext.getParser(topic.type);
         if (parser != null) {
             parser.create(topic);

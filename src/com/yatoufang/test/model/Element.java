@@ -18,7 +18,7 @@ import java.util.Objects;
  * @since 2021/12/25 0025
  */
 public class Element implements Drawable {
-    public Element parent;
+    public transient Element parent;
     private Rectangle bounds = new Rectangle();
 
     public List<Element> children = Lists.newArrayList();
