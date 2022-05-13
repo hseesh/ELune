@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiField;
 import com.yatoufang.action.TableScannerAction;
 import com.yatoufang.entity.Table;
+import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.Application;
 import com.yatoufang.test.component.Canvas;
 import com.yatoufang.test.component.RootLayer;
@@ -16,12 +18,14 @@ import com.yatoufang.test.model.PopupMenuContext;
 import com.yatoufang.test.model.entity.Designer;
 import com.yatoufang.utils.BuildUtil;
 import com.yatoufang.utils.DataUtil;
+import com.yatoufang.utils.PSIUtil;
 import org.apache.commons.compress.utils.Lists;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -230,11 +234,23 @@ public class EditorContext {
             return;
         }
         Table table = new TableScannerAction().getTable(aClass);
+        if (table == null) {
+            return;
+        }
         designer.setTable(table);
+        current.children.clear();
+        Canvas.createNodes(current,table);
     }
 
     public static void setDesigner(Map<String, String> fileMap) {
         designer.setConfigContentMap(fileMap);
+        fileMap.forEach((k,v) ->{
+            PsiClass aClass = BuildUtil.createClass(v);
+            if(aClass == null){
+                return;
+            }
+          //  List<String> primaryInfo = PSIUtil.getClassPrimaryInfo(aClass);
+        });
     }
 
     public static void setFilePath(String rootPath) {

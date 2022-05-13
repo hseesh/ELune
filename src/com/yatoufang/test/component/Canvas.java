@@ -2,6 +2,8 @@ package com.yatoufang.test.component;
 
 import com.intellij.ui.JBColor;
 import com.yatoufang.config.MindMapConfig;
+import com.yatoufang.entity.Field;
+import com.yatoufang.entity.Table;
 import com.yatoufang.test.controller.PopMenuListener;
 import com.yatoufang.test.draw.AbstractLayoutParser;
 import com.yatoufang.test.draw.LayoutContext;
@@ -17,6 +19,7 @@ import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.geom.RoundRectangle2D;
+import java.util.List;
 
 /**
  * @author GongHuang（hse）
@@ -286,6 +289,12 @@ public class Canvas {
         }
     }
 
+    public static void createNodes(Element node, Table table) {
+        Element element = createElement(node, table.getName(), node.layoutType);
+        for (Field field : table.getFields()) {
+            createElement(element, field.getPrimaryInfo(), element.layoutType);
+        }
+    }
 }
         
 
