@@ -34,6 +34,7 @@ public class ApiDocumentAction extends AnAction {
             NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
             return;
         }
+        Application.project = file.getProject();
         PsiClass[] classes = file.getClasses();
         if (classes.length == 0) return;
         PsiClass aClass = classes[0];
