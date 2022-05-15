@@ -13,7 +13,7 @@ import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
-import com.yatoufang.ui.ExecuteDialog;
+import com.yatoufang.ui.dialog.ExecuteDialog;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.ui.ConfigTemplateDialog;
+import com.yatoufang.ui.dialog.ConfigTemplateDialog;
 import org.jetbrains.annotations.NotNull;
 
 /**

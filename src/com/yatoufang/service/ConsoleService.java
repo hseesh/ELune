@@ -3,14 +3,13 @@ package com.yatoufang.service;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import com.intellij.execution.ui.layout.Tab;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Application;
-import com.yatoufang.ui.ModuleGeneratorDialog;
+import com.yatoufang.ui.dialog.ModuleGeneratorDialog;
 import icons.Icon;
 import org.jetbrains.annotations.NotNull;
 

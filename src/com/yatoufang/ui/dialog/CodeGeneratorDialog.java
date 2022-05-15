@@ -1,4 +1,4 @@
-package com.yatoufang.ui;
+package com.yatoufang.ui.dialog;
 
 
 import com.intellij.psi.*;

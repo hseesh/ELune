@@ -1,4 +1,4 @@
-package com.yatoufang.ui;
+package com.yatoufang.ui.dialog;
 
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -13,6 +13,7 @@ import com.yatoufang.core.HttpRequestResult;
 import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.service.PersistentService;
+import com.yatoufang.ui.HttpTableController;
 
 import javax.swing.*;
 import java.awt.*;

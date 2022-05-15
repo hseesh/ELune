@@ -1,8 +1,6 @@
 package com.yatoufang.action;
 
-import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.ScriptRunnerUtil;
 import com.intellij.find.findInProject.FindInProjectManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -15,14 +13,13 @@ import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
+import com.yatoufang.ui.dialog.EntityTemplateDialog;
 import com.yatoufang.utils.BuildUtil;
 import com.yatoufang.utils.PSIUtil;
-import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 
 public class PaintTest extends AnAction {
 
@@ -30,16 +27,11 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-//        PsiClass test = BuildUtil.createClass();
-//        if(test != null){
-//            System.out.println(age);
-//            PsiField[] fields = test.getFields();
-//            for (PsiField field : fields) {
-//                System.out.println(field);
-//            }
-//            return;
-//        }
         System.out.println(--age);
+        new EntityTemplateDialog("","").show();
+        if(age > 0){
+            return;
+        }
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
             NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);

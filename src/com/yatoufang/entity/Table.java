@@ -30,6 +30,9 @@ public class Table {
 
     private boolean multiEntity;
 
+    public Table() {
+    }
+
     public Table(String name, String type) {
         this.name = name.replace("\"",StringUtil.EMPTY);
         int indexOf = type.indexOf(".");

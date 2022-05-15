@@ -11,7 +11,7 @@ import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.templet.NotifyKeys;
-import com.yatoufang.ui.TableTemplateDialog;
+import com.yatoufang.ui.dialog.TableTemplateDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

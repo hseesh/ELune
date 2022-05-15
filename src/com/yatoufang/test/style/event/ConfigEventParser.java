@@ -3,7 +3,7 @@ package com.yatoufang.test.style.event;
 import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.style.AbstractNodeEventParser;
 import com.yatoufang.test.style.NodeType;
-import com.yatoufang.ui.ConfigTemplateDialog;
+import com.yatoufang.ui.dialog.ConfigTemplateDialog;
 
 /**
  * @author GongHuang（hse）

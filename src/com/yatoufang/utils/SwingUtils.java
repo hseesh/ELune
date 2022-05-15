@@ -7,7 +7,6 @@ import com.intellij.openapi.ui.popup.IconButton;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.EditorTextField;
 import com.yatoufang.templet.Application;
-import com.yatoufang.ui.TableTemplateDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;

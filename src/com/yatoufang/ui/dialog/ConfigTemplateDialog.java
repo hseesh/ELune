@@ -1,4 +1,4 @@
-package com.yatoufang.ui;
+package com.yatoufang.ui.dialog;
 
 
 import com.google.common.collect.Maps;
@@ -19,7 +19,11 @@ import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.utils.*;
+import com.yatoufang.test.event.EditorContext;
+import com.yatoufang.utils.FileWrite;
+import com.yatoufang.utils.PSIUtil;
+import com.yatoufang.utils.StringUtil;
+import com.yatoufang.utils.SwingUtils;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.compress.utils.Sets;
 import org.jetbrains.annotations.NotNull;
@@ -29,10 +33,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.function.BiConsumer;
 
 /**
  * @author hse
@@ -44,6 +49,10 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
     private String rootPath;
     private String workSpace;
+
+    private boolean designerModel;
+
+    private final ArrayList<String> files = Lists.newArrayList();
 
     private Map<String, String> fileMap = Maps.newHashMap();
     private HashSet<ConfigParam> params = new HashSet<>();
@@ -77,10 +86,13 @@ public class ConfigTemplateDialog extends DialogWrapper {
         }
         this.fileMap = fileMap;
         this.rootPath = rootPath;
+        this.designerModel = true;
         this.workSpace = workSpace;
         velocityService = VelocityService.getInstance();
-        editor = SwingUtils.createEditor("");
+        String defaultContent = fileMap.values().stream().findFirst().orElse(StringUtil.EMPTY);
+        editor = SwingUtils.createEditor(defaultContent);
         editor.setFont(new Font(null, Font.PLAIN, 14));
+        files.addAll(fileMap.keySet());
         init();
     }
 
@@ -137,7 +149,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
     protected @Nullable
     JComponent createCenterPanel() {
         JSplitPane rootPane = new JSplitPane();
-        ArrayList<String> files = Lists.newArrayList();
+
         rootPane.setMinimumSize(new Dimension(1100, 800));
 
         JTextArea configData = new JTextArea();
@@ -247,6 +259,13 @@ public class ConfigTemplateDialog extends DialogWrapper {
         return new JPanel();
     }
 
+    @Override
+    public void doCancelAction() {
+        super.doCancelAction();
+        if(designerModel){
+            EditorContext.setDesigner(fileMap);
+        }
+    }
 
     public Map<String, String> getFileMap() {
         return fileMap;

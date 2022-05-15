@@ -1,4 +1,4 @@
-package com.yatoufang.ui;
+package com.yatoufang.ui.dialog;
 
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -25,12 +25,12 @@ import java.util.List;
  * @author hse
  * @Date: 2021/1/25
  */
-public class ExportDialog extends DialogWrapper {
+public class DocumentExportDialog extends DialogWrapper {
 
     private final String content;
     private final String fileName;
 
-    public ExportDialog(@Nullable Project project, String content, String fileName) {
+    public DocumentExportDialog(@Nullable Project project, String content, String fileName) {
         super(project);
         this.content = content;
         this.fileName = fileName;

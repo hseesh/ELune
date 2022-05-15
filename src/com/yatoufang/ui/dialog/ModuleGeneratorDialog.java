@@ -1,27 +1,21 @@
-package com.yatoufang.ui;
+package com.yatoufang.ui.dialog;
 
-import com.android.aapt.Resources;
-import com.google.common.collect.Maps;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.ui.AnActionButton;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
-import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.FormBuilder;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.FileNode;
 import com.yatoufang.entity.Table;
-import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import com.yatoufang.utils.SwingUtils;
@@ -33,11 +27,10 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -157,7 +150,30 @@ public class ModuleGeneratorDialog extends DialogWrapper {
         toolbarDecorator.addExtraAction(new AnActionButton("Edit Object Fields", "Edit", Icon.EDIT) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-                new ChooseFieldsDialog(false).show();
+                ChooseFieldsDialog chooseFieldsDialog = new ChooseFieldsDialog(table);
+                ActionListener actionListener = new ActionListener() {
+                    /**
+                     * Invoked when an action occurs.
+                     *
+                     * @param e the event to be processed
+                     */
+                    @Override
+                    @SuppressWarnings("all")
+                    public void actionPerformed(ActionEvent e) {
+                        FileNode selectedNode = getSelectedNode();
+                        if (selectedNode != null) {
+                            if(e.getSource() instanceof List){
+                                List<Field> fields = (List<Field>) e.getSource();
+                                if (fields.size() > 0) {
+                                    selectedNode.table.setFields(fields);
+                                    editor.setText(velocityService.execute(selectedNode.templatePath, selectedNode.table));
+                                }
+                            }
+                        }
+                    }
+                };
+                chooseFieldsDialog.setListener(actionListener);
+                chooseFieldsDialog.show();
             }
         });
 
@@ -234,84 +250,6 @@ public class ModuleGeneratorDialog extends DialogWrapper {
             return selectedNode;
         }
         return null;
-    }
-
-    class ChooseFieldsDialog extends DialogWrapper {
-        private Tree fieldsTree;
-
-        protected ChooseFieldsDialog(boolean canBeParent) {
-            super(canBeParent);
-            init();
-            setTitle("My Fields");
-        }
-
-        @Override
-        protected @Nullable
-        JComponent createCenterPanel() {
-            return createFieldsPanel();
-        }
-
-        @NotNull
-        @Override
-        protected JPanel createButtonsPanel(@NotNull List<? extends JButton> buttons) {
-            JPanel jPanel = new JPanel();
-            JButton confirmButton = new JButton("Confirm");
-            JButton cancelButton = new JButton("Close");
-            jPanel.add(confirmButton);
-            jPanel.add(cancelButton);
-
-            confirmButton.addActionListener(e -> {
-                FileNode selectedNode = getSelectedNode();
-                if (selectedNode != null) {
-                    DefaultMutableTreeNode[] selectedNodes = fieldsTree.getSelectedNodes(DefaultMutableTreeNode.class, fileNode -> !fileNode.getAllowsChildren());
-                    List<Field> fields = Lists.newArrayList();
-                    for (DefaultMutableTreeNode node : selectedNodes) {
-                        Field field = (Field) node.getUserObject();
-                        fields.add(field);
-                    }
-                    if (fields.size() > 0) {
-                        selectedNode.table.setFields(fields);
-                        editor.setText(velocityService.execute(selectedNode.templatePath, selectedNode.table));
-                    }
-                }
-                dispose();
-            });
-            cancelButton.addActionListener(e -> dispose());
-            return jPanel;
-        }
-
-        private JComponent createFieldsPanel() {
-            DefaultMutableTreeNode root = new DefaultMutableTreeNode(table.getName());
-            for (Field field : table.getFields()) {
-                DefaultMutableTreeNode node = new DefaultMutableTreeNode(field);
-                node.setAllowsChildren(false);
-                root.add(node);
-            }
-            DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer() {
-                @Override
-                public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
-                    super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-                    Object userObject = node.getUserObject();
-                    if (userObject instanceof Field) {
-                        Field field = (Field) userObject;
-                        this.setIcon(AllIcons.Nodes.Field);
-                        this.setText(field.getName() + "  " + field.getAlias());
-                    } else {
-                        this.setIcon(AllIcons.Nodes.Class);
-                    }
-                    return this;
-                }
-            };
-
-            DefaultTreeModel fileTreeModel = new DefaultTreeModel(root);
-            fieldsTree = new Tree(fileTreeModel);
-            fieldsTree.setDragEnabled(true);
-            fieldsTree.setExpandableItemsEnabled(true);
-            fieldsTree.setCellRenderer(cellRenderer);
-            return new JBScrollPane(fieldsTree);
-        }
-
     }
 
     private void saveFile() {

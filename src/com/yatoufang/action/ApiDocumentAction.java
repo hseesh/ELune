@@ -13,7 +13,7 @@ import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.templet.NotifyKeys;
-import com.yatoufang.ui.ExportDialog;
+import com.yatoufang.ui.dialog.DocumentExportDialog;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
@@ -67,7 +67,7 @@ public class ApiDocumentAction extends AnAction {
         }
         MarkdownGenerator markdownGenerator = new MarkdownGenerator();
         markdownGenerator.build(methods, fileName);
-        new ExportDialog(Application.project, markdownGenerator.getContent(), fileName).show();
+        new DocumentExportDialog(Application.project, markdownGenerator.getContent(), fileName).show();
     }
 
     /**

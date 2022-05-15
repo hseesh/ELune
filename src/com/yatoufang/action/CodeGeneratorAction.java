@@ -20,7 +20,7 @@ import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
-import com.yatoufang.ui.CodeGeneratorDialog;
+import com.yatoufang.ui.dialog.CodeGeneratorDialog;
 import com.yatoufang.xml.Mapper;
 import com.yatoufang.xml.Result;
 import com.yatoufang.xml.ResultMap;

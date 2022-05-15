@@ -8,7 +8,7 @@ import com.intellij.openapi.ui.popup.LightweightWindowEvent;
 import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.style.AbstractNodeEventParser;
 import com.yatoufang.test.style.NodeType;
-import com.yatoufang.ui.TableTemplateDialog;
+import com.yatoufang.ui.dialog.TableTemplateDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
