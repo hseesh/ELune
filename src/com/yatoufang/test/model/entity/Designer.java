@@ -3,7 +3,10 @@ package com.yatoufang.test.model.entity;
 import com.yatoufang.entity.Config;
 import com.yatoufang.entity.Table;
 import com.yatoufang.test.model.Element;
+import org.apache.commons.compress.utils.Lists;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**

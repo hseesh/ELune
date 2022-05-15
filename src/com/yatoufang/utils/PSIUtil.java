@@ -15,6 +15,7 @@ import com.yatoufang.templet.Application;
 import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.ProjectKeys;
+import org.apache.commons.compress.utils.Lists;
 
 import java.util.*;
 
@@ -612,6 +613,23 @@ public class PSIUtil {
         return null;
     }
 
+    /**
+     *  get class all fields
+     * @param aClass target class
+     * @return List<String>
+     */
+    public static List<String> getClassPrimaryInfo(PsiClass aClass){
+        PsiField[] allFields = aClass.getAllFields();
+        ArrayList<String> result = Lists.newArrayList();
+        for (PsiField field : allFields) {
+            if(field.hasAnnotation(Annotations.FILED_IGNORE)){
+                continue;
+            }
+            result.add(field.getType().getPresentableText() + StringUtil.SPACE + field.getName());
+        }
+        return result;
+    }
+
     public static PsiField createField(PsiElement element){
         PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
         PsiType psiType = factory.createTypeFromText("HitState", element);
@@ -633,5 +651,7 @@ public class PSIUtil {
         PsiComment comment = factory.createCommentFromText(strComment, null);
         element.addBefore(comment, element.getFirstChild());
     }
+
+
 
 }

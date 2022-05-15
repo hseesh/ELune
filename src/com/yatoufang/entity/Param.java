@@ -148,6 +148,10 @@ public class Param {
         this.annotation = annotation;
     }
 
+    public String getPrimaryInfo(){
+        return alias + StringUtil.SPACE + name + StringUtil.SPACE + defaultValue;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

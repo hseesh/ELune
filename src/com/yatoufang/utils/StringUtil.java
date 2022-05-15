@@ -1,6 +1,5 @@
 package com.yatoufang.utils;
 
-
 import com.yatoufang.templet.ProjectKeys;
 import org.apache.commons.compress.utils.Lists;
 
@@ -42,9 +41,9 @@ public class StringUtil {
         boolean needUpper = true;
         for (int i = 0; i < chars.length; i++) {
             if (needUpper) {
-                if(chars[i] > 96 && chars[i] < 123){
+                if (chars[i] > 96 && chars[i] < 123) {
                     builder.append(chars[i] -= 32);
-                }else{
+                } else {
                     builder.append(chars[i]);
                 }
                 needUpper = false;
@@ -62,7 +61,7 @@ public class StringUtil {
         StringBuilder builder = new StringBuilder();
         char[] chars = variable.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 65 && chars[i] <= 97) {
+            if (chars[i] >= 65 && chars[i] < 97) {
                 if (i != 0) {
                     builder.append("_");
                 }
@@ -100,7 +99,7 @@ public class StringUtil {
         }
         StringBuilder builder = new StringBuilder();
         for (char c : value.toCharArray()) {
-            if (c > 123) {
+            if (c > 122) {
                 builder.append(c);
             } else {
                 break;
