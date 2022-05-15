@@ -21,6 +21,8 @@ public class Designer {
 
     private Map<String, String> configContentMap;
 
+    private Map<String, String> entityContentMap;
+
     private transient Table table;
 
     private transient Map<String, Config> configMap;
@@ -64,5 +66,13 @@ public class Designer {
 
     public void setConfigMap(Map<String, Config> configMap) {
         this.configMap = configMap;
+    }
+
+    public Map<String, String> getEntityContentMap() {
+        return entityContentMap;
+    }
+
+    public void setEntityContentMap(Map<String, String> entityContentMap) {
+        this.entityContentMap = entityContentMap;
     }
 }

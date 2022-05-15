@@ -5,8 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.openapi.util.io.FileUtil;
 import com.yatoufang.test.model.entity.NodeConfig;
-import com.yatoufang.test.style.event.ConfigEventParser;
-import com.yatoufang.test.style.event.TableEventParser;
+import com.yatoufang.test.style.impl.event.*;
 import com.yatoufang.test.style.impl.NodeLayoutStyleParser;
 
 import java.io.IOException;
@@ -55,7 +54,9 @@ public class StyleContext {
         }
         new NodeLayoutStyleParser();
         new ConfigEventParser();
+        new EntityEventParser();
         new TableEventParser();
+        new DefaultEventParser();
     }
 
 

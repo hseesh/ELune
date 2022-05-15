@@ -1,17 +1,27 @@
-package com.yatoufang.test.style.event;
+package com.yatoufang.test.style.impl.event;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.ui.popup.IconButton;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.JBPopupListener;
 import com.intellij.openapi.ui.popup.LightweightWindowEvent;
+import com.yatoufang.entity.Field;
+import com.yatoufang.entity.Table;
+import com.yatoufang.templet.Annotations;
 import com.yatoufang.test.event.EditorContext;
+import com.yatoufang.test.model.Element;
 import com.yatoufang.test.style.AbstractNodeEventParser;
 import com.yatoufang.test.style.NodeType;
 import com.yatoufang.ui.dialog.TableTemplateDialog;
+import com.yatoufang.utils.PSIUtil;
+import com.yatoufang.utils.SwingUtils;
+import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author GongHuang（hse）
@@ -25,7 +35,22 @@ public class TableEventParser extends AbstractNodeEventParser {
 
     @Override
     public void preview() {
-        onExecute();
+        Table table = EditorContext.designer.getTable();
+        if(table == null){
+            return;
+        }
+        List<Field> list = table.getFields();
+        for (Field field : list) {
+            field.setTypeAlias(field.getAlias());
+        }
+        String content = PSIUtil.getFieldsInfo(list);
+        String info = PSIUtil.getFilePrimaryInfo(content, Annotations.FILED_IGNORE);
+        SwingUtils.createPreviewWindow(info);
+    }
+
+    @Override
+    public void onPreview(Element node) {
+
     }
 
     @Override

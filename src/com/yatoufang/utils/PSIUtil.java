@@ -295,6 +295,18 @@ public class PSIUtil {
         }
     }
 
+    public static void getClassAllFields(PsiClass psiClass, Collection<Param> result) {
+        if (psiClass == null) return;
+        PsiField[] fields = psiClass.getFields();
+        for (PsiField field : fields) {
+            PsiType type = field.getType();
+            Param param = new Param(field.getName());
+            param.setTypeAlias(type.getPresentableText());
+            param.setDescription(getDescription(field.getDocComment()));
+            result.add(param);
+        }
+    }
+
     public static void delete(PsiElement psiElement) {
         if (psiElement.getContainingFile() == null) {
             psiElement = psiElement.getParent();
@@ -614,15 +626,16 @@ public class PSIUtil {
     }
 
     /**
-     *  get class all fields
+     * get class all fields
+     *
      * @param aClass target class
      * @return List<String>
      */
-    public static List<String> getClassPrimaryInfo(PsiClass aClass){
+    public static List<String> getClassPrimaryInfo(PsiClass aClass) {
         PsiField[] allFields = aClass.getAllFields();
         ArrayList<String> result = Lists.newArrayList();
         for (PsiField field : allFields) {
-            if(field.hasAnnotation(Annotations.FILED_IGNORE)){
+            if (field.hasAnnotation(Annotations.FILED_IGNORE)) {
                 continue;
             }
             result.add(field.getType().getPresentableText() + StringUtil.SPACE + field.getName());
@@ -630,15 +643,15 @@ public class PSIUtil {
         return result;
     }
 
-    public static PsiField createField(PsiElement element){
+    public static PsiField createField(PsiElement element) {
         PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
         PsiType psiType = factory.createTypeFromText("HitState", element);
         PsiField field = factory.createField("HSE", psiType);
-       // PsiUtil.setModifierProperty(field, PsiModifier.PRIVATE, true);
+        // PsiUtil.setModifierProperty(field, PsiModifier.PRIVATE, true);
         return field;
     }
 
-    public static PsiMethod createMethod(PsiElement element){
+    public static PsiMethod createMethod(PsiElement element) {
         String content = "actionStoreHelper";
         PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
         PsiType psiType = factory.createTypeFromText("HitState", element);
@@ -653,5 +666,39 @@ public class PSIUtil {
     }
 
 
+    public static String getFilePrimaryInfo(String content, String annotation) {
+        if (content.isEmpty()) {
+            return content;
+        }
+        PsiClass aClass = BuildUtil.createClass(content);
+        if (aClass == null) {
+            return content;
+        }
+        ArrayList<Param> fieldsList = Lists.newArrayList();
+        getClassAllFields(aClass, fieldsList);
+        if (annotation != null) {
+            fieldsList.removeIf(e -> annotation.equals(e.getAnnotation()));
+        }
+        return getFieldsInfo(fieldsList);
 
+    }
+
+    public static <T extends Param> String getFieldsInfo(List<T> fieldsList) {
+        StringBuilder builder = new StringBuilder();
+        String commentStart = "/**\n";
+        String comment = " * ";
+        String commentEnd = " */\n";
+        for (Param param : fieldsList) {
+            builder.append(commentStart)
+                    .append(comment)
+                    .append(param.getDescription())
+                    .append(StringUtil.NEW_LINE)
+                    .append(commentEnd)
+                    .append(param.getTypeAlias())
+                    .append(StringUtil.SPACE)
+                    .append(param.getName())
+                    .append(StringUtil.NEW_LINE);
+        }
+        return builder.toString();
+    }
 }

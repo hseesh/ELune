@@ -24,6 +24,7 @@ public enum NodeType {
     GLOBAL_CONSTANT_KEY(15),
     FIELDS_NODE(16),
     INTERFACE_NODE(17),
+    ENTITY_NODE(18),
 
     NONE(0);
 

@@ -18,6 +18,7 @@ public class StringUtil {
     public static final char LEFT_BRACE = '{';
     public static final char RIGHT_BRACE = '}';
     public static final String DOUBLE_QUOTATION = " \"\" ";
+    public static final char NEW_LINE = '\n' ;
 
     public static String buildPath(String rootPath, String... args) {
         StringBuilder builder = new StringBuilder(rootPath);

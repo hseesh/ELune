@@ -4,6 +4,7 @@
     "insertOrder": 0,
     "children": [
       5,
+      18,
       4,
       6
     ],
@@ -158,6 +159,15 @@
     "type": 17,
     "name": "Interface",
     "icon": "Interface",
+    "insertOrder": 0,
+    "children": [],
+    "layoutStyle": 2,
+    "scaleCoefficient": 0
+  },
+  {
+    "type": 18,
+    "name": "Entity",
+    "icon": "Entity",
     "insertOrder": 0,
     "children": [],
     "layoutStyle": 2,

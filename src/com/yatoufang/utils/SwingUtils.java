@@ -31,16 +31,18 @@ public class SwingUtils {
         };
     }
 
-    public static void previewCode(String text){
+    public static void createPreviewWindow(String text){
         JBPopupFactory instance = JBPopupFactory.getInstance();
-        instance.createComponentPopupBuilder(createEditor(text),null)
+        EditorTextField editor = createEditor(text);
+        editor.setFont(new Font(null, Font.PLAIN, 15));
+        instance.createComponentPopupBuilder(editor,null)
                 .setTitle("Preview Code")
                 .setMovable(true)
                 .setResizable(true)
                 .setCancelOnClickOutside(false)
                 .setCancelButton(new IconButton("Close", AllIcons.Actions.Cancel))
                 .setRequestFocus(true)
-                .setMinSize(new Dimension(700, 500))
+                .setMinSize(new Dimension(300, 400))
                 .createPopup()
                 .showInFocusCenter();
     }
