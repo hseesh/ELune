@@ -72,6 +72,7 @@
                 fieldName="INSTANCE"
                 language="MindMap"
                 extensions="mm"/>
+      <fileTemplateGroup implementation="com.yatoufang.test.filetype.FileTemplateFactory"/>
   </extensions>
 
 </idea-plugin>

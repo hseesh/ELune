@@ -60,6 +60,9 @@ public class DataUtil {
     }
 
     public static void initialise(Element element) {
+        if (element == null) {
+            return;
+        }
         for (Element child : element.children) {
             child.parent = element;
             initialise(child);

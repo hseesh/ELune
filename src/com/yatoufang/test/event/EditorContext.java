@@ -40,7 +40,7 @@ public class EditorContext {
     public static PopupMenuContext popupMenuContext = new PopupMenuContext();
     public static boolean clearMenuItemState = false;
     public static String filePath;
-    public static  Designer designer;
+    public static Designer designer;
     public static AtomicBoolean menuState = new AtomicBoolean(false);
     public static AtomicBoolean saveState = new AtomicBoolean(true);
     public static AtomicBoolean shouldUpdate = new AtomicBoolean(true);
@@ -59,33 +59,34 @@ public class EditorContext {
     }
 
     public static void updateUI() {
-        if (updates.size() > 0 ) {
+        if (updates.size() > 0) {
             rootPanel.create(rootPanel.topic);
             shouldUpdate.set(false);
+            saveState.set(true);
             updates.clear();
             save();
         }
-        if( shouldUpdate.getAndSet(false)){
+        if (shouldUpdate.getAndSet(false)) {
             rootPanel.create(rootPanel.topic);
         }
     }
 
     public static void save() {
-       if(saveState.get()){
-           WriteCommandAction.runWriteCommandAction(Application.project, () ->{
-               Gson gson = new Gson();
-               String content = gson.toJson(designer);
-               if(content == null || content.length() == 0){
-                   return;
-               }
-               document.deleteString(0,document.getText().length());
-               document.insertString(0,content);
-               saveState.set(false);
-               DataUtil.createTimer(2000, e ->{
-                   saveState.set(true);
-               });
-           });
-       }
+        if (saveState.get()) {
+            WriteCommandAction.runWriteCommandAction(Application.project, () -> {
+                Gson gson = new Gson();
+                String content = gson.toJson(designer);
+                if (content == null || content.length() == 0) {
+                    return;
+                }
+                document.deleteString(0, document.getText().length());
+                document.insertString(0, content);
+                saveState.set(false);
+                DataUtil.createTimer(2000, e -> {
+                    saveState.set(true);
+                });
+            });
+        }
     }
 
     public static void pushUpdates(Element element) {
@@ -244,17 +245,21 @@ public class EditorContext {
 
     public static void setDocument(Document newDocument) {
         document = newDocument;
-        if(document.getText().length() > 0){
+        if (document.getText().length() > 0) {
             try {
+                System.out.println("init stage");
                 Gson gson = new Gson();
                 designer = gson.fromJson(document.getText(), Designer.class);
                 Element element = designer.getElement();
-                DataUtil.initialise(element);
-                rootPanel.topic = element;
-            }catch (Exception e){
+                if (element != null) {
+                    DataUtil.initialise(element);
+                    rootPanel.topic = element;
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+        designer.setElement(rootPanel.topic);
         rootPanel.init();
     }
 }

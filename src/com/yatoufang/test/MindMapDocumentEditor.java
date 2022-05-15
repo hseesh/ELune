@@ -1,10 +1,8 @@
 package com.yatoufang.test;
 
+import com.google.common.collect.Maps;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.DocumentsEditor;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.fileEditor.FileEditorLocation;
-import com.intellij.openapi.fileEditor.FileEditorState;
+import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.yatoufang.templet.ProjectKeys;
@@ -18,6 +16,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author GongHuang（hse）
@@ -28,6 +28,8 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     private final VirtualFile file;
     private Document[] documents;
     private MindMapEditor mindMapEditor;
+    private FileEditorState fileEditorState;
+    private final Map userdata = Maps.newHashMap();
 
     public MindMapDocumentEditor(VirtualFile virtualFile) {
         this.file = virtualFile;
@@ -36,10 +38,10 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     private void initConfig() {
         final Document document = FileDocumentManager.getInstance().getDocument(this.file);
-        this.documents = new Document[] {document};
-        mindMapEditor = new  MindMapEditor();
+        this.documents = new Document[]{document};
+        mindMapEditor = new MindMapEditor();
         String canonicalPath = this.file.getCanonicalPath();
-        if(canonicalPath == null){
+        if (canonicalPath == null) {
             return;
         }
         String rootPath = StringUtil.EMPTY;
@@ -50,34 +52,39 @@ public class MindMapDocumentEditor implements DocumentsEditor {
         } else if (canonicalPath.contains(ProjectKeys.BATTLE_SERVER)) {
             rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.BATTLE_SERVER);
         }
+        System.out.println("init config");
         EditorContext.setFilePath(rootPath);
         EditorContext.setDocument(documents[0]);
     }
 
     @Override
-    public @NotNull Document[] getDocuments() {
+    public @NotNull
+    Document[] getDocuments() {
         return this.documents;
     }
 
     @Override
-    public @NotNull JComponent getComponent() {
+    public @NotNull
+    JComponent getComponent() {
         return mindMapEditor.getComponent();
     }
 
     @Override
-    public @Nullable JComponent getPreferredFocusedComponent() {
+    public @Nullable
+    JComponent getPreferredFocusedComponent() {
         return mindMapEditor.getPreferredFocusedComponent();
     }
 
     @Override
     public @Nls(capitalization = Nls.Capitalization.Title)
-    @NotNull String getName() {
-         return "Mm-Editor";
+    @NotNull
+    String getName() {
+        return "Mm-Editor";
     }
 
     @Override
     public void setState(@NotNull FileEditorState fileEditorState) {
-
+        this.fileEditorState = fileEditorState;
     }
 
     @Override
@@ -87,7 +94,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     @Override
     public boolean isValid() {
-        return false;
+        return true;
     }
 
     @Override
@@ -101,27 +108,41 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     }
 
     @Override
-    public @Nullable FileEditorLocation getCurrentLocation() {
-        return null;
+    public @Nullable
+    FileEditorLocation getCurrentLocation() {
+        return new FileEditorLocation() {
+            @Override
+            public @NotNull
+            FileEditor getEditor() {
+                return MindMapDocumentEditor.this;
+            }
+
+            @Override
+            public int compareTo(@NotNull FileEditorLocation o) {
+                return o.compareTo(this);
+            }
+        };
     }
 
     @Override
     public void dispose() {
-        mindMapEditor = null;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getUserData(@NotNull Key<T> key) {
-        return null;
+        return (T) userdata.get(key);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> void putUserData(@NotNull Key<T> key, @Nullable T t) {
-
+        userdata.put(key, t);
     }
 
     @Override
-    public @Nullable VirtualFile getFile() {
+    public @Nullable
+    VirtualFile getFile() {
         return this.file;
     }
 

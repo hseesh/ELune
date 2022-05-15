@@ -24,6 +24,7 @@ public class RootLayer extends JComponent {
     Drawable paint;
 
     public RootLayer() {
+        System.out.println("init RootLayer");
         setSize(800, 600);
         topic = new Element("EMPTY NODE", null);
         topic.setBounds(100, 100, 70, 40);
@@ -35,7 +36,10 @@ public class RootLayer extends JComponent {
     }
 
     public void init() {
-        System.out.println("init = ");
+        System.out.println("init panel");
+        if (topic.children.size() > 0) {
+            return;
+        }
         AbstractStyleParser parser = StyleContext.getParser(topic.type);
         if (parser != null) {
             parser.create(topic);

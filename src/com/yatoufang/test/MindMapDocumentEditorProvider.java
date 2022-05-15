@@ -12,12 +12,16 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author GongHuang（hse）
  * @since 2021/12/20
  */
 public class MindMapDocumentEditorProvider implements FileEditorProvider, DumbAware {
 
+    private final Map<VirtualFile, FileEditor> fileFileEditorMap = new HashMap<>();
 
     @Override
     public boolean accept(@NotNull Project project, @NotNull VirtualFile virtualFile) {
@@ -27,7 +31,14 @@ public class MindMapDocumentEditorProvider implements FileEditorProvider, DumbAw
     @Override
     public @NotNull
     FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        return new MindMapDocumentEditor(virtualFile);
+        if (!fileFileEditorMap.containsKey(virtualFile)) {
+            synchronized (MindMapDocumentEditorProvider.class) {
+                if (!fileFileEditorMap.containsKey(virtualFile)) {
+                    fileFileEditorMap.put(virtualFile, new MindMapDocumentEditor(virtualFile));
+                }
+            }
+        }
+        return fileFileEditorMap.get(virtualFile);
     }
 
     @Override
@@ -35,15 +46,6 @@ public class MindMapDocumentEditorProvider implements FileEditorProvider, DumbAw
         FileEditorProvider.super.disposeEditor(editor);
     }
 
-    @Override
-    public @NotNull
-    FileEditorState readState(@NotNull Element sourceElement, @NotNull Project project, @NotNull VirtualFile file) {
-        return MindMapEditorState.DUMMY;
-    }
-
-    @Override
-    public void writeState(@NotNull FileEditorState state, @NotNull Project project, @NotNull Element targetElement) {
-    }
 
     @Override
     public @NotNull
@@ -55,7 +57,7 @@ public class MindMapDocumentEditorProvider implements FileEditorProvider, DumbAw
     @Override
     public @NotNull
     FileEditorPolicy getPolicy() {
-        return FileEditorPolicy.HIDE_DEFAULT_EDITOR;
+        return FileEditorPolicy.PLACE_BEFORE_DEFAULT_EDITOR;
     }
 
 
