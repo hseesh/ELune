@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.ui.popup.IconButton;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.EditorTextField;
+import com.intellij.ui.awt.RelativePoint;
 import com.yatoufang.templet.Application;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,7 +40,7 @@ public class SwingUtils {
                 .setTitle("Preview Code")
                 .setMovable(true)
                 .setResizable(true)
-                .setCancelOnClickOutside(false)
+                .setCancelOnClickOutside(true)
                 .setCancelButton(new IconButton("Close", AllIcons.Actions.Cancel))
                 .setRequestFocus(true)
                 .setMinSize(new Dimension(300, 400))

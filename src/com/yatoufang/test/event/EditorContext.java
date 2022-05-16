@@ -278,4 +278,9 @@ public class EditorContext {
         designer.setElement(rootPanel.topic);
         rootPanel.init();
     }
+
+
+    public static Point getCurrentPoint(){
+        return current.getBounds().getLocation();
+    }
 }

@@ -35,16 +35,11 @@ public class TableEventParser extends AbstractNodeEventParser {
 
     @Override
     public void preview() {
-        Table table = EditorContext.designer.getTable();
-        if(table == null){
+        String tableContent = EditorContext.designer.getTableContent();
+        if(tableContent == null || tableContent.length() == 0){
             return;
         }
-        List<Field> list = table.getFields();
-        for (Field field : list) {
-            field.setTypeAlias(field.getAlias());
-        }
-        String content = PSIUtil.getFieldsInfo(list);
-        String info = PSIUtil.getFilePrimaryInfo(content, Annotations.FILED_IGNORE);
+        String info = PSIUtil.getFilePrimaryInfo(tableContent,null);
         SwingUtils.createPreviewWindow(info);
     }
 

@@ -33,6 +33,7 @@ public class DefaultEventParser extends AbstractNodeEventParser {
         if(!eventParser.isSuperNode()){
             return;
         }
+        eventParser.onPreview(current);
     }
 
     @Override
