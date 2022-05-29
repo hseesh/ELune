@@ -14,14 +14,13 @@ public class Param {
     private String name;
     private transient String alias;
     private transient PsiType type;
-    private  String typeAlias;
+    private String typeAlias;
     private transient boolean required;
     private String defaultValue;
     private String description;
     private transient String setString;
     private transient String getString;
     private transient String annotation;
-
 
     public Param(String paramName) {
         this.required = true;
@@ -102,7 +101,6 @@ public class Param {
         this.typeAlias = paramType.getCanonicalText();
     }
 
-
     public Boolean getRequired() {
         return required;
     }
@@ -148,21 +146,23 @@ public class Param {
         this.annotation = annotation;
     }
 
-    public String getPrimaryInfo(){
+    public String getPrimaryInfo() {
         return alias + StringUtil.SPACE + name + StringUtil.SPACE + defaultValue;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Param param = (Param) o;
-        return Objects.equals(name, param.name) && Objects.equals(type, param.type);
+        return Objects.equals(name, param.name) && Objects.equals(type, param.type) && Objects.equals(typeAlias, param.typeAlias);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, type);
+        return Objects.hash(name, type, typeAlias);
     }
 
     @Override

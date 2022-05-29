@@ -1,0 +1,47 @@
+<templateSet group="Latex">
+    <template name="\cent" value="¢" description="¢" toRefromat="false" toShortenFQNames="true">
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+    <template name="\pounds" value="£" description="£" toRefromat="false" toShortenFQNames="true">
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+    <template name="value" value="valueOf" description="valueOf" toRefromat="false" toShortenFQNames="true">
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+    <template
+            name="dds"
+            value="$TITLE$"
+            description="SDK: Convert to title case"
+            toReformat="true"
+            toShortenFQNames="false">
+        <variable
+                name="TITLE"
+                expression="titleCase(SELECTION)"
+                defaultValue="the quick brown fox"
+                alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+    <template
+            name="valueOf"
+            value="$valueOf$"
+            description="SDK: Convert to title case"
+            toReformat="true"
+            toShortenFQNames="false">
+        <variable
+                name="valueOf"
+                expression="valueOf(SELECTION)"
+                defaultValue="the quick brown fox"
+                alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+</templateSet>
