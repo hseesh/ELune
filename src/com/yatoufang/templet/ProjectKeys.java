@@ -35,6 +35,7 @@ public interface ProjectKeys {
     String DAO = "dao";
 
     String VO = "vO";
+    String VO_ALIAS = "VO";
 
     String IMPL = "impl";
 
@@ -63,6 +64,11 @@ public interface ProjectKeys {
     String JAVA = ".java";
 
     String EQUAL = " = ";
+    String IS = "is";
+    String GET = "get";
+    String NEW = " new ";
+    String RETURN = "return";
+    String NULL = "null";
 
     String GET_VALUE_METHOD = "getValue";
     String INITIALIZE_METHOD = "initialize";

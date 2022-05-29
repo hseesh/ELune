@@ -16,6 +16,7 @@ import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.ProjectKeys;
 import org.apache.commons.compress.utils.Lists;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -701,4 +702,36 @@ public class PSIUtil {
         }
         return builder.toString();
     }
+
+    @Nullable
+    public static String getClassValueOf(PsiClass[] classes) {
+        PsiClass aClass = classes[0];
+        if (aClass == null) {
+            return null;
+        }
+        return getClassValueOf(aClass);
+    }
+
+    @Nullable
+    public static String getClassValueOf(PsiClass aClass) {
+        PsiClass superClass = aClass.getSuperClass();
+        List<PsiField> fields = Lists.newArrayList();
+        if (superClass != null) {
+            for (PsiField psiField : aClass.getAllFields()) {
+                boolean shouldAdd = true;
+                for (PsiField allField : superClass.getAllFields()) {
+                    if (psiField.getName().equals(allField.getName())) {
+                        shouldAdd = false;
+                        break;
+                    }
+                }
+                if (shouldAdd) {
+                    fields.add(psiField);
+                }
+            }
+        }
+        return TemplateUtil.valueOf(aClass.getName(), fields);
+    }
+
+
 }

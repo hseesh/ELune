@@ -1,15 +1,10 @@
-<templateSet group="Latex">
+<templateSet group="Elune">
     <template name="\cent" value="¢" description="¢" toRefromat="false" toShortenFQNames="true">
         <context>
             <option name="OTHER" value="true"/>
         </context>
     </template>
     <template name="\pounds" value="£" description="£" toRefromat="false" toShortenFQNames="true">
-        <context>
-            <option name="OTHER" value="true"/>
-        </context>
-    </template>
-    <template name="value" value="valueOf" description="valueOf" toRefromat="false" toShortenFQNames="true">
         <context>
             <option name="OTHER" value="true"/>
         </context>
@@ -32,13 +27,27 @@
     <template
             name="valueOf"
             value="$valueOf$"
-            description="SDK: Convert to title case"
+            description="Elune: Create valueOf() method for all fields"
             toReformat="true"
             toShortenFQNames="false">
         <variable
                 name="valueOf"
                 expression="valueOf(SELECTION)"
-                defaultValue="the quick brown fox"
+                alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template
+            name="valueT"
+            value="$valueT$"
+            description="Elune: Create valueOf() method for current object"
+            toReformat="true"
+            toShortenFQNames="false">
+        <variable
+                name="valueT"
+                expression="valueT(SELECTION)"
                 alwaysStopAt="true"/>
         <context>
             <option name="OTHER" value="true"/>

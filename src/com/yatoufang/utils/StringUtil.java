@@ -13,12 +13,16 @@ public class StringUtil {
     public static final char COLON = ':';
     public static final char SPACE = ' ';
     public static final char EQUAL = '=';
+    public static final char POINT = '.';
+    public static final char SEMICOLON = ';';
     public static final char LEFT_BRACKET = '[';
     public static final char RIGHT_BRACKET = ']';
+    public static final char LEFT_ROUND_BRACKET = '(';
+    public static final char RIGHT_ROUND_BRACKET = ')';
     public static final char LEFT_BRACE = '{';
     public static final char RIGHT_BRACE = '}';
     public static final String DOUBLE_QUOTATION = " \"\" ";
-    public static final char NEW_LINE = '\n' ;
+    public static final char NEW_LINE = '\n';
 
     public static String buildPath(String rootPath, String... args) {
         StringBuilder builder = new StringBuilder(rootPath);
@@ -53,6 +57,23 @@ public class StringUtil {
                 needUpper = true;
                 continue;
             }
+            builder.append(chars[i]);
+        }
+        return builder.toString();
+    }
+
+    public static String toLowerCaseForFirstChar(String variable) {
+        if (variable == null || variable.isEmpty()) {
+            return variable;
+        }
+        char[] chars = variable.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        if (chars[0] >= 65 && chars[0] <= 97) {
+            builder.append(chars[0] += 32);
+        } else {
+            builder.append(chars[0]);
+        }
+        for (int i = 1; i < chars.length; i++) {
             builder.append(chars[i]);
         }
         return builder.toString();
@@ -171,6 +192,6 @@ public class StringUtil {
     public static void main(String[] args) {
         System.out.println(getUpperCaseVariable("Rune"));
         System.out.println(toUpper("Rune", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
+        System.out.println(toLowerCaseForFirstChar("testTable"));
     }
-
 }

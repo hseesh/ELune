@@ -76,7 +76,8 @@
 
 
         <defaultLiveTemplates file="/liveTemplate/notion.xml"/>
-        <liveTemplateMacro implementation="com.yatoufang.template.MyMacro"/>
+        <liveTemplateMacro implementation="com.yatoufang.template.ValueOfMacro"/>
+        <liveTemplateMacro implementation="com.yatoufang.template.ValueTMacro"/>
         <liveTemplateContext implementation="com.yatoufang.template.MyTemplateContext" />
 
     </extensions>
