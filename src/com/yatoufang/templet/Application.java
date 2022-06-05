@@ -50,7 +50,16 @@ public class Application {
 
     public static boolean isBasicType(String data){
         data = data.replace("[]","");
+        int i = data.indexOf("<");
+        if(i > 0){
+            data = data.substring(0,i);
+        }
         return DATATYPE.indexOf(data) > 0;
+    }
+
+    public static void main(String[] args) {
+        String str = "Map<Integer,Long>";
+        System.out.println(str.substring(0,3));
     }
 
 

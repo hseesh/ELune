@@ -1,33 +1,8 @@
 <templateSet group="Elune">
-    <template name="\cent" value="¢" description="¢" toRefromat="false" toShortenFQNames="true">
-        <context>
-            <option name="OTHER" value="true"/>
-        </context>
-    </template>
-    <template name="\pounds" value="£" description="£" toRefromat="false" toShortenFQNames="true">
-        <context>
-            <option name="OTHER" value="true"/>
-        </context>
-    </template>
-    <template
-            name="dds"
-            value="$TITLE$"
-            description="SDK: Convert to title case"
-            toReformat="true"
-            toShortenFQNames="false">
-        <variable
-                name="TITLE"
-                expression="titleCase(SELECTION)"
-                defaultValue="the quick brown fox"
-                alwaysStopAt="true"/>
-        <context>
-            <option name="OTHER" value="true"/>
-        </context>
-    </template>
     <template
             name="valueOf"
             value="$valueOf$"
-            description="Elune: Create valueOf() method for all fields"
+            description="Elune: public static &lt;T&gt; valueOf(Object..)"
             toReformat="true"
             toShortenFQNames="false">
         <variable
@@ -35,14 +10,14 @@
                 expression="valueOf(SELECTION)"
                 alwaysStopAt="true"/>
         <context>
-            <option name="OTHER" value="true"/>
+            <option name="ELUNE" value="true"/>
         </context>
     </template>
 
     <template
             name="valueT"
             value="$valueT$"
-            description="Elune: Create valueOf() method for current object"
+            description="Elune: public static &lt;TVO&gt; valueOf(&lt;T&gt;)"
             toReformat="true"
             toShortenFQNames="false">
         <variable
@@ -50,7 +25,1199 @@
                 expression="valueT(SELECTION)"
                 alwaysStopAt="true"/>
         <context>
-            <option name="OTHER" value="true"/>
+            <option name="ELUNE" value="true"/>
         </context>
     </template>
+
+    <template name="list" value="List&lt;$PARAM$&gt; $NAME$ = Lists.newArrayList();"
+              description="Elune: List&lt;$PARAM$&gt; list = Lists.newArrayList()" toReformat="true"
+              toShortenFQNames="true">
+        <variable name="NAME" expression="" defaultValue="list" alwaysStopAt="true"/>
+        <variable name="PARAM" expression="" defaultValue="&quot;Object&quot;" alwaysStopAt="true"/>
+        <context>`
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+
+    <template name="set" value="Set&lt;$PARAM$&gt; $NAME$ = Sets.newHashSet();"
+              description="Elune: Set&lt;$PARAM$&gt; set = Sets.newHashSet()" toReformat="true" toShortenFQNames="true">
+        <variable name="NAME" expression="" defaultValue="set" alwaysStopAt="true"/>
+        <variable name="PARAM" expression="" defaultValue="&quot;Object&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+
+    <template name="map" value="Map&lt;$PARAM$,$PARAM1$&gt; $NAME$ = Maps.newHashMap();"
+              description="Elune: Map&lt;Object,Object&gt; map = Maps.newHashMap()" toReformat="true"
+              toShortenFQNames="true">
+        <variable name="NAME" expression="" defaultValue="map" alwaysStopAt="true"/>
+        <variable name="PARAM" expression="" defaultValue="&quot;Object&quot;" alwaysStopAt="true"/>
+        <variable name="PARAM1" expression="" defaultValue="&quot;Object&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="sso"
+            value="int ServerType, int ServerId, int data, String openDate"
+            description="int ServerType, int ServerId, int data, String openDate"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="logger"
+            value="LOGGER.error(&quot;$END$&quot;);"
+            description="LOGGER.error();"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++  -->
+    <template
+            name="goodsId"
+            value="int goodsId"
+            description="Elune: int goodsId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="num"
+            value="int num"
+            description="Elune: int num"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="endTime"
+            value="long endTime"
+            description="Elune: long endTime"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="flagId"
+            value="int flagId"
+            description="Elune: int flagId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="equipmentId"
+            value="long equipmentId"
+            description="Elune: long equipmentId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="rewardMap"
+            value="Map&lt;Integer, Long&gt; rewardMap"
+            description="Elune: Map&lt;Integer, Long&gt; rewardMap"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="artifactId"
+            value="long artifactId"
+            description="Elune: long artifactId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="devourMap"
+            value="Map&lt;Integer, Integer&gt; devourMap"
+            description="Elune: Map&lt;Integer, Integer&gt; devourMap"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="rank"
+            value="long rank"
+            description="Elune: long rank"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="taskId"
+            value="int taskId"
+            description="Elune: int taskId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="time"
+            value="long time"
+            description="Elune: long time"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="rage"
+            value="int rage"
+            description="Elune: int rage"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="isSkip"
+            value="boolean isSkip"
+            description="Elune: boolean isSkip"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="groupId"
+            value="int groupId"
+            description="Elune: int groupId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="goodsIdList"
+            value="Collection&lt;Integer&gt; goodsIdList"
+            description="Elune: Collection&lt;Integer&gt; goodsIdList"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="damage"
+            value="long damage"
+            description="Elune: long damage"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="goodsUid"
+            value="long goodsUid"
+            description="Elune: long goodsUid"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="price"
+            value="int price"
+            description="Elune: int price"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="spiritId"
+            value="long spiritId"
+            description="Elune: long spiritId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="targetServeRId"
+            value="int targetServeRId"
+            description="Elune: int targetServeRId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="recharge"
+            value="int recharge"
+            description="Elune: int recharge"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="monsterId"
+            value="int monsterId"
+            description="Elune: int monsterId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="push"
+            value="boolean push"
+            description="Elune: boolean push"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="count"
+            value="int count"
+            description="Elune: int count"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="goodsMap"
+            value="Map&lt;Long, Integer&gt; goodsMap"
+            description="Elune: Map&lt;Long, Integer&gt; goodsMap"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="skillLevel"
+            value="int skillLevel"
+            description="Elune: int skillLevel"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="configId"
+            value="int configId"
+            description="Elune: int configId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="runeId"
+            value="long runeId"
+            description="Elune: long runeId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="addExp"
+            value="long addExp"
+            description="Elune: long addExp"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="actorId"
+            value="long actorId"
+            description="Elune: long actorId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="criticalList"
+            value="Collection&lt;Integer&gt; criticalList"
+            description="Elune: Collection&lt;Integer&gt; criticalList"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="num"
+            value="long num"
+            description="Elune: long num"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="battleId"
+            value="long battleId"
+            description="Elune: long battleId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="id"
+            value="int id"
+            description="Elune: int id"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="change"
+            value="int change"
+            description="Elune: int change"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="title"
+            value="String title"
+            description="Elune: String title"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="actorName"
+            value="String actorName"
+            description="Elune: String actorName"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="targetActorId"
+            value="long targetActorId"
+            description="Elune: long targetActorId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="message"
+            value="String message"
+            description="Elune: String message"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="costId"
+            value="int costId"
+            description="Elune: int costId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="heroIds"
+            value="Collection&lt;Long&gt; heroIds"
+            description="Elune: Collection&lt;Long&gt; heroIds"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="chosenId"
+            value="long chosenId"
+            description="Elune: long chosenId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="winnerId"
+            value="long winnerId"
+            description="Elune: long winnerId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="storyId"
+            value="int storyId"
+            description="Elune: int storyId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="amount"
+            value="int amount"
+            description="Elune: int amount"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="score"
+            value="int score"
+            description="Elune: int score"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="monsterGroupId"
+            value="int monsterGroupId"
+            description="Elune: int monsterGroupId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="attributes"
+            value="Map&lt;Byte, Object&gt; attributes"
+            description="Elune: Map&lt;Byte, Object&gt; attributes"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="actorAttributeMap"
+            value="Map&lt;Byte, Object&gt; actorAttributeMap"
+            description="Elune: Map&lt;Byte, Object&gt; actorAttributeMap"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="heroId"
+            value="int heroId"
+            description="Elune: int heroId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="nationId"
+            value="long nationId"
+            description="Elune: long nationId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="reinforceLevel"
+            value="int reinforceLevel"
+            description="Elune: int reinforceLevel"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="nextId"
+            value="int nextId"
+            description="Elune: int nextId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="goodsId"
+            value="long goodsId"
+            description="Elune: long goodsId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="ids"
+            value="Collection&lt;Long&gt; ids"
+            description="Elune: Collection&lt;Long&gt; ids"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="star"
+            value="int star"
+            description="Elune: int star"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="talentId"
+            value="int talentId"
+            description="Elune: int talentId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="fragmentId"
+            value="int fragmentId"
+            description="Elune: int fragmentId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="level"
+            value="int level"
+            description="Elune: int level"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="zoneId"
+            value="int zoneId"
+            description="Elune: int zoneId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="floor"
+            value="int floor"
+            description="Elune: int floor"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="bossId"
+            value="int bossId"
+            description="Elune: int bossId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="configIds"
+            value="Collection&lt;Integer&gt; configIds"
+            description="Elune: Collection&lt;Integer&gt; configIds"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="progress"
+            value="int progress"
+            description="Elune: int progress"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="heroId"
+            value="long heroId"
+            description="Elune: long heroId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="battleType"
+            value="int battleType"
+            description="Elune: int battleType"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="treasureId"
+            value="int treasureId"
+            description="Elune: int treasureId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="name"
+            value="String name"
+            description="Elune: String name"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="equipmentIds"
+            value="Collection&lt;Long&gt; equipmentIds"
+            description="Elune: Collection&lt;Long&gt; equipmentIds"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="nationIdList"
+            value="Collection&lt;Long&gt; nationIdList"
+            description="Elune: Collection&lt;Long&gt; nationIdList"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="loserId"
+            value="long loserId"
+            description="Elune: long loserId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="isFree"
+            value="boolean isFree"
+            description="Elune: boolean isFree"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="devourIds"
+            value="Collection&lt;Long&gt; devourIds"
+            description="Elune: Collection&lt;Long&gt; devourIds"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="originalId"
+            value="long originalId"
+            description="Elune: long originalId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="petId"
+            value="long petId"
+            description="Elune: long petId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="content"
+            value="String content"
+            description="Elune: String content"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="openTime"
+            value="long openTime"
+            description="Elune: long openTime"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="chapterId"
+            value="int chapterId"
+            description="Elune: int chapterId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="targetId"
+            value="long targetId"
+            description="Elune: long targetId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="activityId"
+            value="int activityId"
+            description="Elune: int activityId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="isWind"
+            value="boolean isWind"
+            description="Elune: boolean isWind"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="idl"
+            value="long id"
+            description="Elune: long id"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="giftId"
+            value="int giftId"
+            description="Elune: int giftId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="roomId"
+            value="long roomId"
+            description="Elune: long roomId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="pets"
+            value="Map&lt;Integer, Long&gt; pets"
+            description="Elune: Map&lt;Integer, Long&gt; pets"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="isRoll"
+            value="boolean isRoll"
+            description="Elune: boolean isRoll"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="skillType"
+            value="int skillType"
+            description="Elune: int skillType"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="stateId"
+            value="int stateId"
+            description="Elune: int stateId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="positionId"
+            value="int positionId"
+            description="Elune: int positionId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="treasureId"
+            value="long treasureId"
+            description="Elune: long treasureId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="teamId"
+            value="long teamId"
+            description="Elune: long teamId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="titleId"
+            value="int titleId"
+            description="Elune: int titleId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="effectId"
+            value="int effectId"
+            description="Elune: int effectId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="runeIds"
+            value="Collection&lt;Long&gt; runeIds"
+            description="Elune: Collection&lt;Long&gt; runeIds"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="storyIdList"
+            value="List&lt;Integer&gt; storyIdList"
+            description="Elune: List&lt;Integer&gt; storyIdList"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="laseResetTime"
+            value="long laseResetTime"
+            description="Elune: long laseResetTime"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="times"
+            value="int times"
+            description="Elune: int times"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="serverId"
+            value="int serverId"
+            description="Elune: int serverId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="beginTime"
+            value="long beginTime"
+            description="Elune: long beginTime"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="orderId"
+            value="int orderId"
+            description="Elune: int orderId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="power"
+            value="long power"
+            description="Elune: long power"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="points"
+            value="int points"
+            description="Elune: int points"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="times"
+            value="Map&lt;Long, Integer&gt; times"
+            description="Elune: Map&lt;Long, Integer&gt; times"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="fragmentIds"
+            value="Collection&lt;Long&gt; fragmentIds"
+            description="Elune: Collection&lt;Long&gt; fragmentIds"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="orderIds"
+            value="Collection&lt;String&gt; orderIds"
+            description="Elune: Collection&lt;String&gt; orderIds"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="replaceId"
+            value="long replaceId"
+            description="Elune: long replaceId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="type"
+            value="int type"
+            description="Elune: int type"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="costValue"
+            value="double costValue"
+            description="Elune: double costValue"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="fragmentId"
+            value="List&lt;Integer&gt; fragmentId"
+            description="Elune: List&lt;Integer&gt; fragmentId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="isWin"
+            value="boolean isWin"
+            description="Elune: boolean isWin"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="positions"
+            value="Map&lt;Integer, Long&gt; positions"
+            description="Elune: Map&lt;Integer, Long&gt; positions"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="isAddExp"
+            value="boolean isAddExp"
+            description="Elune: boolean isAddExp"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="uid"
+            value="long uid"
+            description="Elune: long uid"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+    <template
+            name="chargeId"
+            value="int chargeId"
+            description="Elune: int chargeId"
+            toReformat="true"
+            toShortenFQNames="false">
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+
 </templateSet>
