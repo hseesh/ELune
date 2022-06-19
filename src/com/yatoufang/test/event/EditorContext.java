@@ -39,7 +39,7 @@ public class EditorContext {
     //indicates area taken up by graphics
     private static Point lastDraggingPoint;
     public static JTextArea textArea = new JTextArea();
-    public static RootLayer rootPanel = new RootLayer();
+    public static RootLayer rootPanel;
     public static JPopupMenu popupMenu = Canvas.createMenu();
     public static PopupMenuContext popupMenuContext = new PopupMenuContext();
     public static boolean clearMenuItemState = false;
@@ -51,16 +51,9 @@ public class EditorContext {
     public static AtomicBoolean textAreaState = new AtomicBoolean(false);
     public static AtomicBoolean draggingState = new AtomicBoolean(false);
     private static Document document;
-    private static final Dimension area;
+    private static Dimension area;
     private static final Collection<Element> updates = Lists.newArrayList();
 
-    static {
-        area = new Dimension(0, 0);
-        last = rootPanel.topic;
-        current = rootPanel.topic;
-        current.fillText(textArea, current.getBounds());
-        designer = new Designer();
-    }
 
     public static void updateUI() {
         if (updates.size() > 0) {
@@ -240,17 +233,17 @@ public class EditorContext {
         }
         designer.setTable(table);
         current.children.clear();
-        Canvas.createNodes(current,table);
+        Canvas.createNodes(current, table);
     }
 
     public static void setDesigner(Map<String, String> fileMap) {
         designer.setConfigContentMap(fileMap);
-        fileMap.forEach((k,v) ->{
+        fileMap.forEach((k, v) -> {
             PsiClass aClass = BuildUtil.createClass(v);
-            if(aClass == null){
+            if (aClass == null) {
                 return;
             }
-          //  List<String> primaryInfo = PSIUtil.getClassPrimaryInfo(aClass);
+            //  List<String> primaryInfo = PSIUtil.getClassPrimaryInfo(aClass);
         });
     }
 
@@ -275,12 +268,17 @@ public class EditorContext {
                 e.printStackTrace();
             }
         }
+        area = new Dimension(0, 0);
+        last = rootPanel.topic;
+        current = rootPanel.topic;
+        current.fillText(textArea, current.getBounds());
+        designer = new Designer();
         designer.setElement(rootPanel.topic);
         rootPanel.init();
     }
 
 
-    public static Point getCurrentPoint(){
+    public static Point getCurrentPoint() {
         return current.getBounds().getLocation();
     }
 }

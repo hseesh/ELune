@@ -31,11 +31,11 @@ public class MindMapDocumentEditorProvider implements FileEditorProvider, DumbAw
     @Override
     public @NotNull
     FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        if (!fileFileEditorMap.containsKey(virtualFile)) {
-            synchronized (MindMapDocumentEditorProvider.class) {
-                if (!fileFileEditorMap.containsKey(virtualFile)) {
-                    fileFileEditorMap.put(virtualFile, new MindMapDocumentEditor(virtualFile));
-                }
+        synchronized (MindMapDocumentEditorProvider.class) {
+            if (!fileFileEditorMap.containsKey(virtualFile)) {
+                MindMapDocumentEditor editor = new MindMapDocumentEditor(virtualFile);
+                fileFileEditorMap.put(virtualFile, editor);
+                return editor;
             }
         }
         return fileFileEditorMap.get(virtualFile);
@@ -57,7 +57,7 @@ public class MindMapDocumentEditorProvider implements FileEditorProvider, DumbAw
     @Override
     public @NotNull
     FileEditorPolicy getPolicy() {
-        return FileEditorPolicy.PLACE_BEFORE_DEFAULT_EDITOR;
+        return FileEditorPolicy.HIDE_DEFAULT_EDITOR;
     }
 
 

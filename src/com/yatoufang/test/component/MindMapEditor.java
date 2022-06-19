@@ -23,7 +23,8 @@ public class MindMapEditor implements AdjustmentListener {
     public MindMapEditor() {
         MyMouseAdapter mouseAdapter = new MyMouseAdapter();
         MyMouseMotionAdapter mouseMotionAdapter = new MyMouseMotionAdapter();
-        RootLayer rootLayer = EditorContext.rootPanel;
+        RootLayer rootLayer = new RootLayer();
+        EditorContext.rootPanel = rootLayer;
         rootLayer.addMouseListener(mouseAdapter);
         rootLayer.addMouseMotionListener(mouseMotionAdapter);
         Font font = new Font(null, Font.PLAIN, 25);
