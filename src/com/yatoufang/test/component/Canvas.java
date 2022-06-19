@@ -10,6 +10,7 @@ import com.yatoufang.test.draw.LayoutContext;
 import com.yatoufang.test.draw.LayoutType;
 import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.test.model.Element;
+import com.yatoufang.test.style.NodeType;
 import com.yatoufang.utils.StringUtil;
 import icons.Icon;
 
@@ -291,9 +292,8 @@ public class Canvas {
 
     public static void createNodes(Element node, Table table) {
         Element element = createElement(node, table.getName(), node.layoutType);
-        for (Field field : table.getFields()) {
-            createElement(element, field.getPrimaryInfo(), element.layoutType);
-        }
+        element.type = NodeType.TABLE_NODE;
+        EditorContext.pushUpdates(element);
     }
 }
         
