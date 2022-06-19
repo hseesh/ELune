@@ -17,7 +17,7 @@ import java.util.Map;
  * @author ${author}
  * @since ${now}
  */
-@Table(name = "${table.nickName}", type = DBQueueType.IMPORTANT)
+@Table(name = "${table.alias}", type = DBQueueType.IMPORTANT)
 public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)} extends SingleEntity<Long> {
 
    #foreach($item in $table.fields)/**

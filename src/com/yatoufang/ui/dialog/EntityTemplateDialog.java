@@ -44,7 +44,7 @@ public class EntityTemplateDialog extends DialogWrapper {
 
     private EditorTextField editor;
 
-   private final  ArrayList<String> files = Lists.newArrayList();
+    private final ArrayList<String> files = Lists.newArrayList();
 
     private final String rootPath;
     private String workSpace;
@@ -69,16 +69,21 @@ public class EntityTemplateDialog extends DialogWrapper {
 
     public EntityTemplateDialog(String rootPath, String workSpace, Map<String, String> fileMap) {
         super(Application.project, true);
-        this.fileMap = fileMap;
         this.rootPath = rootPath;
         this.workSpace = workSpace;
         this.designerModel = true;
         this.table = EditorContext.designer.getTable();
         velocityService = VelocityService.getInstance();
-        String defaultContent = fileMap.values().stream().findFirst().orElse(StringUtil.EMPTY);
+        String defaultContent;
+        if (fileMap == null) {
+            defaultContent = StringUtil.EMPTY;
+        } else {
+            defaultContent = fileMap.values().stream().findFirst().orElse(StringUtil.EMPTY);
+            files.addAll(fileMap.keySet());
+            this.fileMap = fileMap;
+        }
         editor = SwingUtils.createEditor(defaultContent);
         editor.setFont(new Font(null, Font.PLAIN, 14));
-        files.addAll(fileMap.keySet());
         init();
     }
 
@@ -133,6 +138,9 @@ public class EntityTemplateDialog extends DialogWrapper {
         decorator.addExtraAction(new AnActionButton("Edit Object Fields", "Edit", Icon.EDIT) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
+                if(table == null){
+                    return;
+                }
                 ChooseFieldsDialog chooseFieldsDialog = new ChooseFieldsDialog(table);
                 ActionListener actionListener = new ActionListener() {
                     /**
@@ -202,7 +210,7 @@ public class EntityTemplateDialog extends DialogWrapper {
     @Override
     public void doCancelAction() {
         super.doCancelAction();
-        if (designerModel) {
+        if (designerModel && fileMap.size() > 0) {
             EditorContext.setDesigner(fileMap);
         }
     }
