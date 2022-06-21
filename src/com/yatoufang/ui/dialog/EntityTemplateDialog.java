@@ -18,6 +18,7 @@ import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.test.event.EditorContext;
+import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import com.yatoufang.utils.SwingUtils;
@@ -164,6 +165,7 @@ public class EntityTemplateDialog extends DialogWrapper {
                                     table.setName(table.getName() + StringUtil.UNDER_LINE);
                                 }
                                 table.setFields(fields);
+                                DataUtil.valueOf(table);
                                 String result = velocityService.execute(ProjectKeys.ENTITY_TEMPLATE, table);
                                 fileMap.put(table.getName(), result);
                                 listModel.add(table.getName());

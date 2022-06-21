@@ -1,5 +1,7 @@
 package com.yatoufang.utils;
 
+import com.yatoufang.entity.Field;
+import com.yatoufang.entity.Table;
 import com.yatoufang.test.model.Element;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,6 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 public class DataUtil {
 
@@ -41,7 +44,7 @@ public class DataUtil {
         String[] split = canonicalPath.split(key);
         if (split.length == 1 || split.length == 2) {
             return split[0] + key + "/src/main/java/cn/daxiang/lyltd/" + key;
-        }else if (split.length == 3) {
+        } else if (split.length == 3) {
             return split[0] + key + split[1] + key;
         }
         return null;
@@ -67,5 +70,20 @@ public class DataUtil {
             child.parent = element;
             initialise(child);
         }
+    }
+
+    public static void valueOf(Table table) {
+        StringBuilder stringBuilder = new StringBuilder("(");
+        List<Field> fields = table.getFields();
+        for (int i = 0; i < fields.size(); i++) {
+            stringBuilder.append(fields.get(i).getAlias())
+                .append(" ")
+                .append(fields.get(i).getName());
+            if (i != fields.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append(")");
+        table.setValueOf(stringBuilder.toString());
     }
 }

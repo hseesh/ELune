@@ -15,6 +15,7 @@ import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.ExceptionUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
@@ -201,18 +202,7 @@ public class TableTemplateDialog {
 
     private void calcResult() {
         String result;
-        StringBuilder stringBuilder = new StringBuilder("(");
-        List<Field> fields = table.getFields();
-        for (int i = 0; i < fields.size(); i++) {
-            stringBuilder.append(fields.get(i).getAlias())
-                    .append(" ")
-                    .append(fields.get(i).getName());
-            if (i != fields.size() - 1) {
-                stringBuilder.append(", ");
-            }
-        }
-        stringBuilder.append(")");
-        table.setValueOf(stringBuilder.toString());
+        DataUtil.valueOf(table);
         if (table.isMultiEntity()) {
             result = velocityService.execute(ProjectKeys.MULTI_TEMPLATE, table);
         } else {
