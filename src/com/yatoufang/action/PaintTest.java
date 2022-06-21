@@ -13,13 +13,17 @@ import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
 import com.yatoufang.config.ProjectSearchScope;
+import com.yatoufang.entity.ConfigParam;
 import com.yatoufang.entity.Param;
+import com.yatoufang.entity.Table;
 import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.ui.dialog.ConfigTemplateDialog;
 import com.yatoufang.ui.dialog.EntityTemplateDialog;
+import com.yatoufang.ui.dialog.ProtocolBuildDialog;
 import com.yatoufang.utils.BuildUtil;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
@@ -38,45 +42,10 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        PackageChooserDialog selector = new PackageChooserDialog("Select a Package", Application.project);
-        selector.show();
-        PsiPackage selectedPackage = selector.getSelectedPackage();
-        HashSet<Param> result = Sets.newHashSet();
-        if (selectedPackage != null) {
-            PsiPackage[] subPackages = selectedPackage.getSubPackages();
-            for (PsiPackage psiPackage : subPackages) {
-                PsiPackage[] psiPackages = psiPackage.getSubPackages();
-                for (PsiPackage aPackage : psiPackages) {
-                    if (aPackage.getName().contains(ProjectKeys.FACADE)) {
-                        PsiClass[] allClass = aPackage.getClasses();
-                        for (PsiClass aClass : allClass) {
-                            if (aClass.isInterface()) {
-                                PsiMethod[] allMethods = aClass.getAllMethods();
-                                for (PsiMethod method : allMethods) {
-                                    PsiParameterList parameterList = method.getParameterList();
-                                    PsiParameter[] parameters = parameterList.getParameters();
-                                    for (PsiParameter parameter : parameters) {
-                                        String typeAlias = parameter.getType().getPresentableText();
-                                        if (Application.isBasicType(typeAlias)) {
-                                            Param param = new Param(parameter.getName());
-                                            param.setTypeAlias(typeAlias);
-                                            param.setDefaultValue(null);
-                                            param.setDescription(null);
-                                            result.add(param);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-
-        GsonBuilder builder = new GsonBuilder();
-        String s = builder.disableHtmlEscaping().create().toJson(result);
-        System.out.println(s);
+        Table table = new Table();
+        table.setFields(new ArrayList<>());
+        table.setName("dds");
+        new ProtocolBuildDialog(table,"").show();
     }
 
     private void test() {
@@ -147,6 +116,45 @@ public class PaintTest extends AnAction {
             JavaCodeStyleManager.getInstance(Application.project).shortenClassReferences(file);
             CodeStyleManager.getInstance(Application.project).reformat(aClass);
         });
+    }
+
+    private void dd() {
+        PackageChooserDialog selector = new PackageChooserDialog("Select a Package", Application.project);
+        selector.show();
+        PsiPackage selectedPackage = selector.getSelectedPackage();
+        HashSet<Param> result = Sets.newHashSet();
+        if (selectedPackage != null) {
+            PsiPackage[] subPackages = selectedPackage.getSubPackages();
+            for (PsiPackage psiPackage : subPackages) {
+                PsiPackage[] psiPackages = psiPackage.getSubPackages();
+                for (PsiPackage aPackage : psiPackages) {
+                    if (aPackage.getName().contains(ProjectKeys.FACADE)) {
+                        PsiClass[] allClass = aPackage.getClasses();
+                        for (PsiClass aClass : allClass) {
+                            if (aClass.isInterface()) {
+                                PsiMethod[] allMethods = aClass.getAllMethods();
+                                for (PsiMethod method : allMethods) {
+                                    PsiParameterList parameterList = method.getParameterList();
+                                    PsiParameter[] parameters = parameterList.getParameters();
+                                    for (PsiParameter parameter : parameters) {
+                                        String typeAlias = parameter.getType().getPresentableText();
+                                        if (Application.isBasicType(typeAlias)) {
+                                            Param param = new Param(parameter.getName());
+                                            param.setTypeAlias(typeAlias);
+                                            param.setDefaultValue(null);
+                                            param.setDescription(null);
+                                            result.add(param);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
     }
 
     public static void main(String[] args) {

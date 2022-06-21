@@ -131,6 +131,16 @@ public class StringUtil {
         return builder.toString();
     }
 
+    public static String collectChineseCharacter(String value) {
+        StringBuilder builder = new StringBuilder();
+        for (char c : value.toCharArray()) {
+            if (c > 122) {
+                builder.append(c);
+            }
+        }
+        return builder.toString();
+    }
+
     public static String getCustomerJson(String value) {
         if (value.isEmpty()) {
             return value;
@@ -194,5 +204,6 @@ public class StringUtil {
         System.out.println(getUpperCaseVariable("Rune"));
         System.out.println(toUpper("Rune", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
         System.out.println(toLowerCaseForFirstChar("testTable"));
+        System.out.println(collectChineseCharacter("\\module/Dds/升级/request/LevelRequest"));
     }
 }

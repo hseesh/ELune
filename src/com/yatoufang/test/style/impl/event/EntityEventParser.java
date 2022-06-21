@@ -22,6 +22,11 @@ public class EntityEventParser extends AbstractNodeEventParser {
     }
 
     @Override
+    public void preview() {
+        onPreview(EditorContext.current);
+    }
+
+    @Override
     public void onPreview(Element node) {
         Map<String, String> configContentMap = EditorContext.designer.getEntityContentMap();
         String content = configContentMap.get(node.text);
