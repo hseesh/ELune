@@ -54,7 +54,6 @@ public class EditorContext {
     private static Dimension area;
     private static final Collection<Element> updates = Lists.newArrayList();
 
-
     public static void updateUI() {
         if (updates.size() > 0) {
             rootPanel.create(rootPanel.topic);
@@ -150,7 +149,6 @@ public class EditorContext {
         }
     }
 
-
     public static void refreshViewableRange(Rectangle bounds) {
         boolean changed = false;
         Point point = bounds.getLocation();
@@ -234,6 +232,7 @@ public class EditorContext {
         designer.setTable(table);
         current.children.clear();
         Canvas.createNodes(current, table);
+        refresh();
     }
 
     public static void setDesigner(Map<String, String> fileMap) {
@@ -243,14 +242,22 @@ public class EditorContext {
             if (aClass == null) {
                 return;
             }
-            //  List<String> primaryInfo = PSIUtil.getClassPrimaryInfo(aClass);
         });
+        refresh();
+    }
+
+    public static void setEntities(Map<String, String> fileMap) {
+        designer.setEntityContentMap(fileMap);
+        current.children.clear();
+        fileMap.forEach((k, v) -> {
+            Canvas.createNodes(current, k);
+        });
+        refresh();
     }
 
     public static void setFilePath(String rootPath) {
         filePath = rootPath;
     }
-
 
     public static void setDocument(Document newDocument) {
         document = newDocument;
@@ -261,22 +268,33 @@ public class EditorContext {
                 designer = gson.fromJson(document.getText(), Designer.class);
                 Element element = designer.getElement();
                 if (element != null) {
-                    DataUtil.initialise(element);
+                    initialise(element);
                     rootPanel.topic = element;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } else {
+            System.out.println("init designer");
+            designer = new Designer();
         }
         area = new Dimension(0, 0);
         last = rootPanel.topic;
         current = rootPanel.topic;
         current.fillText(textArea, current.getBounds());
-        designer = new Designer();
         designer.setElement(rootPanel.topic);
         rootPanel.init();
     }
 
+    public static void initialise(Element element) {
+        if (element == null) {
+            return;
+        }
+        for (Element child : element.children) {
+            child.parent = element;
+            initialise(child);
+        }
+    }
 
     public static Point getCurrentPoint() {
         return current.getBounds().getLocation();

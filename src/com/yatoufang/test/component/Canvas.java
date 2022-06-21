@@ -295,6 +295,12 @@ public class Canvas {
         element.type = NodeType.TABLE_NODE;
         EditorContext.pushUpdates(element);
     }
+
+    public static void createNodes(Element node, String name) {
+        Element element = createElement(node, name, node.layoutType);
+        element.type = NodeType.ENTITY_NODE;
+        EditorContext.pushUpdates(element);
+    }
 }
         
 

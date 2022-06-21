@@ -57,7 +57,6 @@ public class EntityTemplateDialog extends DialogWrapper {
 
     private final VelocityService velocityService;
 
-
     public EntityTemplateDialog(String rootPath, String workSpace) {
         super(Application.project, true);
         this.rootPath = rootPath;
@@ -72,7 +71,14 @@ public class EntityTemplateDialog extends DialogWrapper {
         this.rootPath = rootPath;
         this.workSpace = workSpace;
         this.designerModel = true;
-        this.table = EditorContext.designer.getTable();
+
+        if (EditorContext.designer == null || EditorContext.designer.getTable() == null) {
+            table = new Table();
+            table.setName(StringUtil.EMPTY);
+            table.setFields(new ArrayList<>());
+        } else {
+            this.table = EditorContext.designer.getTable();
+        }
         velocityService = VelocityService.getInstance();
         String defaultContent;
         if (fileMap == null) {
@@ -87,16 +93,17 @@ public class EntityTemplateDialog extends DialogWrapper {
         init();
     }
 
-
     private void saveFile() {
         if (fileMap.size() > 0) {
+            if(table.getName() == null || table.getName().isEmpty()){
+                return;
+            }
             fileMap.forEach((fileName, fileContent) -> {
                 String filePath = StringUtil.buildPath(rootPath, ProjectKeys.MODEL, table.getName(), fileName + ProjectKeys.JAVA);
                 FileWrite.write(fileContent, filePath, true, false);
             });
         }
     }
-
 
     private void initData() {
         String text = velocityService.execute(ProjectKeys.ENTITY_TEMPLATE, new Config());
@@ -105,12 +112,10 @@ public class EntityTemplateDialog extends DialogWrapper {
     }
 
     @Override
-    protected @Nullable
-    JComponent createCenterPanel() {
+    protected @Nullable JComponent createCenterPanel() {
         JSplitPane rootPane = new JSplitPane();
 
         rootPane.setMinimumSize(new Dimension(1100, 800));
-
 
         JButton execute = new JButton("Execute");
 
@@ -118,7 +123,6 @@ public class EntityTemplateDialog extends DialogWrapper {
 
         CollectionListModel<String> listModel = new CollectionListModel<>(files);
         JBList<String> fileList = new JBList<>(listModel);
-
 
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(fileList);
 
@@ -138,7 +142,7 @@ public class EntityTemplateDialog extends DialogWrapper {
         decorator.addExtraAction(new AnActionButton("Edit Object Fields", "Edit", Icon.EDIT) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-                if(table == null){
+                if (table == null) {
                     return;
                 }
                 ChooseFieldsDialog chooseFieldsDialog = new ChooseFieldsDialog(table);
@@ -155,9 +159,15 @@ public class EntityTemplateDialog extends DialogWrapper {
                             List<Field> fields = (List<Field>) e.getSource();
                             if (fields.size() > 0) {
                                 Table table = new Table();
-                                table.setName(fileList.getSelectedValue());
+                                table.setName(ProjectKeys.MODEL);
+                                if(fileMap.containsKey(table.getName())){
+                                    table.setName(table.getName() + StringUtil.UNDER_LINE);
+                                }
                                 table.setFields(fields);
-                                editor.setText(velocityService.execute(ProjectKeys.ENTITY_TEMPLATE, table));
+                                String result = velocityService.execute(ProjectKeys.ENTITY_TEMPLATE, table);
+                                fileMap.put(table.getName(), result);
+                                listModel.add(table.getName());
+                                editor.setText(result);
                             }
                         }
                     }
@@ -192,10 +202,7 @@ public class EntityTemplateDialog extends DialogWrapper {
         executeDimension.setSize(new Dimension(300, 50));
         executeDimension.add(execute);
 
-        JPanel leftRootPanel = FormBuilder.createFormBuilder()
-                .addComponentFillVertically(panel, 0)
-                .addComponent(executeDimension)
-                .getPanel();
+        JPanel leftRootPanel = FormBuilder.createFormBuilder().addComponentFillVertically(panel, 0).addComponent(executeDimension).getPanel();
 
         rightRootPanel.add(editor);
 
@@ -211,13 +218,12 @@ public class EntityTemplateDialog extends DialogWrapper {
     public void doCancelAction() {
         super.doCancelAction();
         if (designerModel && fileMap.size() > 0) {
-            EditorContext.setDesigner(fileMap);
+            EditorContext.setEntities(fileMap);
         }
     }
 
     @Override
-    protected @NotNull
-    JPanel createButtonsPanel(@NotNull List<? extends JButton> buttons) {
+    protected @NotNull JPanel createButtonsPanel(@NotNull List<? extends JButton> buttons) {
         return new JPanel();
     }
 }

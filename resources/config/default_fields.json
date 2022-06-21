@@ -1,0 +1,97 @@
+[
+    {
+        "name": "id",
+        "typeAlias": "long",
+        "description": "ID",
+        "alias": "long"
+    },
+    {
+        "name": "id",
+        "typeAlias": "int",
+        "description": "ID",
+        "alias": "int"
+    },
+    {
+        "name": "charge",
+        "typeAlias": "int",
+        "alias": "int",
+        "defaultValue": "",
+        "description": "充值金额"
+    },
+    {
+        "name": "score",
+        "typeAlias": "int",
+        "alias": "int",
+        "defaultValue": "",
+        "description": "积分"
+    },
+    {
+        "name": "rank",
+        "typeAlias": "long",
+        "alias": "ID",
+        "defaultValue": "",
+        "description": "排名"
+    },
+    {
+        "name": "achieveTime",
+        "typeAlias": "long",
+        "alias": "long",
+        "description": "达成时间"
+    },
+    {
+        "name": "count",
+        "typeAlias": "int",
+        "alias": "int",
+        "defaultValue": "",
+        "description": "数量"
+    },
+    {
+        "name": "level",
+        "typeAlias": "int",
+        "alias": "int",
+        "defaultValue": "",
+        "description": "等级"
+    },
+    {
+        "name": "fragmentId",
+        "typeAlias": "int",
+        "alias": "int",
+        "defaultValue": "",
+        "description": "碎片ID"
+    },
+    {
+        "name": "rechargeReceiveMap",
+        "typeAlias": "Map<Integer, Integer>",
+        "alias": "Map<Integer, Integer>",
+        "defaultValue": "= Maps.newHashMap()",
+        "description": "单充-领取记录\n{key:charge,value:num}"
+    },
+    {
+        "name": "rechargeRecord",
+        "alias": "Map<Integer, Integer>",
+        "typeAlias": "Map<Integer, Integer>",
+        "defaultValue": "= Maps.newHashMap()",
+        "description": "单充记录\n{key:charge,value:num}"
+    },
+    {
+        "name": "goodsRecord",
+        "alias": "Map<Integer, Integer>",
+        "typeAlias": "Map<Integer, Integer>",
+        "defaultValue": "= Maps.newHashMap()",
+        "description": "兑换商店-兑换记录 \n{key:charge,value:num}"
+    },
+    {
+        "name": "receiveRewards",
+        "alias": "Collection<Integer>",
+        "typeAlias": "Collection<Integer>",
+        "defaultValue": "= Sets.newHashSet()",
+        "description": "已领取免费奖励的记录  \n[id,id,id] id:宝箱id"
+    },
+    {
+        "name": "attributes",
+        "alias": "Map<Byte, Object>",
+        "typeAlias": "Map<Byte, Object>",
+        "defaultValue": "= Maps.newHashMap()",
+        "description": "角色属性key:\n{@code ActorKey},value:Value"
+    }
+]
