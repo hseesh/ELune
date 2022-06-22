@@ -57,6 +57,7 @@ public class StyleContext {
         new EntityEventParser();
         new TableEventParser();
         new DefaultEventParser();
+        new ProtocolEventParser();
     }
 
 

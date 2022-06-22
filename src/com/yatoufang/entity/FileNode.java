@@ -73,4 +73,12 @@ public class FileNode extends DefaultMutableTreeNode {
         this.templatePath = templatePath;
     }
 
+    public static FileNode valueOf(Node node){
+        FileNode fileNode = new FileNode(node.name);
+        fileNode.content = node.content;
+        fileNode.isCatalog = node.isCatalog;
+        fileNode.isInterface = node.isInterface;
+        return fileNode;
+    }
+
 }

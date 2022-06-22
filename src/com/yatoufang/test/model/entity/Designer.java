@@ -1,6 +1,7 @@
 package com.yatoufang.test.model.entity;
 
 import com.yatoufang.entity.Config;
+import com.yatoufang.entity.Node;
 import com.yatoufang.entity.Table;
 import com.yatoufang.test.model.Element;
 import org.apache.commons.compress.utils.Lists;
@@ -14,6 +15,8 @@ import java.util.Map;
  * @since 2022/5/3 0003
  */
 public class Designer {
+
+    private Node node;
 
     private Element element;
 
@@ -74,5 +77,13 @@ public class Designer {
 
     public void setEntityContentMap(Map<String, String> entityContentMap) {
         this.entityContentMap = entityContentMap;
+    }
+
+    public Node getNode() {
+        return node;
+    }
+
+    public void setNode(Node node) {
+        this.node = node;
     }
 }

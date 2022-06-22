@@ -1,6 +1,5 @@
 package com.yatoufang.ui.dialog;
 
-import com.google.common.collect.Maps;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
@@ -11,11 +10,13 @@ import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.FormBuilder;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.FileNode;
+import com.yatoufang.entity.Node;
 import com.yatoufang.entity.Table;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.utils.*;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author GongHuang（hse）
@@ -42,11 +42,12 @@ public class ProtocolBuildDialog extends DialogWrapper {
 
     private final String rootPath;
     private final Table table;
+    private Node node;
 
     private Tree tree;
     private EditorTextField editor;
 
-    private Map<String, String> fileMap = Maps.newHashMap();
+    private boolean designerModel;
 
     private final VelocityService velocityService = VelocityService.getInstance();
 
@@ -58,6 +59,19 @@ public class ProtocolBuildDialog extends DialogWrapper {
         initComponent();
         init();
         setTitle("My Protocol");
+    }
+
+    public ProtocolBuildDialog(Table table, String filePath, Node node) {
+        super(Application.project, true, false);
+        this.table = table;
+        this.node = node;
+        designerModel = true;
+        this.table.setName(StringUtil.getUpperCaseVariable(table.getName()));
+        this.rootPath = StringUtil.buildPath(filePath, ProjectKeys.MODULE);
+        initComponent();
+        init();
+        setTitle("My Protocol");
+
     }
 
     @Nullable
@@ -99,7 +113,16 @@ public class ProtocolBuildDialog extends DialogWrapper {
     }
 
     private JComponent createStructureTree() {
-        FileNode root = new FileNode(table.getName(), true);
+        FileNode root;
+        if (!designerModel) {
+            root = new FileNode(table.getName(), true);
+        } else {
+            if (this.node == null) {
+                root = new FileNode(table.getName(), true);
+            } else {
+                root = initNode();
+            }
+        }
         DefaultTreeModel fileTreeModel = new DefaultTreeModel(root);
         tree = new Tree(fileTreeModel);
         tree.setDragEnabled(true);
@@ -265,14 +288,14 @@ public class ProtocolBuildDialog extends DialogWrapper {
             String filePath = file.getFilePath(rootPath);
             methods.add(StringUtil.collectChineseCharacter(filePath));
             if (filePath.contains(ProjectKeys.REQUEST)) {
-                String path = StringUtil.buildPath(rootPath, table.getName(), ProjectKeys.REQUEST, file.name+ ProjectKeys.JAVA);
-                FileWrite.write(file.content,path, true, false);
+                String path = StringUtil.buildPath(rootPath, table.getName(), ProjectKeys.REQUEST, file.name + ProjectKeys.JAVA);
+                FileWrite.write(file.content, path, true, false);
             } else if (filePath.contains(ProjectKeys.RESPONSE)) {
-                String path = StringUtil.buildPath(rootPath, table.getName(), ProjectKeys.RESPONSE, file.name+ProjectKeys.JAVA);
-                FileWrite.write(file.content,path, true, false);
+                String path = StringUtil.buildPath(rootPath, table.getName(), ProjectKeys.RESPONSE, file.name + ProjectKeys.JAVA);
+                FileWrite.write(file.content, path, true, false);
             }
             PsiClass aClass = BuildUtil.createClass(file.content);
-            if(aClass == null){
+            if (aClass == null) {
                 continue;
             }
 
@@ -289,6 +312,29 @@ public class ProtocolBuildDialog extends DialogWrapper {
         }
     }
 
+    private void visitNode(FileNode root, Node parent) {
+        for (int i = 0; i < root.getChildCount(); i++) {
+            FileNode leafNode = (FileNode) root.getChildAt(i);
+            Node node = Node.valueOf(leafNode);
+            parent.addChild(node);
+            visitNode(leafNode, node);
+        }
+    }
+
+    private void initNode(FileNode root, Node parent) {
+        for (Node child : parent.children) {
+            FileNode fileNode = FileNode.valueOf(child);
+            root.add(fileNode);
+            initNode(fileNode, child);
+        }
+    }
+
+    protected FileNode initNode() {
+        FileNode parent = FileNode.valueOf(this.node);
+        initNode(parent, this.node);
+        return parent;
+    }
+
     private FileNode createNode(String node) {
         FileNode newNode = new FileNode(node);
         FileNode request = new FileNode(ProjectKeys.REQUEST);
@@ -301,4 +347,24 @@ public class ProtocolBuildDialog extends DialogWrapper {
         return newNode;
     }
 
+    @Override
+    public void doCancelAction() {
+        super.doCancelAction();
+        if (!designerModel) {
+            return;
+        }
+        TreeModel model = tree.getModel();
+        FileNode root = (FileNode) model.getRoot();
+        Node node = Node.valueOf(root);
+        visitNode(root, node);
+        if (node.children.size() < 1) {
+            return;
+        }
+        List<String> methods = Lists.newArrayList();
+        for (int i = 0; i < root.getChildCount(); i++) {
+            FileNode leafNode = (FileNode) root.getChildAt(i);
+            methods.add(leafNode.name);
+        }
+        EditorContext.setDesigner(node, methods);
+    }
 }

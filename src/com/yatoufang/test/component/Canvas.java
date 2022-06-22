@@ -293,13 +293,18 @@ public class Canvas {
     public static void createNodes(Element node, Table table) {
         Element element = createElement(node, table.getName(), node.layoutType);
         element.type = NodeType.TABLE_NODE;
-        EditorContext.pushUpdates(element);
     }
 
     public static void createNodes(Element node, String name) {
         Element element = createElement(node, name, node.layoutType);
         element.type = NodeType.ENTITY_NODE;
-        EditorContext.pushUpdates(element);
+    }
+
+    public static void createNodes(Element node, List<String> methods) {
+        for (String name : methods) {
+            Element element = createElement(node, name, node.layoutType);
+            element.type = NodeType.PROTOCOL_NODE;
+        }
     }
 }
         

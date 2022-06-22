@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.yatoufang.action.TableScannerAction;
+import com.yatoufang.entity.Node;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.Application;
@@ -217,6 +218,13 @@ public class EditorContext {
     public static void refresh() {
         AbstractLayoutParser parser = LayoutContext.getParser(rootPanel.topic.layoutType);
         parser.onCreate(rootPanel.topic);
+    }
+
+    public static void setDesigner(Node node, List<String> methods){
+        designer.setNode(node);
+        current.children.clear();
+        Canvas.createNodes(current, methods);
+        refresh();
     }
 
     public static void setDesigner(String content) {
