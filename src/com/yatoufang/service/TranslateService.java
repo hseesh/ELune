@@ -5,10 +5,8 @@ import com.google.gson.Gson;
 import com.yatoufang.entity.translate.Response;
 import com.yatoufang.utils.HttpUtils;
 import com.yatoufang.utils.Md5;
-import com.yatoufang.utils.StringUtil;
 
 import java.util.HashMap;
-import java.util.Locale;
 
 /**
  * @author GongHuang（hse）
@@ -58,8 +56,7 @@ public class TranslateService {
         if(translateResult == null){
             return querySource;
         }
-        String replace = translateResult.replace(" ", StringUtil.UNDER_LINE);
-        return replace.toUpperCase(Locale.ROOT);
+        return translateResult;
     }
 
 }

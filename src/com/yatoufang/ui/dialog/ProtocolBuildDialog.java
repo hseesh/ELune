@@ -8,10 +8,8 @@ import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.FormBuilder;
-import com.yatoufang.entity.Field;
-import com.yatoufang.entity.FileNode;
-import com.yatoufang.entity.Node;
-import com.yatoufang.entity.Table;
+import com.yatoufang.entity.*;
+import com.yatoufang.service.TranslateService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
@@ -32,7 +30,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author GongHuang（hse）
@@ -302,6 +302,94 @@ public class ProtocolBuildDialog extends DialogWrapper {
         }
         System.out.println(methods);
         dispose();
+    }
+
+    private void refresh(FileNode root) {
+        List<String> methods = Lists.newArrayList();
+        for (int i = 0; i < root.getChildCount(); i++) {
+            FileNode leafNode = (FileNode) root.getChildAt(i);
+            String name = StringUtil.collectChineseCharacter(leafNode.name);
+            if (name.isEmpty()) {
+                continue;
+            }
+            methods.add(name);
+        }
+        if (methods.size() > 0) {
+            return;
+        }
+        new Thread(() -> {
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < methods.size(); i++) {
+                builder.append(methods.get(i));
+                if(i != methods.size() - 1){
+                    builder.append(StringUtil.EQUAL);
+                }
+            }
+            TranslateService instance = TranslateService.getInstance();
+            String action = instance.action(builder.toString());
+            if (action == null) {
+                return;
+            }
+            String[] results = action.split(String.valueOf(StringUtil.EQUAL));
+            for (String result : results) {
+                result = result.trim();
+                String allUpperCase = result.replace(" ",StringUtil.UNDER_LINE).toUpperCase(Locale.ROOT);
+                String[] s = result.split(" ");
+                StringBuilder camelCase = new StringBuilder(StringUtil.toLowerCaseForFirstChar(s[0]));
+                if (s.length > 1) {
+                    for (int i = 1; i < s.length; i++) {
+                        camelCase.append(StringUtil.getUpperCaseVariable(s[i]));
+                    }
+                }
+                System.out.println(allUpperCase);
+                System.out.println(camelCase);
+            }
+
+            List<FileNode> files = Lists.newArrayList();
+            visitNode(root, files);
+            List<TcpMethod> methodList = Lists.newArrayList();
+            for (int i = 0; i < methods.size(); i++) {
+                String name = methods.get(i);
+                TcpMethod method = new TcpMethod(results[i], name);
+                methodList.add(method);
+            }
+        }).start();
+
+    }
+
+    public static void main(String[] args) {
+        List<String> methods = Lists.newArrayList();
+        methods.add("获取信息");
+        methods.add("升级");
+        methods.add("高级升级");
+        methods.add("领取等级奖励");
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < methods.size(); i++) {
+            builder.append(methods.get(i));
+            if(i != methods.size() - 1){
+                builder.append(StringUtil.EQUAL);
+            }
+        }
+        TranslateService instance = TranslateService.getInstance();
+        String action = instance.action(builder.toString());
+        if (action == null) {
+            return;
+        }
+        String[] results = action.split(String.valueOf(StringUtil.EQUAL));
+        for (String result : results) {
+            result = result.trim();
+            String allUpperCase = result.replace(" ",StringUtil.UNDER_LINE).toUpperCase(Locale.ROOT);
+            String[] s = result.split(" ");
+            StringBuilder camelCase = new StringBuilder(StringUtil.toLowerCaseForFirstChar(s[0]));
+            if (s.length > 1) {
+                for (int i = 1; i < s.length; i++) {
+                    camelCase.append(StringUtil.getUpperCaseVariable(s[i]));
+                }
+            }
+            System.out.println(allUpperCase);
+            System.out.println(camelCase);
+        }
+        System.out.println(Arrays.toString(results));
     }
 
     private void visitNode(FileNode root, List<FileNode> files) {

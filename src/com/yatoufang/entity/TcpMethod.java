@@ -12,16 +12,31 @@ import java.util.Collection;
 public class TcpMethod {
     private String methodName;
 
+    private String alias;
+
     private String content;
 
     private String moduleCode;
 
     private String cmdCode;
 
+    private String push;
+
+    private String request;
+
+    private String response;
+
+    private String description;
+
     private final Collection<Param> params = Lists.newArrayList();
 
     public TcpMethod(String moduleCode) {
         this.moduleCode = moduleCode;
+    }
+
+    public TcpMethod(String methodName, String description) {
+        this.methodName = methodName;
+        this.description = description;
     }
 
     public String getModuleCode() {
@@ -62,6 +77,48 @@ public class TcpMethod {
 
     public void add(Param param) {
         this.params.add(param);
+    }
+
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getPush() {
+        return push;
+    }
+
+    public void setPush(String push) {
+        this.push = push;
+    }
+
+    public String getRequest() {
+        return request;
+    }
+
+    public void setRequest(String request) {
+        this.request = request;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
+
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
