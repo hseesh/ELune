@@ -734,4 +734,9 @@ public class PSIUtil {
     }
 
 
+    public static List<Param>  getClassFields(PsiClass aClass) {
+        List<Param> list = Lists.newArrayList();
+        getClassFields(aClass,list);
+        return list;
+    }
 }

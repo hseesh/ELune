@@ -1,6 +1,9 @@
 package com.yatoufang.ui.dialog;
 
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.PsiClass;
@@ -30,9 +33,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author GongHuang（hse）
@@ -170,6 +172,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
                                 selectedNode.add(newNode);
                                 fileTreeModel.nodesWereInserted(selectedNode, new int[]{selectedNode.getChildCount() - 1});
                                 tree.setSelectionPath(new TreePath(newNode.getPath()));
+                                refresh(root);
                             }
                         }
                     }
@@ -314,16 +317,15 @@ public class ProtocolBuildDialog extends DialogWrapper {
             }
             methods.add(name);
         }
-        if (methods.size() > 0) {
-            return;
-        }
-        new Thread(() -> {
+        ApplicationManager.getApplication().invokeLater(() ->{
             StringBuilder builder = new StringBuilder();
+            HashMap<String, Integer> map = Maps.newHashMap();
             for (int i = 0; i < methods.size(); i++) {
                 builder.append(methods.get(i));
-                if(i != methods.size() - 1){
+                if (i != methods.size() - 1) {
                     builder.append(StringUtil.EQUAL);
                 }
+                map.put(methods.get(i), i);
             }
             TranslateService instance = TranslateService.getInstance();
             String action = instance.action(builder.toString());
@@ -331,9 +333,11 @@ public class ProtocolBuildDialog extends DialogWrapper {
                 return;
             }
             String[] results = action.split(String.valueOf(StringUtil.EQUAL));
+            ArrayList<String> upCaseList = Lists.newArrayList();
+            ArrayList<String> cameCaseList = Lists.newArrayList();
             for (String result : results) {
                 result = result.trim();
-                String allUpperCase = result.replace(" ",StringUtil.UNDER_LINE).toUpperCase(Locale.ROOT);
+                String allUpperCase = result.replace(" ", StringUtil.UNDER_LINE).toUpperCase(Locale.ROOT);
                 String[] s = result.split(" ");
                 StringBuilder camelCase = new StringBuilder(StringUtil.toLowerCaseForFirstChar(s[0]));
                 if (s.length > 1) {
@@ -341,20 +345,58 @@ public class ProtocolBuildDialog extends DialogWrapper {
                         camelCase.append(StringUtil.getUpperCaseVariable(s[i]));
                     }
                 }
-                System.out.println(allUpperCase);
-                System.out.println(camelCase);
+                upCaseList.add(allUpperCase);
+                cameCaseList.add(camelCase.toString());
             }
-
-            List<FileNode> files = Lists.newArrayList();
-            visitNode(root, files);
-            List<TcpMethod> methodList = Lists.newArrayList();
-            for (int i = 0; i < methods.size(); i++) {
-                String name = methods.get(i);
-                TcpMethod method = new TcpMethod(results[i], name);
-                methodList.add(method);
+            FileNode cmdNode;
+            FileNode handlerNode;
+            ArrayList<TcpMethod> list = Lists.newArrayList();
+            for (int i = 0; i < root.getChildCount(); i++) {
+                FileNode leafNode = (FileNode) root.getChildAt(i);
+                Integer index = map.get(leafNode.name);
+                if (index == null) {
+                    if (leafNode.name.contains("Cmd")) {
+                        cmdNode = leafNode;
+                    } else if (leafNode.name.contains("Handler")) {
+                        handlerNode = leafNode;
+                    }
+                    continue;
+                }
+                TcpMethod method = new TcpMethod(cameCaseList.get(index), leafNode.name);
+                method.setAlias(upCaseList.get(index));
+                list.add(method);
+                for (int j = 0; j < leafNode.getChildCount(); j++) {
+                    FileNode parent = (FileNode) leafNode.getChildAt(j);
+                    for (int k = 0; k < parent.getChildCount(); k++) {
+                        FileNode child = (FileNode) parent.getChildAt(0);
+                        if (child == null) {
+                            if (parent.name.contains(ProjectKeys.REQUEST)) {
+                                method.setRequest(ProjectKeys.REQUEST);
+                            } else if (parent.name.contains(ProjectKeys.RESPONSE)) {
+                                method.setResponse(ProjectKeys.REQUEST);
+                            } else {
+                                method.setPush(ProjectKeys.PUSH);
+                            }
+                        } else {
+                            if (parent.name.contains(ProjectKeys.REQUEST)) {
+                                PsiClass aClass = BuildUtil.createClass(child.content);
+                                if (aClass != null) {
+                                    List<Param> classFields = PSIUtil.getClassFields(aClass);
+                                    method.addAll(classFields);
+                                }
+                                method.setRequest(child.name);
+                            } else if (parent.name.contains(ProjectKeys.RESPONSE)) {
+                                method.setResponse(child.name);
+                            } else {
+                                method.setPush(child.name);
+                            }
+                        }
+                    }
+                }
+                String s = new Gson().toJson(list);
+                System.out.println(s);
             }
-        }).start();
-
+        });
     }
 
     public static void main(String[] args) {
@@ -366,7 +408,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < methods.size(); i++) {
             builder.append(methods.get(i));
-            if(i != methods.size() - 1){
+            if (i != methods.size() - 1) {
                 builder.append(StringUtil.EQUAL);
             }
         }
@@ -378,7 +420,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
         String[] results = action.split(String.valueOf(StringUtil.EQUAL));
         for (String result : results) {
             result = result.trim();
-            String allUpperCase = result.replace(" ",StringUtil.UNDER_LINE).toUpperCase(Locale.ROOT);
+            String allUpperCase = result.replace(" ", StringUtil.UNDER_LINE).toUpperCase(Locale.ROOT);
             String[] s = result.split(" ");
             StringBuilder camelCase = new StringBuilder(StringUtil.toLowerCaseForFirstChar(s[0]));
             if (s.length > 1) {

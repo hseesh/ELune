@@ -88,6 +88,11 @@ public class TcpMethod {
         this.alias = alias;
     }
 
+    public void addAll(Collection<Param> params){
+        this.params.addAll(params);
+    }
+
+
     public String getPush() {
         return push;
     }
