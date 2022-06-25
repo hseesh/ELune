@@ -92,4 +92,7 @@ public interface ProjectKeys {
 
     String CONFIG_TEMPLATE = "/templates/ConfigTemplate.vm";
     String ENTITY_TEMPLATE = "/templates/Entity.vm";
+    String HANDLER_TEMPLATE = "/templates/protocol/Handler.vm";
+    String CMD_TEMPLATE = "/templates/protocol/Cmd.vm";
+    String REQUEST_TEMPLATE = "/templates/protocol/Request.vm";
 }

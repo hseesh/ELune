@@ -1,0 +1,45 @@
+package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)};
+
+import cn.daxiang.framework.dispatch.DispatchType;
+import cn.daxiang.framework.protocal.DataPacket;
+import cn.daxiang.framework.result.Result;
+import cn.daxiang.framework.result.TResult;
+import cn.daxiang.framework.router.annotation.Cmd;
+import cn.daxiang.lyltd.gameserver.core.router.GatewayRouterHandlerImpl;
+import cn.daxiang.shared.GameModuleStatusCodeConstant;
+import cn.daxiang.shared.ModuleName;
+import io.netty.channel.Channel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+/**
+* @author ${author}
+* @since ${now}
+*/
+@Component
+public class ${table.name}Handler extends GatewayRouterHandlerImpl {
+
+@Autowired
+private ${table.name}Facade ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Facade;
+
+@Override
+public byte getModule() {
+return ModuleName.${table.alias};
+}
+
+
+#foreach($item in $table.methods)
+@Cmd(Id = ${table.name}Cmd.${item.alias}, dispatchType = DispatchType.ACTOR)
+public void ${item.methodName}(Channel channel, Long actorId, DataPacket packet) {
+    #if($item.request =='request')
+    Result result = ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Facade.${item.methodName}(actorId);
+    #else
+        ${item.request}  request = packet.getValue(${item.request}.class);
+        ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Facade.${item.methodName}(${item.valueOf});
+    #end
+channelWrite(channel, packet, result.statusCode);
+}
+#end
+
+
+}

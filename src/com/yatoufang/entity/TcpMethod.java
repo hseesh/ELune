@@ -1,9 +1,11 @@
 package com.yatoufang.entity;
 
+import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author GongHuang（hse）
@@ -28,7 +30,9 @@ public class TcpMethod {
 
     private String description;
 
-    private final Collection<Param> params = Lists.newArrayList();
+    private String valueOf;
+
+    private final List<Param> params = Lists.newArrayList();
 
     public TcpMethod(String moduleCode) {
         this.moduleCode = moduleCode;
@@ -77,8 +81,8 @@ public class TcpMethod {
 
     public void add(Param param) {
         this.params.add(param);
+        this.valueOf = DataUtil.valueOf(params);
     }
-
 
     public String getAlias() {
         return alias;
@@ -88,10 +92,9 @@ public class TcpMethod {
         this.alias = alias;
     }
 
-    public void addAll(Collection<Param> params){
+    public void addAll(Collection<Param> params) {
         this.params.addAll(params);
     }
-
 
     public String getPush() {
         return push;
@@ -117,7 +120,6 @@ public class TcpMethod {
         this.response = response;
     }
 
-
     public String getDescription() {
         return description;
     }
@@ -126,10 +128,16 @@ public class TcpMethod {
         this.description = description;
     }
 
+    public String getValueOf() {
+        return valueOf;
+    }
+
+    public void setValueOf(String valueOf) {
+        this.valueOf = valueOf;
+    }
+
     @Override
     public String toString() {
-        return "td.ServerDelegate.sendMessage({\n" +
-                "  module : " + moduleCode + ", cmd : " + cmdCode + (content.isEmpty() ? StringUtil.EMPTY : ", ") + content + "\n" +
-                "})";
+        return "td.ServerDelegate.sendMessage({\n" + "  module : " + moduleCode + ", cmd : " + cmdCode + (content.isEmpty() ? StringUtil.EMPTY : ", ") + content + "\n" + "})";
     }
 }

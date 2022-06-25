@@ -1,0 +1,30 @@
+package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)};
+
+/**
+* ${table.comment}
+*
+* @author ${author}
+* @since ${now}
+*/
+public interface ${table.name}Cmd {
+
+    #foreach($item in $table.methods)
+    /**
+    * ${item.description}
+    * <pre>
+    *     请求：{@code ${item.request}}
+    *     响应：{@code ${item.response}}
+    *     推送：{@code ${item.push}}
+    * </pre>
+    */
+    byte ${item.alias} ${item.cmdCode};
+    #end
+
+
+    /**
+     * 推送${table.comment}
+     * 推送：{@code }
+     */
+    byte PUSH_${table.alias} = 100;
+
+}

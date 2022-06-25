@@ -1,6 +1,7 @@
 package com.yatoufang.utils;
 
 import com.yatoufang.entity.Field;
+import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
 import com.yatoufang.test.model.Element;
 import org.jetbrains.annotations.NotNull;
@@ -86,4 +87,19 @@ public class DataUtil {
         stringBuilder.append(")");
         table.setValueOf(stringBuilder.toString());
     }
+
+
+    public static String valueOf(List<Param> fields ) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < fields.size(); i++) {
+            stringBuilder.append(fields.get(i).getTypeAlias())
+                .append(" ")
+                .append(fields.get(i).getName());
+            if (i != fields.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        return  stringBuilder.toString();
+    }
+
 }
