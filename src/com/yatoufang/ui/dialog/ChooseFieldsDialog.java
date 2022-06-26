@@ -100,6 +100,7 @@ public class ChooseFieldsDialog extends DialogWrapper {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(table.getName());
         for (Field param : defaultFields) {
             param.setAlias(param.getTypeAlias());
+            param.initGetSetString();
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(param);
             node.setAllowsChildren(false);
             defaultNode.add(node);

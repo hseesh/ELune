@@ -59,7 +59,7 @@ public class Param {
         return getString;
     }
 
-    private void initGetSetString() {
+    public void initGetSetString() {
         this.getString = "get" + StringUtil.getUpperCaseVariable(this.getAlias());
         this.setString = "set" + StringUtil.getUpperCaseVariable(this.getAlias());
     }

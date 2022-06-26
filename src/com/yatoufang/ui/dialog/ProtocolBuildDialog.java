@@ -1,7 +1,6 @@
 package com.yatoufang.ui.dialog;
 
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -33,8 +32,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * @author GongHuang（hse）
@@ -56,8 +55,8 @@ public class ProtocolBuildDialog extends DialogWrapper {
     public ProtocolBuildDialog(Table table, String rootPath) {
         super(Application.project, true, false);
         this.table = table;
-        this.table.setName(StringUtil.getUpperCaseVariable(table.getName()));
         this.rootPath = StringUtil.buildPath(rootPath, ProjectKeys.MODULE);
+        this.table.setName(StringUtil.toUpperCaseForFirstCharacter(table.getName()));
         initComponent();
         init();
         setTitle("My Protocol");
@@ -68,7 +67,6 @@ public class ProtocolBuildDialog extends DialogWrapper {
         this.table = table;
         this.node = node;
         designerModel = true;
-        this.table.setName(StringUtil.getUpperCaseVariable(table.getName()));
         this.rootPath = StringUtil.buildPath(filePath, ProjectKeys.MODULE);
         initComponent();
         init();
@@ -120,7 +118,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
             root = new FileNode(table.getName(), true);
         } else {
             if (this.node == null) {
-                root = new FileNode(table.getName(), true);
+                root = getFileNode();
             } else {
                 root = initNode();
             }
@@ -161,8 +159,13 @@ public class ProtocolBuildDialog extends DialogWrapper {
                                 table.setName(fileName);
                                 table.setFields(fields);
                                 DataUtil.valueOf(table);
+                                String result = StringUtil.EMPTY;
+                                if (selectedNode.name.contains(ProjectKeys.REQUEST)) {
+                                    result = velocityService.execute(ProjectKeys.REQUEST_TEMPLATE, table);
+                                } else if (selectedNode.name.contains(ProjectKeys.RESPONSE)) {
+                                    result = velocityService.execute(ProjectKeys.ENTITY_TEMPLATE, table);
+                                }
 
-                                String result = velocityService.execute(ProjectKeys.ENTITY_TEMPLATE, table);
                                 FileNode newNode = new FileNode(fileName);
 
                                 newNode.content = result;
@@ -245,6 +248,36 @@ public class ProtocolBuildDialog extends DialogWrapper {
         return toolbarDecorator.createPanel();
     }
 
+    @NotNull
+    private FileNode getFileNode() {
+        String name = StringUtil.toUpperCaseForFirstCharacter(table.getName());
+        FileNode root = new FileNode(table.getName(), true);
+        FileNode cmd = new FileNode(name + "Cmd", false);
+        FileNode handler = new FileNode(name + "Handler", false);
+        FileNode helpRoot = new FileNode(ProjectKeys.HELPER, true);
+        FileNode implRoot = new FileNode(ProjectKeys.IMPL, true);
+        FileNode facadeRoot = new FileNode(ProjectKeys.FACADE, true);
+        FileNode facade = new FileNode(name + StringUtil.toUpper(ProjectKeys.FACADE));
+        FileNode facadeImpl = new FileNode(name + StringUtil.toUpper(ProjectKeys.FACADE, ProjectKeys.IMPL));
+        FileNode pushHelper = new FileNode(StringUtil.toUpper(table.getName(), ProjectKeys.PUSH, ProjectKeys.HELPER));
+        cmd.isInterface = true;
+        cmd.isCatalog = false;
+        facade.isCatalog = false;
+        facadeImpl.isCatalog = false;
+        pushHelper.isCatalog = false;
+        facade.isInterface = true;
+        root.add(cmd);
+        root.add(handler);
+        root.add(helpRoot);
+        root.add(facadeRoot);
+        helpRoot.add(pushHelper);
+        facadeRoot.add(implRoot);
+        facadeRoot.add(facade);
+        implRoot.add(facadeImpl);
+        pushHelper.content = velocityService.execute(ProjectKeys.PUSH_HELP_TEMPLATE, table);
+        return root;
+    }
+
 
     private JComponent createMethodPanel() {
         return new JLabel();
@@ -296,14 +329,12 @@ public class ProtocolBuildDialog extends DialogWrapper {
             } else if (filePath.contains(ProjectKeys.RESPONSE)) {
                 String path = StringUtil.buildPath(rootPath, table.getName(), ProjectKeys.RESPONSE, file.name + ProjectKeys.JAVA);
                 FileWrite.write(file.content, path, true, false);
+            } else {
+                String path = file.getFilePath(rootPath) + ProjectKeys.JAVA;
+                FileWrite.write(file.content, path, true, false);
             }
-            PsiClass aClass = BuildUtil.createClass(file.content);
-            if (aClass == null) {
-                continue;
-            }
-
         }
-        System.out.println(methods);
+        doCancelAction();
         dispose();
     }
 
@@ -317,7 +348,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
             }
             methods.add(name);
         }
-        ApplicationManager.getApplication().invokeLater(() ->{
+        ApplicationManager.getApplication().invokeLater(() -> {
             StringBuilder builder = new StringBuilder();
             HashMap<String, Integer> map = Maps.newHashMap();
             for (int i = 0; i < methods.size(); i++) {
@@ -348,8 +379,11 @@ public class ProtocolBuildDialog extends DialogWrapper {
                 upCaseList.add(allUpperCase);
                 cameCaseList.add(camelCase.toString());
             }
-            FileNode cmdNode;
-            FileNode handlerNode;
+            int cmdIndex = 1;
+            FileNode cmdNode = null;
+            FileNode facadeNode = null;
+            FileNode handlerNode = null;
+            FileNode facadeImplNode = null;
             ArrayList<TcpMethod> list = Lists.newArrayList();
             for (int i = 0; i < root.getChildCount(); i++) {
                 FileNode leafNode = (FileNode) root.getChildAt(i);
@@ -359,30 +393,40 @@ public class ProtocolBuildDialog extends DialogWrapper {
                         cmdNode = leafNode;
                     } else if (leafNode.name.contains("Handler")) {
                         handlerNode = leafNode;
+                    } else if (leafNode.name.contains(ProjectKeys.FACADE)) {
+                        for (int j = 0; j < leafNode.getChildCount(); j++) {
+                            FileNode child = (FileNode) leafNode.getChildAt(j);
+                            if (child.name.endsWith(StringUtil.toUpper(ProjectKeys.FACADE))) {
+                                facadeNode = child;
+                            } else if (child.name.contains(ProjectKeys.IMPL)) {
+                                for (int k = 0; k < child.getChildCount(); k++) {
+                                    FileNode implChild = (FileNode) child.getChildAt(j);
+                                    if (implChild.name.endsWith(StringUtil.toUpper(ProjectKeys.FACADE, ProjectKeys.IMPL))) {
+                                        facadeImplNode = child;
+                                    }
+                                }
+                            }
+                        }
                     }
                     continue;
                 }
                 TcpMethod method = new TcpMethod(cameCaseList.get(index), leafNode.name);
                 method.setAlias(upCaseList.get(index));
+
+                method.setCmdCode(String.valueOf(cmdIndex++));
                 list.add(method);
                 for (int j = 0; j < leafNode.getChildCount(); j++) {
                     FileNode parent = (FileNode) leafNode.getChildAt(j);
                     for (int k = 0; k < parent.getChildCount(); k++) {
                         FileNode child = (FileNode) parent.getChildAt(0);
-                        if (child == null) {
+                        if (child != null) {
                             if (parent.name.contains(ProjectKeys.REQUEST)) {
-                                method.setRequest(ProjectKeys.REQUEST);
-                            } else if (parent.name.contains(ProjectKeys.RESPONSE)) {
-                                method.setResponse(ProjectKeys.REQUEST);
-                            } else {
-                                method.setPush(ProjectKeys.PUSH);
-                            }
-                        } else {
-                            if (parent.name.contains(ProjectKeys.REQUEST)) {
-                                PsiClass aClass = BuildUtil.createClass(child.content);
-                                if (aClass != null) {
-                                    List<Param> classFields = PSIUtil.getClassFields(aClass);
-                                    method.addAll(classFields);
+                                if (child.content != null && !child.content.isEmpty()) {
+                                    PsiClass aClass = BuildUtil.createClass(child.content);
+                                    if (aClass != null) {
+                                        List<Param> classFields = PSIUtil.getClassFields(aClass);
+                                        method.addAll(classFields);
+                                    }
                                 }
                                 method.setRequest(child.name);
                             } else if (parent.name.contains(ProjectKeys.RESPONSE)) {
@@ -393,8 +437,21 @@ public class ProtocolBuildDialog extends DialogWrapper {
                         }
                     }
                 }
-                String s = new Gson().toJson(list);
-                System.out.println(s);
+                String valueOf = DataUtil.valueOf(method.getParams());
+                method.setValueOf(valueOf);
+            }
+            Protocol protocol = Protocol.valueOf(table.getName(), table.getAlias(), table.getComment(), list);
+            if (cmdNode != null) {
+                cmdNode.content = velocityService.execute(ProjectKeys.CMD_TEMPLATE, protocol);
+            }
+            if (facadeNode != null) {
+                facadeNode.content = velocityService.execute(ProjectKeys.FACADE_TEMPLATE, protocol);
+            }
+            if (handlerNode != null) {
+                handlerNode.content = velocityService.execute(ProjectKeys.HANDLER_TEMPLATE, protocol);
+            }
+            if (facadeImplNode != null) {
+                facadeImplNode.content = velocityService.execute(ProjectKeys.FACADE_IMPL_TEMPLATE, protocol);
             }
         });
     }
@@ -493,6 +550,10 @@ public class ProtocolBuildDialog extends DialogWrapper {
         List<String> methods = Lists.newArrayList();
         for (int i = 0; i < root.getChildCount(); i++) {
             FileNode leafNode = (FileNode) root.getChildAt(i);
+            String name = StringUtil.collectChineseCharacter(leafNode.name);
+            if (name.isEmpty()) {
+                continue;
+            }
             methods.add(leafNode.name);
         }
         EditorContext.setDesigner(node, methods);

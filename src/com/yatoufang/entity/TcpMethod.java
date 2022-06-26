@@ -1,5 +1,6 @@
 package com.yatoufang.entity;
 
+import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
@@ -41,6 +42,9 @@ public class TcpMethod {
     public TcpMethod(String methodName, String description) {
         this.methodName = methodName;
         this.description = description;
+        this.push = ProjectKeys.PUSH;
+        this.request = ProjectKeys.REQUEST;
+        this.response = ProjectKeys.RESPONSE;
     }
 
     public String getModuleCode() {
@@ -75,7 +79,7 @@ public class TcpMethod {
         this.content = StringUtil.getCustomerJson(content);
     }
 
-    public Collection<Param> getParams() {
+    public List<Param> getParams() {
         return params;
     }
 

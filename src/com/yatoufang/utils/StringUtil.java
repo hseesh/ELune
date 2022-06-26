@@ -69,8 +69,25 @@ public class StringUtil {
         }
         char[] chars = variable.toCharArray();
         StringBuilder builder = new StringBuilder();
-        if (chars[0] >= 65 && chars[0] <= 97) {
+        if (chars[0] >= 65 && chars[0] < 97) {
             builder.append(chars[0] += 32);
+        } else {
+            builder.append(chars[0]);
+        }
+        for (int i = 1; i < chars.length; i++) {
+            builder.append(chars[i]);
+        }
+        return builder.toString();
+    }
+
+    public static String toUpperCaseForFirstCharacter(String variable){
+        if (variable == null || variable.isEmpty()) {
+            return variable;
+        }
+        char[] chars = variable.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        if (chars[0] >= 97 && chars[0] < 123) {
+            builder.append(chars[0] -= 32);
         } else {
             builder.append(chars[0]);
         }
@@ -96,6 +113,28 @@ public class StringUtil {
             } else {
                 builder.append(chars[i]);
             }
+        }
+        return builder.toString();
+    }
+
+    public static String toCameCaseForSmallCameCase(String variable){
+        char[] chars = variable.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        boolean flag = false;
+        for (char aChar : chars) {
+            if (aChar == '_') {
+                flag = true;
+                continue;
+            }
+            if(flag){
+                if (aChar > 96 && aChar < 123) {
+                    aChar -= 32;
+                }
+                builder.append(aChar);
+                flag = false;
+                continue;
+            }
+            builder.append(aChar);
         }
         return builder.toString();
     }
@@ -205,5 +244,7 @@ public class StringUtil {
         System.out.println(toUpper("Rune", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
         System.out.println(toLowerCaseForFirstChar("testTable"));
         System.out.println(collectChineseCharacter("\\module/Dds/升级/request/LevelRequest"));
+        System.out.println(toCameCaseForSmallCameCase("test_table"));
+        System.out.println(toUpperCaseForFirstCharacter("testTable"));
     }
 }

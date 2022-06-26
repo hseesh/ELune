@@ -4,6 +4,7 @@ import com.yatoufang.entity.Config;
 import com.yatoufang.entity.Node;
 import com.yatoufang.entity.Table;
 import com.yatoufang.test.model.Element;
+import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.Collection;
@@ -60,6 +61,7 @@ public class Designer {
     }
 
     public void setTable(Table table) {
+        table.setName(StringUtil.toCameCaseForSmallCameCase(table.getName()));
         this.table = table;
     }
 

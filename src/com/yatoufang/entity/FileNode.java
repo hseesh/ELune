@@ -1,8 +1,13 @@
 package com.yatoufang.entity;
 
 
+import com.intellij.openapi.util.io.FileUtil;
+import com.yatoufang.utils.StringUtil;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -25,6 +30,7 @@ public class FileNode extends DefaultMutableTreeNode {
         super(name);
         this.name = name;
         this.isCatalog = true;
+        this.content = StringUtil.EMPTY;
     }
 
     /**

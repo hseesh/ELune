@@ -16,8 +16,8 @@ public class TranslateService {
 
     // 百度翻译API
     private static final String URL = "https://fanyi-api.baidu.com/api/trans/vip/translate";
-    private static final  String APPID = "";
-    private static final  String KEY = "";
+    private static final  String APPID = "20220619001252176";
+    private static final  String KEY = "SBdjN9EaHVsFXIXsRKJn";
 
     private static TranslateService service;
 

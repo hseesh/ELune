@@ -21,6 +21,7 @@ import com.yatoufang.utils.BuildUtil;
 import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.PSIUtil;
 import org.apache.commons.compress.utils.Lists;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
@@ -229,18 +230,25 @@ public class EditorContext {
 
     public static void setDesigner(String content) {
         designer.setTableContent(content);
-        PsiClass aClass = BuildUtil.createClass(content);
-        if (aClass == null) {
-            return;
-        }
-        Table table = new TableScannerAction().getTable(aClass);
-        if (table == null) {
-            return;
-        }
-        designer.setTable(table);
+        Table table = getTable(content);
+        if (table == null) return;
         current.children.clear();
         Canvas.createNodes(current, table);
         refresh();
+    }
+
+    @Nullable
+    private static Table getTable(String content) {
+        PsiClass aClass = BuildUtil.createClass(content);
+        if (aClass == null) {
+            return null;
+        }
+        Table table = new TableScannerAction().getTable(aClass);
+        if (table == null) {
+            return null;
+        }
+        designer.setTable(table);
+        return table;
     }
 
     public static void setDesigner(Map<String, String> fileMap) {
@@ -278,6 +286,9 @@ public class EditorContext {
                 if (element != null) {
                     initialise(element);
                     rootPanel.topic = element;
+                    if(designer.getTableContent() != null && !designer.getTableContent().isEmpty()){
+                        getTable(designer.getTableContent());
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();

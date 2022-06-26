@@ -100,7 +100,7 @@ public class EntityTemplateDialog extends DialogWrapper {
                 return;
             }
             fileMap.forEach((fileName, fileContent) -> {
-                String filePath = StringUtil.buildPath(rootPath, ProjectKeys.MODEL, table.getName(), fileName + ProjectKeys.JAVA);
+                String filePath = StringUtil.buildPath(rootPath, ProjectKeys.MODULE, table.getName(),ProjectKeys.MODEL, fileName + ProjectKeys.JAVA);
                 FileWrite.write(fileContent, filePath, true, false);
             });
         }
@@ -146,6 +146,10 @@ public class EntityTemplateDialog extends DialogWrapper {
                 if (table == null) {
                     return;
                 }
+                String name = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
+                if(name == null || name.isEmpty()){
+                    return;
+                }
                 ChooseFieldsDialog chooseFieldsDialog = new ChooseFieldsDialog(table);
                 ActionListener actionListener = new ActionListener() {
                     /**
@@ -160,7 +164,7 @@ public class EntityTemplateDialog extends DialogWrapper {
                             List<Field> fields = (List<Field>) e.getSource();
                             if (fields.size() > 0) {
                                 Table table = new Table();
-                                table.setName(ProjectKeys.MODEL);
+                                table.setName(name);
                                 if(fileMap.containsKey(table.getName())){
                                     table.setName(table.getName() + StringUtil.UNDER_LINE);
                                 }
