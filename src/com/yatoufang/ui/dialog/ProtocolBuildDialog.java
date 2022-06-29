@@ -17,6 +17,7 @@ import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.test.event.EditorContext;
+import com.yatoufang.test.model.entity.Designer;
 import com.yatoufang.utils.*;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +51,8 @@ public class ProtocolBuildDialog extends DialogWrapper {
 
     private boolean designerModel;
 
+    private Map<String, List<Field>> fileMap = Maps.newHashMap();
+
     private final VelocityService velocityService = VelocityService.getInstance();
 
     public ProtocolBuildDialog(Table table, String rootPath) {
@@ -62,16 +65,42 @@ public class ProtocolBuildDialog extends DialogWrapper {
         setTitle("My Protocol");
     }
 
-    public ProtocolBuildDialog(Table table, String filePath, Node node) {
+
+    public ProtocolBuildDialog(Designer designer, String filePath) {
         super(Application.project, true, false);
-        this.table = table;
-        this.node = node;
+        this.table = designer.getTable();
+        this.node = designer.getNode();
         designerModel = true;
         this.rootPath = StringUtil.buildPath(filePath, ProjectKeys.MODULE);
         initComponent();
         init();
         setTitle("My Protocol");
-
+        if (designer.getEntityContentMap() != null) {
+            designer.getEntityContentMap().forEach((name, content) -> {
+                if (content == null || content.isEmpty()) {
+                    return;
+                }
+                PsiClass aClass = BuildUtil.createClass(content);
+                if (aClass == null) {
+                    return;
+                }
+                List<Field> classFields = PSIUtil.getClassField(aClass);
+                fileMap.put(name, classFields);
+            });
+        }
+        if (designer.getConfigContentMap() != null) {
+            designer.getConfigContentMap().forEach((name, content) -> {
+                if (content == null || content.isEmpty()) {
+                    return;
+                }
+                PsiClass aClass = BuildUtil.createClass(content);
+                if (aClass == null) {
+                    return;
+                }
+                List<Field> classFields = PSIUtil.getClassField(aClass);
+                fileMap.put(name, classFields);
+            });
+        }
     }
 
     @Nullable
@@ -142,7 +171,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
                 return;
             }
             if (ProjectKeys.REQUEST.equals(selectedNode.name) || ProjectKeys.RESPONSE.equals(selectedNode.name)) {
-                ChooseFieldsDialog chooseFieldsDialog = new ChooseFieldsDialog(table);
+                ChooseFieldsDialog chooseFieldsDialog = new ChooseFieldsDialog(table, fileMap);
                 ActionListener actionListener = new ActionListener() {
                     /**
                      * Invoked when an action occurs.
@@ -400,7 +429,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
                                 facadeNode = child;
                             } else if (child.name.contains(ProjectKeys.IMPL)) {
                                 for (int k = 0; k < child.getChildCount(); k++) {
-                                    FileNode implChild = (FileNode) child.getChildAt(j);
+                                    FileNode implChild = (FileNode) child.getChildAt(k);
                                     if (implChild.name.endsWith(StringUtil.toUpper(ProjectKeys.FACADE, ProjectKeys.IMPL))) {
                                         facadeImplNode = child;
                                     }

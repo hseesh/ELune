@@ -27,7 +27,7 @@ public class ProtocolEventParser extends AbstractNodeEventParser {
 
     @Override
     public void onExecute() {
-        new ProtocolBuildDialog(EditorContext.designer.getTable(), EditorContext.filePath,EditorContext.designer.getNode()).show();
+        new ProtocolBuildDialog(EditorContext.designer,EditorContext.filePath).show();
     }
 
     @Override

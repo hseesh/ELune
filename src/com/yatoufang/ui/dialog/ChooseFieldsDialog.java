@@ -1,5 +1,6 @@
 package com.yatoufang.ui.dialog;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.intellij.icons.AllIcons;
@@ -9,6 +10,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.panels.VerticalBox;
 import com.intellij.ui.treeStructure.Tree;
 import com.yatoufang.entity.Field;
+import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
 import com.yatoufang.test.style.StyleContext;
 import org.apache.commons.compress.utils.Lists;
@@ -24,7 +26,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -34,6 +36,8 @@ import java.util.List;
 public class ChooseFieldsDialog extends DialogWrapper {
     private Tree fieldsTree;
     private Tree defaultFieldsTree;
+    private List<Tree> trees = Lists.newArrayList();
+    private Map<String, List<Field>> fileMap = Maps.newHashMap();
 
     private ActionListener listener;
     private final Table table;
@@ -45,8 +49,17 @@ public class ChooseFieldsDialog extends DialogWrapper {
         setTitle("My Fields");
     }
 
+    protected ChooseFieldsDialog(Table table, Map<String, List<Field>> fileMap) {
+        super(false);
+        this.table = table;
+        this.fileMap = fileMap;
+        init();
+        setTitle("My Fields");
+    }
+
     @Override
-    protected @Nullable JComponent createCenterPanel() {
+    protected @Nullable
+    JComponent createCenterPanel() {
         return createFieldsPanel();
     }
 
@@ -60,9 +73,16 @@ public class ChooseFieldsDialog extends DialogWrapper {
         jPanel.add(cancelButton);
 
         confirmButton.addActionListener(e -> {
+            List<Field> fields = Lists.newArrayList();
             DefaultMutableTreeNode[] selectedNodes = fieldsTree.getSelectedNodes(DefaultMutableTreeNode.class, fileNode -> !fileNode.getAllowsChildren());
             DefaultMutableTreeNode[] selectDefaultNodes = defaultFieldsTree.getSelectedNodes(DefaultMutableTreeNode.class, fileNode -> !fileNode.getAllowsChildren());
-            List<Field> fields = Lists.newArrayList();
+            for (Tree tree : trees) {
+                DefaultMutableTreeNode[] nodes = tree.getSelectedNodes(DefaultMutableTreeNode.class, fileNode -> !fileNode.getAllowsChildren());
+                for (DefaultMutableTreeNode node : nodes) {
+                    Field field = (Field) node.getUserObject();
+                    fields.add(field);
+                }
+            }
             for (DefaultMutableTreeNode node : selectedNodes) {
                 Field field = (Field) node.getUserObject();
                 fields.add(field);
@@ -110,6 +130,19 @@ public class ChooseFieldsDialog extends DialogWrapper {
             node.setAllowsChildren(false);
             root.add(node);
         }
+        ArrayList<DefaultMutableTreeNode> topNode = Lists.newArrayList();
+
+        fileMap.forEach((name,list)  ->{
+            DefaultMutableTreeNode parent = new DefaultMutableTreeNode(name);
+            for (Param param : list) {
+                DefaultMutableTreeNode child = new DefaultMutableTreeNode(param);
+                child.setAllowsChildren(false);
+                parent.add(child);
+            }
+            topNode.add(parent);
+        });
+
+
         DefaultTreeCellRenderer cellRenderer = new DefaultTreeCellRenderer() {
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -129,17 +162,23 @@ public class ChooseFieldsDialog extends DialogWrapper {
 
         DefaultTreeModel fileTreeModel = new DefaultTreeModel(root);
         DefaultTreeModel defaultTreeModel = new DefaultTreeModel(defaultNode);
+
         fieldsTree = new Tree(fileTreeModel);
-        fieldsTree.setDragEnabled(true);
         fieldsTree.setExpandableItemsEnabled(true);
         fieldsTree.setCellRenderer(cellRenderer);
         defaultFieldsTree = new Tree(defaultTreeModel);
-        defaultFieldsTree.setDragEnabled(true);
         defaultFieldsTree.setExpandableItemsEnabled(true);
         defaultFieldsTree.setCellRenderer(cellRenderer);
         VerticalBox box = new VerticalBox();
         box.add(fieldsTree);
         box.add(defaultFieldsTree);
+        for (DefaultMutableTreeNode node : topNode) {
+            DefaultTreeModel model = new DefaultTreeModel(node);
+            Tree tree = new Tree(model);
+            tree.setCellRenderer(cellRenderer);
+            trees.add(tree);
+            box.add(tree);
+        }
         return new JBScrollPane(box);
     }
 

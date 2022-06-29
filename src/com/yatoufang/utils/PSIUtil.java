@@ -8,6 +8,7 @@ import com.intellij.psi.javadoc.PsiDocTagValue;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
 import com.intellij.psi.util.PsiUtil;
+import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Param;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.service.SearchScopeService;
@@ -289,6 +290,24 @@ public class PSIUtil {
             PsiType type = field.getType();
             if (Application.isBasicType(type.getPresentableText())) {
                 Param param = new Param(field.getName());
+                param.setType(type);
+                param.setDescription(getDescription(field.getDocComment()));
+                result.add(param);
+            }
+        }
+    }
+
+
+    public static void getClassField(PsiClass psiClass, Collection<Field> result) {
+        if (psiClass == null) return;
+        if (Application.isBasicType(psiClass.getName())) {
+            return;
+        }
+        PsiField[] fields = psiClass.getFields();
+        for (PsiField field : fields) {
+            PsiType type = field.getType();
+            if (Application.isBasicType(type.getPresentableText())) {
+                Field param = new Field(field.getName());
                 param.setType(type);
                 param.setDescription(getDescription(field.getDocComment()));
                 result.add(param);
@@ -737,6 +756,12 @@ public class PSIUtil {
     public static List<Param>  getClassFields(PsiClass aClass) {
         List<Param> list = Lists.newArrayList();
         getClassFields(aClass,list);
+        return list;
+    }
+
+    public static List<Field>  getClassField(PsiClass aClass) {
+        List<Field> list = Lists.newArrayList();
+        getClassField(aClass,list);
         return list;
     }
 }
