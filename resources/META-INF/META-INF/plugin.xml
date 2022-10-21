@@ -5,25 +5,36 @@
     <vendor email="gong-huang@qq.com" url="https://github.com/hseesh">gonghuang</vendor>
 
     <description><![CDATA[
-   <p>
-    <b>Automatically generate Documentation for JAVA Web API</b><br/>
-    <b>Http Test Client</b>
-    </p>
-    ]]></description>
+        <p>
+            <b>Automatically generate Documentation for JAVA Web API</b><br/>
+            <b>Http Test Client</b>
+        </p>
+        ]]></description>
 
     <change-notes>
         <![CDATA[
-        Known bug fix<br/>
-        Http test support<br/>
+        <p>
+            <b> package4.1 </b>
+            <br>1.实时模板支持
+            <br>2.系统设计支持
+            <br>3.known bug fix
+        </p>
+	       <p> <b> package4.0 </b><br/>
+        1.修改获取提交信息错误<br/>
+        2.更改初始化界面信息为手动点击刷新<br/>
+        3.文本域打印dos操作<br/>
+        4.添加底部Elune页打印操作<br/>
+        5.删除help菜单PackagingAction<br/>
+        6.添加配置设置git工作目录<br/>
+        7.功能定位项目
+       </p>
     ]]>
     </change-notes>
 
 
-    <idea-version since-build="203.0"/>
-
-    <depends>com.intellij.modules.platform</depends>
-    <depends config-file="META-INF/depends.xml" optional="true">com.intellij.java</depends>
-    <depends config-file="META-INF/module.xml" optional="true">com.intellij.modules.java</depends>
+    <idea-version since-build="203"/>
+    <depends config-file="depends.xml" optional="true">com.intellij.java</depends>
+    <depends config-file="module.xml" optional="true">com.intellij.modules.java</depends>
 
     <actions>
         <action id="com.yatoufang.code.generator.scanner" class="com.yatoufang.action.TableScannerAction"
@@ -42,6 +53,14 @@
                 text="New Config" icon="/icons/config.svg">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
+        <action id="com.yatoufang.hse.Elune.init.initService" class="com.yatoufang.action.InitConfigService"
+                text="Init Service" icon="/icons/config.svg">
+            <add-to-group group-id="JavaGenerateGroup1" anchor="last"/>
+        </action>
+        <action id="com.yatoufang.hse.Elune.init.createAccess" class="com.yatoufang.action.CreateAccessAction"
+                text="Create Access Method" icon="/icons/config.svg">
+            <add-to-group group-id="JavaGenerateGroup1" anchor="last"/>
+        </action>
         <action id="com.yatoufang.hse.paint.test" class="com.yatoufang.action.PaintTest" text="PaintTest">
             <add-to-group group-id="HelpMenu" anchor="last"/>
         </action>
@@ -54,8 +73,12 @@
                                  id="com.yatoufang.elune.config.AppSettingsConfigurable"
                                  instance="com.yatoufang.config.AppSettingsConfigurable" parentId="tools"/>
 
-        <applicationService serviceImplementation="com.yatoufang.config.AppSettingService"/>
+        <projectConfigurable displayName="Packaging Settings"
+                             id="com.yatoufang.elune.config.PackagingSettingsConfigurable"
+                             instance="com.yatoufang.config.PackagingSettingsConfigurable" parentId="tools"/>
 
+        <applicationService serviceImplementation="com.yatoufang.config.service.AppSettingService"/>
+        <applicationService serviceImplementation="com.yatoufang.config.service.PackagingSettingsService"/>
 
         <toolWindow id="ELune"
                     anchor="bottom"
@@ -63,23 +86,26 @@
                     canCloseContents="false"
                     factoryClass="com.yatoufang.config.ConsoleWindowFactory"/>
 
-        <postStartupActivity implementation="com.yatoufang.action.StartUpAction"/>
 
-        <fileEditorProvider implementation="com.yatoufang.test.MindMapDocumentEditorProvider"/>
-
-        <fileType name="Mind Map"
-                  implementationClass="com.yatoufang.test.filetype.MindMapFileType"
-                  fieldName="INSTANCE"
-                  language="MindMap"
-                  extensions="mm"/>
-        <fileTemplateGroup implementation="com.yatoufang.test.filetype.FileTemplateFactory"/>
-
+        <toolWindow id="PackagingToTest" factoryClass="com.yatoufang.config.PackagingToolWindow" icon="/icons/send.svg" anchor="right"/>
 
         <defaultLiveTemplates file="/liveTemplate/notion.xml"/>
         <liveTemplateMacro implementation="com.yatoufang.template.ValueOfMacro"/>
         <liveTemplateMacro implementation="com.yatoufang.template.ValueTMacro"/>
-        <liveTemplateContext implementation="com.yatoufang.template.MyTemplateContext" />
+        <liveTemplateMacro implementation="com.yatoufang.template.CheckMeMacro"/>
+        <liveTemplateMacro implementation="com.yatoufang.template.ReturnResultMacro"/>
+        <liveTemplateContext implementation="com.yatoufang.template.MyTemplateContext"/>
 
+
+        <postStartupActivity implementation="com.yatoufang.action.StartUpAction"/>
+
+        <fileEditorProvider implementation="com.yatoufang.designer.MindMapDocumentEditorProvider"/>
+
+        <fileType name="Mind Map"
+                  implementationClass="com.yatoufang.designer.filetype.MindMapFileType"
+                  fieldName="INSTANCE"
+                  language="MindMap"
+                  extensions="mm"/>
     </extensions>
 
 </idea-plugin>

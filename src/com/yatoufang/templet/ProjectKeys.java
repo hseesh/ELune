@@ -10,6 +10,12 @@ public interface ProjectKeys {
 
     String CONFIG_KEY = "cn.daxiang.shared.GlobalConfigKey";
 
+    String CONFIG_ADAPTER = "ConfigServiceAdapter";
+
+    String MODEL_ADAPTER = "ModelAdapter";
+
+    String IDENTITY_KEY = "cn.daxiang.framework.identity.IdentiyKey";
+
     String GATE_WAY = "cn.daxiang.lyltd.gameserver.core.router.GatewayRouterHandlerImpl";
 
     String CONFIG_PATH = "core/dataconfig/model";
@@ -32,7 +38,11 @@ public interface ProjectKeys {
     String DATABASE = "database";
     String PROJECT = "lyltd";
 
+    String LINK = "@link";
+
     String DAO = "dao";
+
+    String ACTIVITY = "activity";
 
     String VO = "vO";
     String VO_ALIAS = "VO";
@@ -47,8 +57,19 @@ public interface ProjectKeys {
 
     String DELETE = "delete";
     String RESULT = "result";
+    String T_RESULT = "TResult";
+
+    String METHOD_FIND_CONFIG = "findConfig";
+    String METHOD_FIND_KEY = "findKey";
+    String METHOD_BUILD_KEY = "build";
+
+    String COST = "cost";
 
     String REWARD = "reward";
+
+    String ID = "id";
+    String ATTRIBUTE = "attribute";
+    String ATTRIBUTE_PERCENT = "attributeTTPercent";
 
     String RESPONSE = "response";
     String FACADE = "facade";
@@ -71,6 +92,7 @@ public interface ProjectKeys {
     String NULL = "null";
 
     String GET_VALUE_METHOD = "getValue";
+    String CLEAN_METHOD = "clean";
     String INITIALIZE_METHOD = "initialize";
 
     String SINGLE_ENTITY_TEMPLATE = "/templates/SingleDaoTemplate.vm";
@@ -97,4 +119,7 @@ public interface ProjectKeys {
     String REQUEST_TEMPLATE = "/templates/protocol/Request.vm";
     String FACADE_TEMPLATE = "/templates/protocol/Facade.vm";
     String FACADE_IMPL_TEMPLATE = "/templates/protocol/FacadeImpl.vm";
+
+    String PATH_CONFIG_FIELDS = "/config/config_fields.json";
+    String PATH_CONFIG_ACCESS_BUILD = "/config/access_build.json";
 }

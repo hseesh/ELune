@@ -1,12 +1,12 @@
 package com.yatoufang.entity;
 
+import com.yatoufang.preference.ConfigPreferenceService;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -99,24 +99,34 @@ public class Config {
     }
 
     public void build(HashSet<ConfigParam> sets) {
+        ConfigPreferenceService service = ConfigPreferenceService.getInstance();
+        System.out.println(params);
         Map<String, ConfigParam> maps = sets.stream().collect(Collectors.toMap(ConfigParam::getName, v -> v));
         if (indexLists.size() > 0) {
             for (int i = 0; i < this.params.size(); i++) {
                 String s = indexLists.get(i);
-                if(s.length() >= 2){
+                if (s.length() >= 2) {
                     ConfigParam param = maps.get(params.get(i));
-                    if(param != null){
+                    if (param != null) {
                         paramList.add(param);
-                    }else{
-                        paramList.add(new ConfigParam(params.get(i),"String"));
+                    } else {
+                        ConfigParam configParam = new ConfigParam(params.get(i), "String");
+                        service.action(configParam);
+                        paramList.add(configParam);
                     }
                 }
             }
 
-        }else{
+        } else {
             for (String paramName : this.params) {
                 ConfigParam param = maps.get(paramName);
-                paramList.add(Objects.requireNonNullElseGet(param, () -> new ConfigParam(paramName, "String")));
+                if (param == null) {
+                    ConfigParam configParam = new ConfigParam(paramName, "String");
+                    service.action(configParam);
+                    paramList.add(configParam);
+                } else {
+                    paramList.add(param);
+                }
             }
         }
         StringBuilder builder = new StringBuilder();
@@ -130,7 +140,7 @@ public class Config {
             }
             builder.append(param.getReferenceExpression()).append("\n");
         }
-        if(fileNameAlias == null || fileNameAlias.isEmpty()){
+        if (fileNameAlias == null || fileNameAlias.isEmpty()) {
             fileNameAlias = StringUtil.toLowerCaseWithUnderLine(fileName);
         }
         paramList.addAll(temp);
@@ -139,14 +149,8 @@ public class Config {
 
     @Override
     public String toString() {
-        return "Config{" +
-                "fileName='" + fileName + '\'' +
-                ", fileNameAlias='" + fileNameAlias + '\'' +
-                ", params=" + params +
-                ", indexLists=" + indexLists +
-                '}';
+        return "Config{" + "fileName='" + fileName + '\'' + ", fileNameAlias='" + fileNameAlias + '\'' + ", params=" + params + ", indexLists=" + indexLists + '}';
     }
-
 
 }
 

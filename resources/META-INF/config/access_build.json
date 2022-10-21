@@ -1,0 +1,27 @@
+[
+  {
+    "type": 1,
+    "templates": [
+      "/**\n     * 增加或者减少${table.description}\n     */\n    public void add${table.alias}(int ${table.name}) {\n        this.${table.name} += ${table.name};\n}\n",
+      "/**\n     * 增加${table.description}\n     */\n    public void add${table.alias}() {\n        ++this.${table.name};\n}"
+    ]
+  },
+  {
+    "type": 2,
+    "templates": [
+      "/**\n     *  添加${table.description}\n     */\n    public void addRecord(int id) {\n        ${table.name}.add(id);\n    }\n",
+      "/**\n     *  尝试添加${table.description}\n     */\n    public boolean tryAddRecord(int id) {\n        if (${table.name}.contains(id)) {\n            return false;\n        }\n        return ${table.name}.add(id);\n    }\n",
+      "/**\n     *  删除${table.description}\n     */\n    public void dropRecord(int id) {\n        ${table.name}.remove(id);\n    }\n"
+    ]
+  },
+  {
+    "type": 3,
+    "templates": [
+      "/**\n     *  获取对象信息\n     */\n    public ${table.value} get${table.key}(int key) {\n        return ${table.name}.computeIfAbsent(key, k -> ${table.value}.valueOf(key));\n    }\n",
+      "/**\n     *  获取\n     */\n    public int getValue(int key) {\n        return ${table.name}.getOrDefault(key, 0);\n    }\n",
+      "/**\n     *  获取\n     */\n    public ${table.value} getValue(int key) {\n        return ${table.name}.get(key);\n    }\n",
+      "/**\n     *  添加次数\n     */\n    public void addValue(int key, int value) {\n        ${table.name}.merge(key, value, Integer::sum);\n}\n\n",
+      "/**\n     *  更新\n     */\n    public void update(int key, int value) {\n        ${table.name}.put(key, value);\n}\n\n"
+    ]
+  }
+]

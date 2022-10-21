@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.util.Map;
 
 /**
  * @author User
@@ -51,6 +52,22 @@ public class VelocityService {
         context.put("table", object);
         context.put("author", settingService.author);
         return execute(filePath, context);
+    }
+
+    public String execute(String template, Object object, Map<String, Object> paramMap) {
+        VelocityContext context = new VelocityContext();
+        AppSettingService settingService = AppSettingService.getInstance();
+        context.put("now", DataUtil.now());
+        context.put("table", object);
+        context.put("author", settingService.author);
+        if (paramMap != null) {
+            for (Map.Entry<String, Object> entry : paramMap.entrySet()) {
+                context.put(entry.getKey(), entry.getValue());
+            }
+        }
+        StringWriter stringWriter = new StringWriter();
+        velocityEngine.evaluate(context, stringWriter, "myLog", template);
+        return stringWriter.toString();
     }
 
 
