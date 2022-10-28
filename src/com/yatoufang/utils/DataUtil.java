@@ -1,9 +1,15 @@
 package com.yatoufang.utils;
 
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.LangDataKeys;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiJavaFile;
+import com.yatoufang.designer.model.Element;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
-import com.yatoufang.test.model.Element;
+import com.yatoufang.templet.Application;
+import com.yatoufang.templet.MethodCallExpression;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -12,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-public class DataUtil {
+public class DataUtil implements MethodCallExpression {
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -51,12 +57,50 @@ public class DataUtil {
         return null;
     }
 
+
+    public static PsiClass getClass(@NotNull AnActionEvent e){
+        PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
+        if (file == null) {
+            return null;
+        }
+        PsiClass[] classes = file.getClasses();
+        if (classes.length == 0) {
+            return null;
+        }
+        Application.project = file.getProject();
+        return classes[0];
+    }
+
     public static Timer createTimer(@NotNull final String name, int delay, @NotNull ActionListener listener) {
         return new Timer(delay, listener) {
             public String toString() {
                 return name;
             }
         };
+    }
+
+    public static void valueOf(Table table) {
+        StringBuilder stringBuilder = new StringBuilder("(");
+        List<Field> fields = table.getFields();
+        for (int i = 0; i < fields.size(); i++) {
+            stringBuilder.append(fields.get(i).getAlias()).append(" ").append(fields.get(i).getName());
+            if (i != fields.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        stringBuilder.append(")");
+        table.setValueOf(stringBuilder.toString());
+    }
+
+    public static String valueOf(List<Param> fields) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < fields.size(); i++) {
+            stringBuilder.append(fields.get(i).getTypeAlias()).append(" ").append(fields.get(i).getName());
+            if (i != fields.size() - 1) {
+                stringBuilder.append(", ");
+            }
+        }
+        return stringBuilder.toString();
     }
 
     public static Timer createTimer(int delay, @NotNull ActionListener listener) {
@@ -73,33 +117,54 @@ public class DataUtil {
         }
     }
 
-    public static void valueOf(Table table) {
-        StringBuilder stringBuilder = new StringBuilder("(");
-        List<Field> fields = table.getFields();
-        for (int i = 0; i < fields.size(); i++) {
-            stringBuilder.append(fields.get(i).getAlias())
-                .append(" ")
-                .append(fields.get(i).getName());
-            if (i != fields.size() - 1) {
-                stringBuilder.append(", ");
-            }
+    public static String getDefaultValue(String type) {
+        switch (type.trim()) {
+            case "Map":
+                return "Maps.newHashMap()";
+            case "TreeMap":
+                return "Maps.newTreeMap()";
+            case "List":
+            case "Collection":
+                return "Lists.newArrayList()";
+            case "Set":
+                return "Sets.newSet()";
+            default:
+                return type;
         }
-        stringBuilder.append(")");
-        table.setValueOf(stringBuilder.toString());
     }
 
-
-    public static String valueOf(List<Param> fields ) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < fields.size(); i++) {
-            stringBuilder.append(fields.get(i).getTypeAlias())
-                .append(" ")
-                .append(fields.get(i).getName());
-            if (i != fields.size() - 1) {
-                stringBuilder.append(", ");
-            }
+    public static String getBaseType(String type) {
+        switch (type.trim()) {
+            case "Integer":
+                return "int";
+            case "Long":
+                return "long";
+            case "Double":
+                return "double";
+            case "Float":
+                return "float";
+            case "Boolean":
+                return "boolean";
+            case "Byte":
+                return "byte";
+            case "Char":
+                return "char";
+            default:
+                return type;
         }
-        return  stringBuilder.toString();
     }
 
+    public static String getCreateExpression(String type) {
+        switch (type.trim()) {
+            case "Map":
+            case "TreeMap":
+                return PUT;
+            case "List":
+            case "Collection":
+            case "Set":
+                return ADD;
+            default:
+                return type;
+        }
+    }
 }

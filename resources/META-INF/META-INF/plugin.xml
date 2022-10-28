@@ -61,6 +61,14 @@
                 text="Create Access Method" icon="/icons/config.svg">
             <add-to-group group-id="JavaGenerateGroup1" anchor="last"/>
         </action>
+        <action id="com.yatoufang.hse.Elune.init.fieldsCopy" class="com.yatoufang.action.FieldsCopyAction"
+                text="Copy Fields From Other" icon="/icons/config.svg">
+            <add-to-group group-id="JavaGenerateGroup1" anchor="last"/>
+        </action>
+        <action id="com.yatoufang.hse.Elune.init.build.valueOf" class="com.yatoufang.action.BuildValueOfAction"
+                text="Create ValueOf Method" icon="/icons/config.svg">
+            <add-to-group group-id="JavaGenerateGroup1" anchor="last"/>
+        </action>
         <action id="com.yatoufang.hse.paint.test" class="com.yatoufang.action.PaintTest" text="PaintTest">
             <add-to-group group-id="HelpMenu" anchor="last"/>
         </action>

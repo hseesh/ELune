@@ -58,7 +58,7 @@ public class SwingUtils {
     public static List<PsiFieldMember> showFieldsDialog(PsiFieldMember[] elements, boolean allowEmptySelection, boolean allowMultiSelection) {
         MemberChooser<PsiFieldMember> dialog = new MemberChooser<>(elements, allowEmptySelection, allowMultiSelection, Application.project);
         dialog.setCopyJavadocVisible(false);
-        dialog.setTitle("NotifyKeys.SELECT_FIELDS");
+        dialog.setTitle(NotifyKeys.SELECT_FILE);
         dialog.show();
         if (MemberChooser.CANCEL_EXIT_CODE == dialog.getExitCode()) {
             return Collections.emptyList();
