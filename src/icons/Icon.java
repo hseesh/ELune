@@ -23,4 +23,19 @@ public interface Icon {
     javax.swing.Icon ADD_CHILD = IconLoader.getIcon("/image/menu/add_child.svg", Icon.class);
 
 
+    /**
+     * editor menu
+     */
+    javax.swing.Icon ITEM_EDIT = IconLoader.getIcon("/image/editorMenu/item_editor.svg", Icon.class);
+    javax.swing.Icon ITEM_EXPORT = IconLoader.getIcon("/image/editorMenu/item_export.svg", Icon.class);
+    javax.swing.Icon ITEM_SAVE = IconLoader.getIcon("/image/editorMenu/item_save.svg", Icon.class);
+    javax.swing.Icon ITEM_RENAME = IconLoader.getIcon("/image/editorMenu/item_rename.svg.svg", Icon.class);
+    javax.swing.Icon ITEM_ZOOM_IN = IconLoader.getIcon("/image/editorMenu/item_zoom_in.svg", Icon.class);
+    javax.swing.Icon ITEM_ZOOM_OUT = IconLoader.getIcon("/image/editorMenu/item_zoom_out.svg", Icon.class);
+    javax.swing.Icon NODE_CONFIG = IconLoader.getIcon("/image/editorMenu/node_config.svg", Icon.class);
+    javax.swing.Icon NODE_DATA_BASE = IconLoader.getIcon("/image/editorMenu/node_data_base.svg", Icon.class);
+    javax.swing.Icon NODE_PUSH = IconLoader.getIcon("/image/editorMenu/node_push.svg", Icon.class);
+    javax.swing.Icon NODE_ENTITY = IconLoader.getIcon("/image/editorMenu/node_entity.svg", Icon.class);
+    javax.swing.Icon NODE_RETURN = IconLoader.getIcon("/image/editorMenu/node_return.svg", Icon.class);
+    javax.swing.Icon NODE_SETTING = IconLoader.getIcon("/image/editorMenu/node_setting.svg", Icon.class);
 }
