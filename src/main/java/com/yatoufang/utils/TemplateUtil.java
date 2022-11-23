@@ -10,7 +10,6 @@ import com.yatoufang.entity.Struct;
 import com.yatoufang.templet.Expression;
 import com.yatoufang.templet.MethodCallExpression;
 import com.yatoufang.templet.ProjectKeys;
-import kotlinx.serialization.StringFormat;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -91,7 +90,7 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
         int flag = 0;
         for (PsiFieldMember member : initMember) {
             PsiField field = member.getElement();
-            if (flag ++ != 0) {
+            if (flag++ != 0) {
                 paramList.append(COMMA).append(SPACE);
             }
             paramList.append(field.getType().getPresentableText()).append(SPACE).append(field.getName());
@@ -182,67 +181,40 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
         }
     }
 
-    public static String initialize(Struct struct) {
+    public static String buildInitMethod(Struct struct) {
+        String lastType = struct.getLastKey();
         String recommendName = struct.getName();
-        String lastType = EMPTY;
-        String fileName = getFileName(struct.getValue());
+        String fileName = getFileName(struct.getFileName());
         StringBuilder builder = new StringBuilder();
-        String listAll = String.format(CONFIG_LIST_ALL, struct.getValue(), fileName, struct.getValue());
-        String forLoop = String.format(CONFIG_FOR_LOOP, struct.getValue(), fileName);
+        String listAll = String.format(CONFIG_LIST_ALL, struct.getFileName(), fileName, struct.getFileName());
+        String forLoop = String.format(CONFIG_FOR_LOOP, struct.getFileName(), fileName);
         builder.append(listAll).append(NEW_LINE).append(forLoop).append(LEFT_BRACE).append(NEW_LINE);
-        if (struct.getFields().size() == 1) {
-            for (Map.Entry<String, String> entry : struct.getFields().entrySet()) {
-                String getFields = ProjectKeys.CONFIG + POINT + GET + toUpperCaseForFirstCharacter(struct.getLast()) + LEFT_ROUND_BRACKET + RIGHT_ROUND_BRACKET;
-                String secondWord = ProjectKeys.CONFIG + POINT + GET + toUpperCaseForFirstCharacter(struct.getPenultima()) + LEFT_ROUND_BRACKET + RIGHT_ROUND_BRACKET;
-                if (entry.getKey().contains("Map")) {
-                    if (ProjectKeys.CONFIG.equals(struct.getLast().trim())) {
-                        builder.append(DataUtil.getCreateExpression(lastType)).append(LEFT_ROUND_BRACKET).append(secondWord).append(COMMA).append(ProjectKeys.CONFIG);
-                    } else {
-                        builder.append(DataUtil.getCreateExpression(lastType)).append(LEFT_ROUND_BRACKET).append(secondWord).append(COMMA).append(getFields);
-                    }
-                } else {
-                    if (ProjectKeys.CONFIG.equals(struct.getLast().trim())) {
-                        builder.append(DataUtil.getCreateExpression(lastType)).append(LEFT_ROUND_BRACKET).append(ProjectKeys.CONFIG);
-                    } else {
-                        builder.append(DataUtil.getCreateExpression(lastType)).append(LEFT_ROUND_BRACKET).append(getFields);
-                    }
-                }
-                builder.append(RIGHT_ROUND_BRACKET).append(SEMICOLON);
-            }
-        } else {
-            int index = 1;
-            boolean flag = true;
-            List<String> order = struct.getOrder();
-            for (Map.Entry<String, String> entry : struct.getFields().entrySet()) {
-                if (flag) {
-                    flag = false;
-                    continue;
-                }
-                String name = struct.getRecommendName(index);
-                builder.append(struct.getInfo(index)).append(SPACE).append(name).append(SPACE).append(EQUAL).append(SPACE);
-                if (entry.getKey().contains("Map")) {
-                    String getFields = ProjectKeys.CONFIG + POINT + GET + toUpperCaseForFirstCharacter(order.get(index)) + LEFT_ROUND_BRACKET + RIGHT_ROUND_BRACKET;
-                    String ifAbsent = String.format(CONFIG_IN_ABSENT, recommendName, getFields, DataUtil.getDefaultValue(entry.getKey()));
-                    builder.append(ifAbsent).append(NEW_LINE);
-                } else {
-                    builder.append(DataUtil.getDefaultValue(entry.getKey())).append(COLON).append(NEW_LINE);
-                }
-                ++index;
-                recommendName = name;
-                lastType = entry.getKey();
-            }
+        for (int i = 1; i < struct.getFields().values().size(); i++) {
+            String key = struct.getKeyByIndex(i);
+            String name = struct.getRecommendName(i);
+            builder.append(struct.getInfo(i)).append(SPACE).append(name).append(SPACE).append(EQUAL).append(SPACE);
+            String getFields = ProjectKeys.CONFIG + POINT + GET + toUpperCaseForFirstCharacter(struct.getOrder(i - 1)) + LEFT_ROUND_BRACKET + RIGHT_ROUND_BRACKET;
+            String ifAbsent = String.format(CONFIG_IN_ABSENT, recommendName, getFields, DataUtil.getDefaultValue(key));
+            builder.append(ifAbsent).append(NEW_LINE);
+            recommendName = name;
         }
+        String getFields;
+        String lastValue = struct.getLastValue();
         builder.append(recommendName).append(POINT);
-        String getFields = ProjectKeys.CONFIG + POINT + GET + toUpperCaseForFirstCharacter(struct.getLast()) + LEFT_ROUND_BRACKET + RIGHT_ROUND_BRACKET;
+        if (ProjectKeys.CONFIG.equals(lastValue)) {
+            getFields = ProjectKeys.CONFIG;
+        } else {
+            getFields = ProjectKeys.CONFIG + POINT + GET + toUpperCaseForFirstCharacter(lastValue) + LEFT_ROUND_BRACKET + RIGHT_ROUND_BRACKET;
+        }
         String secondWord = ProjectKeys.CONFIG + POINT + GET + toUpperCaseForFirstCharacter(struct.getPenultima()) + LEFT_ROUND_BRACKET + RIGHT_ROUND_BRACKET;
-        if (lastType.contains("Map")) {
-            if (ProjectKeys.CONFIG.equals(struct.getLast().trim())) {
+        if (lastType.contains(Map.class.getSimpleName())) {
+            if (ProjectKeys.CONFIG.equals(struct.getLastKey().trim())) {
                 builder.append(DataUtil.getCreateExpression(lastType)).append(LEFT_ROUND_BRACKET).append(secondWord).append(COMMA).append(ProjectKeys.CONFIG);
             } else {
                 builder.append(DataUtil.getCreateExpression(lastType)).append(LEFT_ROUND_BRACKET).append(secondWord).append(COMMA).append(getFields);
             }
         } else {
-            if (ProjectKeys.CONFIG.equals(struct.getLast().trim())) {
+            if (ProjectKeys.CONFIG.equals(struct.getLastKey().trim())) {
                 builder.append(DataUtil.getCreateExpression(lastType)).append(LEFT_ROUND_BRACKET).append(ProjectKeys.CONFIG);
             } else {
                 builder.append(DataUtil.getCreateExpression(lastType)).append(LEFT_ROUND_BRACKET).append(getFields);
@@ -262,16 +234,26 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
         return toLowerCaseForFirstChar(filterNumber(replace)) + SPACE;
     }
 
-    public static String getSomeThing(Struct struct) {
+    public static String buildAccessMethod(Struct struct) {
         StringBuilder builder = new StringBuilder();
         String getName = buildGetName(struct.getValue());
         builder.append(String.format(COMMENT, struct.getComment())).append(NEW_LINE);
-        builder.append(PsiModifier.PUBLIC).append(SPACE).append(PsiModifier.STATIC).append(SPACE).append(struct.getValue()).append(SPACE).append(getName)
+        builder.append(PsiModifier.PUBLIC).append(SPACE).append(PsiModifier.STATIC).append(SPACE).append(struct.getReturnExpression()).append(SPACE).append(getName)
                 .append(LEFT_ROUND_BRACKET);
         List<String> fieldsValues = struct.getFieldsValues();
-        for (int i = 0; i < fieldsValues.size(); i++) {
-            builder.append(DataUtil.getBaseType(fieldsValues.get(i))).append(SPACE).append(struct.getOrder(i));
-            if (i != fieldsValues.size() - 1) {
+        int maxIndex = fieldsValues.size();
+        if (Collection.class.getSimpleName().equals(struct.getLastKey())) {
+            maxIndex--;
+        }
+        for (int i = 0; i < maxIndex; i++) {
+            if (Collection.class.getSimpleName().equals(struct.getKeyByIndex(i))) {
+                maxIndex--;
+                builder.append(struct.getInfo(i));
+            } else {
+                builder.append(DataUtil.getBaseType(fieldsValues.get(i)));
+            }
+            builder.append(SPACE).append(struct.getOrder(i));
+            if (i != maxIndex - 1) {
                 builder.append(COMMA);
             }
         }
@@ -279,14 +261,14 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
         String lastVariable = struct.getName();
         if (fieldsValues.size() > 1) {
             List<String> order = struct.getOrder();
-            for (int i = 0, index = 1; i < order.size() - 1; i++) {
+            for (int i = 0, index = 1; i < maxIndex - 1; i++) {
                 String recommendName = struct.getRecommendName(index);
                 builder.append(struct.getInfo(index)).append(SPACE).append(recommendName).append(SPACE).append(EQUAL).append(SPACE);
                 builder.append(String.format(GET_SOME, lastVariable, order.get(i)));
                 lastVariable = recommendName;
             }
         }
-        builder.append(NEW_LINE).append(ProjectKeys.RETURN).append(SPACE).append(String.format(GET_SOME, lastVariable, struct.getLast())).append(NEW_LINE).append(RIGHT_BRACE);
+        builder.append(NEW_LINE).append(ProjectKeys.RETURN).append(SPACE).append(String.format(GET_SOME, lastVariable, struct.getPenultima())).append(NEW_LINE).append(RIGHT_BRACE);
         return builder.toString();
     }
 

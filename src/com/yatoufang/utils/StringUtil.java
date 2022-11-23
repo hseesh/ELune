@@ -1,10 +1,16 @@
 package com.yatoufang.utils;
 
+import com.yatoufang.entity.Config;
+import com.yatoufang.entity.Struct;
+import com.yatoufang.service.TranslateService;
 import com.yatoufang.templet.ProjectKeys;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class StringUtil {
 
@@ -15,6 +21,12 @@ public class StringUtil {
     public static final char EQUAL = '=';
     public static final char POINT = '.';
     public static final char SEMICOLON = ';';
+
+    public static final String TABLE_FLAG = "\t";
+
+    public static final String SPLIT_FLAG = "#";
+    public static final char LESS_THEN = '<';
+    public static final char GRATE_THEN = '>';
     public static final char LEFT_BRACKET = '[';
     public static final char RIGHT_BRACKET = ']';
     public static final char LEFT_ROUND_BRACKET = '(';
@@ -80,7 +92,7 @@ public class StringUtil {
         return builder.toString();
     }
 
-    public static String toUpperCaseForFirstCharacter(String variable){
+    public static String toUpperCaseForFirstCharacter(String variable) {
         if (variable == null || variable.isEmpty()) {
             return variable;
         }
@@ -117,7 +129,7 @@ public class StringUtil {
         return builder.toString();
     }
 
-    public static String toCameCaseForSmallCameCase(String variable){
+    public static String toCameCaseForSmallCameCase(String variable) {
         char[] chars = variable.toCharArray();
         StringBuilder builder = new StringBuilder();
         boolean flag = false;
@@ -126,7 +138,7 @@ public class StringUtil {
                 flag = true;
                 continue;
             }
-            if(flag){
+            if (flag) {
                 if (aChar > 96 && aChar < 123) {
                     aChar -= 32;
                 }
@@ -143,7 +155,7 @@ public class StringUtil {
         StringBuilder builder = new StringBuilder();
         char[] chars = variable.toCharArray();
         for (int i = 0; i < chars.length; i++) {
-            if (chars[i] >= 65 && chars[i] <= 97) {
+            if (chars[i] >= 65 && chars[i] < 97) {
                 if (i != 0) {
                     builder.append("_");
                 }
@@ -178,6 +190,15 @@ public class StringUtil {
             }
         }
         return builder.toString();
+    }
+
+    public static boolean containChineseCharacter(String chars) {
+        for (char c : chars.toCharArray()) {
+            if (c > 122) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String getCustomerJson(String value) {
@@ -221,30 +242,200 @@ public class StringUtil {
     }
 
     public static List<String> getParam(String s) {
+        List<String> params = new ArrayList<>();
+        String[] split = s.split(TABLE_FLAG);
+        Collections.addAll(params, split);
+        return params;
+    }
+
+    public static String removeFirstAndLastString(String variable) {
+        if (variable == null || variable.length() < 2) {
+            return variable;
+        }
         StringBuilder builder = new StringBuilder();
-        List<String> params = Lists.newArrayList();
-        boolean jumpFlag = true;
-        for (char c : s.toCharArray()) {
-            if (c == 9) {
-                if (jumpFlag) {
-                    params.add(builder.toString());
-                    builder.delete(0, builder.length());
-                    jumpFlag = false;
-                }
-            } else {
-                builder.append(c);
-                jumpFlag = true;
+        char[] chars = variable.toCharArray();
+        for (int i = 1; i < chars.length - 1; i++) {
+            builder.append(chars[i]);
+        }
+        return builder.toString();
+    }
+
+    public static String getPrefix(String variable, String prefix) {
+        int index = variable.indexOf(prefix);
+        if (index > 0) {
+            return variable.substring(0, index);
+        }
+        return variable;
+    }
+
+    public static String getSuffix(String variable, String suffix) {
+        int index = variable.indexOf(suffix);
+        if (index > 0) {
+            return variable.substring(0, index);
+        }
+        return variable;
+    }
+
+    /**
+     * 截取俩个字符串之间的字符串
+     *
+     * @param str
+     * @param strStart
+     * @param strEnd
+     * @return
+     */
+    public static String subString(String str, String strStart, String strEnd) {
+        /* 找出指定的2个字符在 该字符串里面的 位置 */
+        int strStartIndex = str.indexOf(strStart);
+        int strEndIndex = str.indexOf(strEnd);
+        // 如果俩个字符相同，结束字符为第二个
+        if (strStart.equalsIgnoreCase(strEnd)) {
+            int fromIndex = getFromIndex(str, strEnd, 2);
+            strEndIndex = fromIndex;
+        }
+
+        /* index 为负数 即表示该字符串中 没有该字符 */
+        if (strStartIndex < 0) {
+            return "字符串 :---->" + str + "<---- 中不存在 " + strStart + ", 无法截取目标字符串";
+        }
+        if (strEndIndex < 0) {
+            return "字符串 :---->" + str + "<---- 中不存在 " + strEnd + ", 无法截取目标字符串";
+        }
+        /* 开始截取 */
+        String result = str.substring(strStartIndex, strEndIndex).substring(strStart.length());
+        return result;
+    }
+
+    //子字符串modelStr在字符串str中第count次出现时的下标
+    private static int getFromIndex(String str, String modelStr, Integer count) {
+        //对子字符串进行匹配
+        Matcher slashMatcher = Pattern.compile(modelStr).matcher(str);
+        int index = 0;
+        //matcher.find();尝试查找与该模式匹配的输入序列的下一个子序列
+        while (slashMatcher.find()) {
+            index++;
+            //当modelStr字符第count次出现的位置
+            if (index == count) {
+                break;
             }
         }
-        return params;
+        //matcher.start();返回以前匹配的初始索引。
+        return slashMatcher.start();
+    }
+
+    public static void getStructInfo(String variable, Struct struct) {
+        char[] chars = variable.toCharArray();
+        String key = EMPTY;
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < chars.length - 1; i++) {
+            if (chars[i] == GRATE_THEN) {
+                struct.setValue(builder.toString());
+                break;
+            }
+            switch (chars[i]) {
+                case LESS_THEN:
+                    key = builder.toString();
+                    builder.setLength(0);
+                    continue;
+                case COMMA:
+                    struct.addFields(key, builder.toString());
+                    builder.setLength(0);
+                    key = EMPTY;
+                    continue;
+                default:
+                    builder.append(chars[i]);
+                    break;
+            }
+        }
+        if (key.length() == 0) {
+            return;
+        }
+        String value = builder.toString().replaceAll(String.valueOf(GRATE_THEN), EMPTY);
+        struct.addFields(key.trim(), value);
+    }
+
+    public static void getInitOrder(String variable, Struct struct) {
+        boolean flag = false;
+        char[] chars = variable.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        FLAG:
+        for (int i = 0; i < chars.length - 1; i++) {
+            switch (chars[i]) {
+                case LESS_THEN:
+                    flag = true;
+                    continue;
+                case COMMA:
+                    struct.addOrder(builder.toString());
+                    builder.setLength(0);
+                    continue;
+                case GRATE_THEN:
+                    struct.addOrder(builder.toString());
+                    builder.setLength(0);
+                    break FLAG;
+                default:
+                    if (flag) {
+                        builder.append(chars[i]);
+                    }
+                    break;
+            }
+        }
+        int index = variable.indexOf(ProjectKeys.LINK);
+        if (index > 0) {
+            variable = variable.substring(index + ProjectKeys.LINK.length());
+            if (variable.endsWith(String.valueOf(RIGHT_BRACE))) {
+                struct.setFileName(variable.substring(0, variable.length() - 1));
+            }
+            return;
+        }
+        struct.setFileName(EMPTY);
+    }
+
+    //0~9 ASCII 48~58 ！
+    public static String filterNumber(String variable) {
+        StringBuilder builder = new StringBuilder();
+        for (char c : variable.toCharArray()) {
+            if (c >= 48 && c <= 58) {
+                continue;
+            }
+            builder.append(c);
+        }
+        return builder.toString();
+    }
+
+
+
+    public static void translateIfNecessary(Config config, List<String> param) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < param.size(); i++) {
+            if (i != param.size() - 1) {
+                builder.append(StringUtil.SPLIT_FLAG);
+            }
+            builder.append(param.get(i));
+        }
+        String character = StringUtil.collectChineseCharacter(builder.toString());
+        if (character.length() > 0) {
+            TranslateService translateService = TranslateService.getInstance();
+            String action = translateService.action(character);
+            String[] strings = action.split(StringUtil.SPLIT_FLAG);
+            if (strings.length < 1) {
+                return;
+            }
+            param.clear();
+            Collections.addAll(param, strings);
+            config.setParams(param);
+        }
     }
 
     public static void main(String[] args) {
         System.out.println(getUpperCaseVariable("Rune"));
+        System.out.println(toUpper("rune"));
         System.out.println(toUpper("Rune", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
         System.out.println(toLowerCaseForFirstChar("testTable"));
         System.out.println(collectChineseCharacter("\\module/Dds/升级/request/LevelRequest"));
         System.out.println(toCameCaseForSmallCameCase("test_table"));
         System.out.println(toUpperCaseForFirstCharacter("testTable"));
+        Struct struct = new Struct();
+        getStructInfo("abcsdefg", struct);
+        System.out.println(struct);
     }
 }
