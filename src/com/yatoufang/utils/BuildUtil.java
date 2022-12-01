@@ -12,31 +12,38 @@ import org.jetbrains.annotations.NotNull;
  */
 public class BuildUtil {
 
-    private static final PsiElementFactory FACTORY = JavaPsiFacade.getInstance(Application.project).getElementFactory();
-
     @NotNull
     public static PsiField createField(PsiElement element, String type, String content) {
-        PsiType psiType = FACTORY.createTypeFromText(type, element);
-        PsiField field = FACTORY.createField(content, psiType);
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        PsiType psiType = factory.createTypeFromText(type, element);
+        PsiField field = factory.createField(content, psiType);
         PsiUtil.setModifierProperty(field, PsiModifier.PRIVATE, true);
         return field;
     }
 
     @NotNull
     public static PsiMethod createMethod(PsiElement element, String type, String content) {
-        PsiType psiType = FACTORY.createTypeFromText(type, element);
-        return FACTORY.createMethod(content, psiType);
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        PsiType psiType = factory.createTypeFromText(type, element);
+        return factory.createMethod(content, psiType);
+    }
+
+    @NotNull
+    public static PsiMethod createMethod(PsiElement element, String content) {
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        return factory.createMethodFromText(content, element);
     }
 
     public static void addComment(@NotNull PsiElement element, String comment) {
-        PsiComment psiComment = FACTORY.createCommentFromText(comment, null);
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        PsiComment psiComment = factory.createCommentFromText(comment, null);
         element.addBefore(psiComment, element.getFirstChild());
     }
 
-
     public static void addAnnotation(@NotNull PsiField element, String content) {
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
         PsiModifierList modifierList = element.getModifierList();
-        if(modifierList == null){
+        if (modifierList == null) {
             return;
         }
         modifierList.addAnnotation(content);
@@ -49,38 +56,38 @@ public class BuildUtil {
 
     public static void addAnnotation(@NotNull PsiClass element, String content) {
         PsiModifierList modifierList = element.getModifierList();
-        if(modifierList == null){
+        if (modifierList == null) {
             return;
         }
         modifierList.addAnnotation(content);
     }
 
-    public static PsiStatement createStatement(@NotNull PsiElement context, String statement){
-        return  FACTORY.createStatementFromText(statement,context);
+    public static PsiStatement createStatement(@NotNull PsiElement context, String statement) {
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        return factory.createStatementFromText(statement, context);
     }
 
-    public static PsiImportStatement createImportStatement(@NotNull PsiElement context, String type){
-//        PsiType psiType = FACTORY.createTypeFromText(type, context);
-//        PsiClass psiClass = PsiUtil.resolveClassInType(psiType);
-//        if(psiClass == null){
-//            return null;
-//        }
+    public static PsiCodeBlock createCodeBlock() {
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        return null;
+    }
+
+    public static PsiImportStatement createImportStatement(@NotNull PsiElement context, String type) {
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
         PsiClass[] classWithShortName = PSIUtil.findClassWithShortName(type);
-        if(classWithShortName.length == 0){
+        if (classWithShortName.length == 0) {
             return null;
         }
-        return  FACTORY.createImportStatement(classWithShortName[0]);
+        return factory.createImportStatement(classWithShortName[0]);
     }
 
-
-    public static PsiClass createClass(String text){
+    public static PsiClass createClass(String text) {
         PsiJavaFile fileFromText = (PsiJavaFile) PsiFileFactory.getInstance(Application.project).createFileFromText("tts.java", JavaFileType.INSTANCE, text);
         PsiClass[] classes = fileFromText.getClasses();
-        if(classes.length == 0){
+        if (classes.length == 0) {
             return null;
         }
         return classes[0];
     }
-
 
 }

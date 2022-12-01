@@ -4,6 +4,7 @@ import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
@@ -28,19 +29,43 @@ public class ConsoleService implements Console {
 
     private static ConsoleService instance;
 
-    public static ConsoleService getInstance(Table table,String rootPath) {
+    private ConsoleService packagedInstance;
+
+    public static ConsoleService getInstance(Table table, String rootPath) {
         if (instance == null) {
             instance = new ConsoleService();
             instance.init(table, rootPath);
         }
         return instance;
     }
+
     public static ConsoleService getInstance() {
         if (instance == null) {
             instance = new ConsoleService();
             instance.init();
         }
         return instance;
+    }
+
+    public ConsoleService getInstance(Project project) {
+        if (packagedInstance == null) {
+            packagedInstance = new ConsoleService();
+            packagedInstance.init(project);
+        }
+        return packagedInstance;
+    }
+
+    public void init(Project project) {
+        ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow("ELune");
+        consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(project).getConsole();
+        if (toolWindow == null) {
+            return;
+        }
+        Content content = toolWindow.getContentManager().getFactory().createContent(consoleView.getComponent(), "PackagedConsole", true);
+        toolWindow.getContentManager().addContent(content);
+        toolWindow.getContentManager().setSelectedContent(content);
+        toolWindow.activate(() -> {
+        });
     }
 
     @Override
@@ -53,12 +78,12 @@ public class ConsoleService implements Console {
         Content content = toolWindow.getContentManager().getFactory().createContent(consoleView.getComponent(), "Table Scanner", true);
         toolWindow.getContentManager().addContent(content);
         toolWindow.getContentManager().setSelectedContent(content);
-        toolWindow.activate(() -> {});
+        toolWindow.activate(() -> {
+        });
     }
 
-
     @Override
-    public void init(Table table,String rootPath) {
+    public void init(Table table, String rootPath) {
         tableObject = table;
         ToolWindow toolWindow = ToolWindowManager.getInstance(Application.project).getToolWindow("ELune");
         consoleView = TextConsoleBuilderFactory.getInstance().createBuilder(Application.project).getConsole();
@@ -73,10 +98,10 @@ public class ConsoleService implements Console {
                 consoleView.clear();
             }
         });
-        actionGroup.addAction(new AnAction("Run Module Generator", "Run",Icon.RUN) {
+        actionGroup.addAction(new AnAction("Run Module Generator", "Run", Icon.RUN) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-                new ModuleGeneratorDialog(tableObject,rootPath).show();
+                new ModuleGeneratorDialog(tableObject, rootPath).show();
             }
         });
         panel.add(consoleView.getComponent(), BorderLayout.CENTER);
@@ -85,7 +110,8 @@ public class ConsoleService implements Console {
         Content content = toolWindow.getContentManager().getFactory().createContent(panel, "Table Scanner", true);
         toolWindow.getContentManager().addContent(content);
         toolWindow.getContentManager().setSelectedContent(content);
-        toolWindow.activate(() -> {});
+        toolWindow.activate(() -> {
+        });
     }
 
     @Override
@@ -109,8 +135,5 @@ public class ConsoleService implements Console {
         String result = "\n" + info + "\n";
         consoleView.print(result, ConsoleViewContentType.ERROR_OUTPUT);
     }
-
-
-
 
 }

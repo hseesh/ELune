@@ -1,0 +1,132 @@
+[
+    {
+        "name": "charge",
+        "typeAlias": "int",
+        "defaultValue": "",
+        "description": "充值金额"
+    },
+    {
+      "name": "chargeId",
+      "typeAlias": "int",
+      "defaultValue": "",
+      "description": "充值ID"
+  },
+    {
+        "name": "score",
+        "typeAlias": "int",
+        "defaultValue": "",
+        "description": "积分"
+    },
+    {
+        "name": "count",
+        "typeAlias": "int",
+        "defaultValue": "",
+        "description": "数量"
+    },
+    {
+      "name": "exp",
+      "typeAlias": "int",
+      "defaultValue": "",
+      "description": "经验"
+  },
+    {
+        "name": "needExp",
+        "typeAlias": "int",
+        "defaultValue": "",
+        "description": "升级所需经验"
+    },
+    {
+        "name": "configId",
+        "typeAlias": "int",
+        "defaultValue": "",
+        "description": "配置ID"
+    },
+    {
+        "name": "level",
+        "typeAlias": "int",
+        "defaultValue": "",
+        "description": "等级"
+    },
+    {
+        "name": "starLevel",
+        "typeAlias": "int",
+        "defaultValue": "",
+        "description": "星级"
+    },
+    {
+        "aliaParam": {
+            "name": "costList",
+            "typeAlias": "Collection<RewardObject>",
+            "defaultValue": " = Lists.newArrayList()",
+            "description": "消耗列表"
+        },
+        "referenceExpression": "JSONArray costArray = JSONArray.parseArray(costs);for (Object rewardItem : costArray) {\n            JSONArray rewardArray = JSONArray.parseArray(rewardItem.toString());\n            RewardObject rewardObject = RewardObject.valueOf(rewardArray);\n            costList.add(rewardObject);\n        }",
+        "name": "costs",
+        "typeAlias": "String",
+        "defaultValue": "",
+        "description": "消耗[[rewardType,id,num],[rewardType,id,num]] {@code RewardType}"
+    },
+    {
+        "aliaParam": {
+            "name": "costList",
+            "typeAlias": "Collection<RewardObject>",
+            "defaultValue": " = Lists.newArrayList()",
+            "description": "消耗列表"
+        },
+        "referenceExpression": "JSONArray costArray = JSONArray.parseArray(cost);for (Object rewardItem : costArray) {\n            JSONArray rewardArray = JSONArray.parseArray(rewardItem.toString());\n            RewardObject rewardObject = RewardObject.valueOf(rewardArray);\n            costList.add(rewardObject);\n        }",
+        "name": "cost",
+        "typeAlias": "String",
+        "defaultValue": "",
+        "description": "消耗[[rewardType,id,num],[rewardType,id,num]] {@code RewardType}"
+    },  {
+        "aliaParam": {
+          "name": "rewardList",
+          "typeAlias": "Collection<RewardObject>",
+          "defaultValue": " = Lists.newArrayList()",
+          "description": "奖励列表"
+        },
+        "referenceExpression": "JSONArray rewardsArray = JSONArray.parseArray(reward);for (Object reward : rewardsArray) {\n            JSONArray itemArray = JSONArray.parseArray(reward.toString());\n            RewardObject rewardObject = RewardObject.valueOf(itemArray);\n            rewardList.add(rewardObject);\n        }",
+        "name": "reward",
+        "typeAlias": "String",
+        "defaultValue": "",
+        "description": "奖励[[rewardType,id,num],[rewardType,id,num]] {@code RewardType}"
+      }, {
+        "aliaParam": {
+          "name": "rewardList",
+          "typeAlias": "Collection<RewardObject>",
+          "defaultValue": " = Lists.newArrayList()",
+          "description": "奖励列表"
+        },
+        "referenceExpression": "JSONArray rewardsArray = JSONArray.parseArray(rewards);for (Object reward : rewardsArray) {\n            JSONArray itemArray = JSONArray.parseArray(reward.toString());\n            RewardObject rewardObject = RewardObject.valueOf(itemArray);\n            rewardList.add(rewardObject);\n        }",
+        "name": "rewards",
+        "typeAlias": "String",
+        "defaultValue": "",
+        "description": "奖励[[rewardType,id,num],[rewardType,id,num]] {@code RewardType}"
+      },
+      {
+        "aliaParam": {
+          "name": "attributeMap",
+          "typeAlias": "Map<SpriteAttributeType, Long>",
+          "defaultValue": " = Maps.newHashMap()",
+          "description": "基础属性Map key:SpriteAttributeType,value:value"
+        },
+        "referenceExpression": "JSONArray baseAttributeArray = JSONArray.parseArray(attribute);for (Object baseAttribute : baseAttributeArray) {\n            JSONArray attributeArray = JSONArray.parseArray(baseAttribute.toString());\n            attributeMap.put(SpriteAttributeType.getType(attributeArray.getIntValue(0)), attributeArray.getLong(1));\n        }",
+        "name": "attribute",
+        "typeAlias": "String",
+        "defaultValue": "",
+        "description": "基础属性([[type,value],[type,value]]){@code SpriteAttributeType}"
+      },
+      {
+        "aliaParam": {
+          "name": "attributeTTPercentMap",
+          "typeAlias": "Map<SpriteAttributeType, Integer>",
+          "defaultValue": " = Maps.newHashMap()",
+          "description": "加成属性Mapkey:SpriteAttributeType,value:value"
+        },
+        "referenceExpression": "JSONArray additionAttributeArray = JSONArray.parseArray(attributeTTPercent);for (Object baseAttribute : additionAttributeArray) {\n            JSONArray attributeArray = JSONArray.parseArray(baseAttribute.toString());\n            attributeTTPercentMap.put(SpriteAttributeType.getType(attributeArray.getIntValue(0)), attributeArray.getIntValue(1));\n        }",
+        "name": "attributeTTPercent",
+        "typeAlias": "String",
+        "defaultValue": "",
+        "description": "加成属性（万分比）([[type,value],[type,value]]){@code SpriteAttributeType}"
+      }
+]

@@ -12,7 +12,7 @@ import com.intellij.ui.treeStructure.Tree;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
-import com.yatoufang.test.style.StyleContext;
+import com.yatoufang.designer.style.StyleContext;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

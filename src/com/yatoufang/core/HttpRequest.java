@@ -59,6 +59,16 @@ public class HttpRequest {
     }
 
 
+    public static void initPackRequest(HttpState state) throws Exception {
+        HttpEntityEnclosingRequestBase requestBase = new HttpPost(state.getUrl());
+        StringEntity entity = new StringEntity("");
+        entity.setContentEncoding("UTF-8");
+        entity.setContentType("application/json");
+        requestBase.setEntity(entity);
+        execute(requestBase, state);
+    }
+
+
     private static void setRequestConfig(HttpRequestBase httpRequest) {
         RequestConfig.Builder custom = RequestConfig.custom();
         custom.setConnectTimeout(5000);

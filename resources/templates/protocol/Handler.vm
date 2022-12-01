@@ -35,7 +35,6 @@ public void ${item.methodName}(Channel channel, Long actorId, DataPacket packet)
     Result result = ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Facade.${item.methodName}(actorId);
     #else
         ${item.request}  request = packet.getValue(${item.request}.class);
-        ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Facade.${item.methodName}(${item.valueOf});
     #end
 channelWrite(channel, packet, result.statusCode);
 }

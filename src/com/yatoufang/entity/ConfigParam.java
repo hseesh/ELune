@@ -20,11 +20,21 @@ public class ConfigParam extends Param{
 
     public ConfigParam(String paramName) {
         super(paramName);
+        super.setDefaultValue(StringUtil.EMPTY);
     }
 
     public ConfigParam(String name, String type) {
         super(name);
         super.setTypeAlias(type);
+        super.setDefaultValue(StringUtil.EMPTY);
+    }
+
+    public static ConfigParam valueOf(String name, String description, String typeAlias ) {
+        ConfigParam model = new ConfigParam();
+        model.setDescription(description);
+        model.setTypeAlias(typeAlias);
+        model.setName(name);
+        return model;
     }
 
     public ConfigParam getAliaParam() {
@@ -55,5 +65,14 @@ public class ConfigParam extends Param{
     @Override
     public int hashCode() {
         return Objects.hash(getName());
+    }
+
+    @Override
+    public String toString() {
+        String string = super.toString();
+        if (referenceExpression != null) {
+            string += referenceExpression;
+        }
+        return  string;
     }
 }

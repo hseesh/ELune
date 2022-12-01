@@ -4,7 +4,6 @@ import com.intellij.util.ui.EditableModel;
 import com.yatoufang.entity.Param;
 
 import javax.swing.table.AbstractTableModel;
-import java.util.ArrayList;
 import java.util.List;
 
 

@@ -24,7 +24,7 @@ public interface ${table.name.substring(0, 1).toUpperCase()}${table.name.substri
      /**
      * ${item.description}
      * #foreach($param in $item.params)
-     *   @param ${param.typeAlias}
+      @param ${param.name}
      * #end
      */
       void ${item.methodName}(${item.valueOf});

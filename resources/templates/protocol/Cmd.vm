@@ -17,7 +17,7 @@ public interface ${table.name}Cmd {
     *     推送：{@code ${item.push}}
     * </pre>
     */
-    byte ${item.alias} ${item.cmdCode};
+    byte ${item.alias} = ${item.cmdCode};
     #end
 
 

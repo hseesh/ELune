@@ -18,7 +18,7 @@ import com.alibaba.fastjson.JSONArray;
 public class  ${table.fileName} implements ModelAdapter {
 
     #foreach($item in $table.paramList)
-    /**
+/**
     * ${item.description}
     */
     private ${item.typeAlias} ${item.name} ${item.defaultValue};

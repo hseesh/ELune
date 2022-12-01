@@ -11,7 +11,6 @@ import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.util.PsiUtil;
 import com.yatoufang.entity.HttpState;
 import com.yatoufang.entity.Method;
-import com.yatoufang.entity.Param;
 import com.yatoufang.entity.ReferenceBox;
 import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
@@ -302,7 +301,6 @@ public class Parser {
                     }
                 }
             }
-
         }
     }
 
@@ -410,11 +408,23 @@ public class Parser {
             case "List":
             case "ArrayList":
             case "Collection":
+            case "JSONArray":
                 writer.beginArray();
                 writer.value(" ");
                 writer.value(" ");
                 writer.value(" ");
                 writer.endArray();
+                return null;
+            case "Map":
+            case "HashMap":
+            case "TreeMap":
+            case "Hashtable":
+                writer.beginObject();
+                writer.name("");
+                writer.value("");
+                writer.name("");
+                writer.value("");
+                writer.endObject();
                 return null;
             case "Object":
                 result = "Object";

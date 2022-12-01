@@ -2,8 +2,8 @@ package com.yatoufang.service;
 
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import com.yatoufang.core.HttpUtils;
 import com.yatoufang.entity.translate.Response;
-import com.yatoufang.utils.HttpUtils;
 import com.yatoufang.utils.Md5;
 
 import java.util.HashMap;

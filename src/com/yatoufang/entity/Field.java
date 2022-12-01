@@ -11,6 +11,11 @@ public class Field extends Param {
 
     public Field parent;
 
+    private String constraint;
+
+    private boolean isPrimaryKey;
+
+    private boolean isForeignKey;
     public Field(String paramName) {
         super(paramName);
         this.setDescription(StringUtil.EMPTY);
@@ -25,12 +30,6 @@ public class Field extends Param {
         this.setConstraint(" NOT NULL");
         this.setAnnotation("@Column");
     }
-
-    private String constraint;
-
-    private boolean isPrimaryKey;
-
-    private boolean isForeignKey;
 
     public boolean isPrimaryKey() {
         return isPrimaryKey;

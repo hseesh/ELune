@@ -5,6 +5,7 @@ import com.intellij.codeInsight.template.macro.MacroBase
 import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.PsiManager
+import com.yatoufang.templet.Application
 import com.yatoufang.utils.PSIUtil
 
 /**
@@ -15,6 +16,7 @@ class ValueOfMacro : MacroBase("valueOf", "valueOf(String)") {
 
     override fun calculateResult(params: Array<out Expression>, context: ExpressionContext?, quick: Boolean): Result? {
         val editor = context?.editor as EditorEx
+        Application.project = context.project;
         val file = PsiManager.getInstance(context.project).findFile(editor.virtualFile) as PsiJavaFile
         val text = PSIUtil.getClassValueOf(file.classes)
         return text?.let { TextResult(it) }

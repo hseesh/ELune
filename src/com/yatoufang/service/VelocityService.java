@@ -1,7 +1,7 @@
 package com.yatoufang.service;
 
 import com.intellij.openapi.util.io.FileUtil;
-import com.yatoufang.config.AppSettingService;
+import com.yatoufang.config.service.AppSettingService;
 import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.StringUtil;
 import org.apache.velocity.VelocityContext;

@@ -60,13 +60,6 @@
         "description": "碎片ID"
     },
     {
-        "name": "rewards",
-        "typeAlias": "RewardResult",
-        "alias": "RewardResult",
-        "defaultValue": "",
-        "description": "奖励结果"
-    },
-    {
         "name": "rechargeReceiveMap",
         "typeAlias": "Map<Integer, Integer>",
         "alias": "Map<Integer, Integer>",

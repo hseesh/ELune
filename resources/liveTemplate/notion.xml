@@ -29,6 +29,37 @@
         </context>
     </template>
 
+    <template
+            name="checkMe"
+            value="$checkMe$"
+            description="Elune: If null or fail then return"
+            toReformat="true"
+            toShortenFQNames="false">
+        <variable
+                name="checkMe"
+                expression="checkMe(suggestFirstVariableName(&quot;Object&quot;))"
+                alwaysStopAt="true"/>
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+
+
+    <template
+            name="invalidParam"
+            value="$invalidParam$"
+            description="Elune: return Invalid Param"
+            toReformat="true"
+            toShortenFQNames="false">
+        <variable
+                name="invalidParam"
+                expression="invalidParam()"
+                alwaysStopAt="true"/>
+        <context>
+            <option name="ELUNE" value="true"/>
+        </context>
+    </template>
+
     <template name="list" value="List&lt;$PARAM$&gt; $NAME$ = Lists.newArrayList();"
               description="Elune: List&lt;$PARAM$&gt; list = Lists.newArrayList()" toReformat="true"
               toShortenFQNames="true">

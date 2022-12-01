@@ -2,6 +2,7 @@ package com.yatoufang.config;
 
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
+import com.yatoufang.config.service.AppSettingService;
 import com.yatoufang.ui.TemplateSettingComponent;
 import org.jetbrains.annotations.Nullable;
 

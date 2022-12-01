@@ -10,6 +10,7 @@ import com.yatoufang.entity.Table;
 import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Annotations;
+import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.PSIUtil;
@@ -32,7 +33,7 @@ public class TableScannerAction extends AnAction {
             NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
             return;
         }
-
+        Application.project = e.getProject();
         String rootPath = getRootPath(file);
         PsiClass[] classes = file.getClasses();
         for (PsiClass aClass : classes) {
@@ -133,7 +134,7 @@ public class TableScannerAction extends AnAction {
             tableField.add(field);
         }
         Field field = new Field("updateTime", "timestamp");
-        field.setConstraint(" NOT　NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
+        field.setConstraint(" NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
         tableField.add(field);
         table.setFields(tableField);
         table.setComment(PSIUtil.getDescription(aClass.getDocComment()));

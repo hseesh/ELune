@@ -142,6 +142,6 @@ public class TcpMethod {
 
     @Override
     public String toString() {
-        return "td.ServerDelegate.sendMessage({\n" + "  module : " + moduleCode + ", cmd : " + cmdCode + (content.isEmpty() ? StringUtil.EMPTY : ", ") + content + "\n" + "})";
+        return "td.ServerDelegate.sendMessage({ module : " + moduleCode + ", cmd : " + cmdCode + (content.isEmpty() ? StringUtil.EMPTY : ", ") + content + "\n" + "})";
     }
 }

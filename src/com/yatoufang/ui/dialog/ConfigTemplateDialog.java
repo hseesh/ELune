@@ -1,7 +1,7 @@
 package com.yatoufang.ui.dialog;
 
-
 import com.google.common.collect.Maps;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.psi.*;
@@ -10,16 +10,17 @@ import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.FormBuilder;
-import com.yatoufang.config.AppSettingService;
+import com.yatoufang.config.service.AppSettingService;
 import com.yatoufang.entity.Config;
 import com.yatoufang.entity.ConfigParam;
 import com.yatoufang.service.NotifyService;
+import com.yatoufang.service.TranslateService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.test.event.EditorContext;
+import com.yatoufang.designer.event.EditorContext;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
@@ -33,10 +34,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -57,27 +56,27 @@ public class ConfigTemplateDialog extends DialogWrapper {
     private Map<String, String> fileMap = Maps.newHashMap();
     private HashSet<ConfigParam> params = new HashSet<>();
 
-    private VelocityService velocityService;
-
+    private final VelocityService velocityService;
 
     public ConfigTemplateDialog(String rootPath, String workSpace) {
         super(Application.project, true);
-        try {
-            params = new BankGroundTask().call();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (params.isEmpty()) {
-            return;
-        }
         this.rootPath = rootPath;
         this.workSpace = workSpace;
         velocityService = VelocityService.getInstance();
         initData();
         init();
+        ApplicationManager.getApplication().runReadAction(() -> {
+            try {
+                params = new BankGroundTask().call();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Collection<ConfigParam> configParams = FileWrite.loadConfig(this.getClass(), ConfigParam.class, ProjectKeys.PATH_CONFIG_FIELDS);
+            params.addAll(configParams);
+        });
     }
 
-    public ConfigTemplateDialog(String rootPath, String workSpace,Map<String, String> fileMap) {
+    public ConfigTemplateDialog(String rootPath, String workSpace, Map<String, String> fileMap) {
         super(Application.project, true);
         try {
             params = new BankGroundTask().call();
@@ -96,7 +95,6 @@ public class ConfigTemplateDialog extends DialogWrapper {
         init();
     }
 
-
     private void saveFile() {
         if (fileMap.size() > 0) {
             fileMap.forEach((fileName, fileContent) -> {
@@ -104,16 +102,6 @@ public class ConfigTemplateDialog extends DialogWrapper {
                 FileWrite.write(fileContent, filePath, true, false);
             });
         }
-    }
-
-
-    public static void main(String[] args) {
-        String text = "data\ttype\trank\trewards\t\t\t\t\tnationalRewards\t\t\t\t\tshowrewards\n";
-        String text2 = "incarnation_reinforce_config\tIncarnationReinforceConfig\t\t\t\n" +
-                "cs\tcs\tcs\tc\tsc\n" +
-                "quality\tlevel\tcosts\tnextLevel\tattribute\n";
-        Config parser = parser(text2);
-        System.out.println(parser);
     }
 
     public static Config parser(String text) {
@@ -130,15 +118,14 @@ public class ConfigTemplateDialog extends DialogWrapper {
             case 2:
                 config.setIndexLists(StringUtil.getParam(split[2]));
             case 1:
-                config.setParams(StringUtil.getParam(split[split.length - 1]));
+                List<String> param = StringUtil.getParam(split[split.length - 1]);
+                config.setParams(param);
                 break;
             default:
                 break;
         }
         return config;
     }
-
-
     private void initData() {
         String text = velocityService.execute(ProjectKeys.CONFIG_TEMPLATE, new Config());
         editor = SwingUtils.createEditor(text);
@@ -146,8 +133,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
     }
 
     @Override
-    protected @Nullable
-    JComponent createCenterPanel() {
+    protected @Nullable JComponent createCenterPanel() {
         JSplitPane rootPane = new JSplitPane();
 
         rootPane.setMinimumSize(new Dimension(1100, 800));
@@ -160,7 +146,6 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
         CollectionListModel<String> listModel = new CollectionListModel<>(files);
         JBList<String> fileList = new JBList<>(listModel);
-
 
         ToolbarDecorator decorator = ToolbarDecorator.createDecorator(fileList);
 
@@ -237,11 +222,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
         executeDimension.setSize(new Dimension(300, 50));
         executeDimension.add(execute);
 
-        JPanel leftRootPanel = FormBuilder.createFormBuilder()
-                .addComponentFillVertically(configData, 1)
-                .addComponent(panel)
-                .addComponent(executeDimension)
-                .getPanel();
+        JPanel leftRootPanel = FormBuilder.createFormBuilder().addComponentFillVertically(configData, 1).addComponent(panel).addComponent(executeDimension).getPanel();
 
         rightRootPanel.add(editor);
 
@@ -254,15 +235,14 @@ public class ConfigTemplateDialog extends DialogWrapper {
     }
 
     @Override
-    protected @NotNull
-    JPanel createButtonsPanel(@NotNull List<? extends JButton> buttons) {
+    protected @NotNull JPanel createButtonsPanel(@NotNull List<? extends JButton> buttons) {
         return new JPanel();
     }
 
     @Override
     public void doCancelAction() {
         super.doCancelAction();
-        if(designerModel){
+        if (designerModel) {
             EditorContext.setDesigner(fileMap);
         }
     }
@@ -287,12 +267,12 @@ public class ConfigTemplateDialog extends DialogWrapper {
         private HashSet<ConfigParam> selectPackage() {
             AppSettingService service = AppSettingService.getInstance();
             if (service.dataConfigPath == null || service.dataConfigPath.isEmpty()) {
-                return null;
+                return Sets.newHashSet();
             }
             PsiPackage selectedPackage = JavaPsiFacade.getInstance(Application.project).findPackage(service.dataConfigPath);
             if (selectedPackage == null) {
                 NotifyService.notifyError("No package Match: " + service.dataConfigPath);
-                return null;
+                return Sets.newHashSet();
             }
             PsiClass[] classes = selectedPackage.getClasses();
             HashSet<ConfigParam> params = Sets.newHashSet();
@@ -301,7 +281,6 @@ public class ConfigTemplateDialog extends DialogWrapper {
             ArrayList<String> expressionList = Lists.newArrayList();
             for (PsiClass aClass : classes) {
                 if (!aClass.hasAnnotation(Annotations.DATA_FILE)) {
-                    NotifyService.notifyWarning(NotifyKeys.NO_PACKAGE_SELECTED);
                     continue;
                 }
                 PsiField[] fields = aClass.getFields();
@@ -312,9 +291,12 @@ public class ConfigTemplateDialog extends DialogWrapper {
                     param.setTypeAlias(type.getPresentableText());
                     param.setDescription(PSIUtil.getDescription(field.getDocComment()));
                     if (field.hasAnnotation(Annotations.FILED_IGNORE)) {
-                        param.setDefaultValue(PSIUtil.getFiledValue((PsiElement) field));
+                        String filedValue = PSIUtil.getFiledValue((PsiElement) field);
+                        filedValue = filedValue == null ? StringUtil.EMPTY : filedValue;
+                        param.setDefaultValue(filedValue);
                         referenceList.add(param);
                     } else {
+                        param.setDefaultValue(StringUtil.EMPTY);
                         paramLists.add(param);
                     }
                 }
@@ -359,7 +341,5 @@ public class ConfigTemplateDialog extends DialogWrapper {
             }
         }
     }
-
-
 
 }

@@ -3,7 +3,7 @@ package com.yatoufang.ui;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.psi.PsiPackage;
 import com.intellij.util.ui.FormBuilder;
-import com.yatoufang.config.AppSettingService;
+import com.yatoufang.config.service.AppSettingService;
 import com.yatoufang.templet.Application;
 
 import javax.swing.*;

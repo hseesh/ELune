@@ -16,18 +16,15 @@ import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.test.event.EditorContext;
-import com.yatoufang.test.model.entity.Designer;
+import com.yatoufang.designer.event.EditorContext;
+import com.yatoufang.designer.model.entity.Designer;
 import com.yatoufang.utils.*;
 import org.apache.commons.compress.utils.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -129,10 +126,9 @@ public class ProtocolBuildDialog extends DialogWrapper {
         subRootPanel.setMinimumSize(new Dimension(400, 600));
         executeDimension.add(execute);
         JPanel leftRootPanel = FormBuilder.createFormBuilder()
-                .addComponent(createStructureTree())
-                .addComponentFillVertically(createMethodPanel(), 0)
-                .addComponent(executeDimension)
-                .getPanel();
+            .addComponentFillVertically(createStructureTree(),0)
+            .addComponent(executeDimension)
+            .getPanel();
         rootPanel.setLeftComponent(leftRootPanel);
         rootPanel.setRightComponent(editor);
         execute.addActionListener(e -> {
@@ -189,6 +185,17 @@ public class ProtocolBuildDialog extends DialogWrapper {
                                 table.setFields(fields);
                                 DataUtil.valueOf(table);
                                 String result = StringUtil.EMPTY;
+                                FileNode nodeWithoutCatalog = getSelectedNodeWithoutCatalog();
+                                if (nodeWithoutCatalog != null) {
+                                    TreeNode parent = nodeWithoutCatalog.getParent();
+                                    if (parent != null) {
+                                        FileNode fileNode = (FileNode) parent.getParent();
+                                        String character = StringUtil.collectChineseCharacter(fileNode.name);
+                                        if (character == null || character.isEmpty()) {
+                                            table.setComment(character);
+                                        }
+                                    }
+                                }
                                 if (selectedNode.name.contains(ProjectKeys.REQUEST)) {
                                     result = velocityService.execute(ProjectKeys.REQUEST_TEMPLATE, table);
                                 } else if (selectedNode.name.contains(ProjectKeys.RESPONSE)) {
@@ -274,6 +281,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
         for (int i = 0; i < tree.getRowCount(); i++) {
             tree.expandRow(i);
         }
+        editor.setFont(new Font(null, Font.PLAIN, 12));
         return toolbarDecorator.createPanel();
     }
 
@@ -307,13 +315,10 @@ public class ProtocolBuildDialog extends DialogWrapper {
         return root;
     }
 
-
-    private JComponent createMethodPanel() {
-        return new JLabel();
-    }
-
     private void initComponent() {
-        table.getFields().removeIf(e -> "actorId".equals(e.getName()) || "updateTime".equals(e.getName()));
+        if (table != null && table.getFields() != null) {
+            table.getFields().removeIf(e -> "actorId".equals(e.getName()) || "updateTime".equals(e.getName()));
+        }
         editor = SwingUtils.createEditor(StringUtil.EMPTY);
         editor.setFont(new Font(null, Font.PLAIN, 14));
         editor.addFocusListener(new FocusListener() {
@@ -324,7 +329,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
 
             @Override
             public void focusLost(FocusEvent e) {
-                FileNode selectedNode = getSelectedNode();
+                FileNode selectedNode = getSelectedNodeWithoutCatalog();
                 if (selectedNode == null) {
                     return;
                 }
@@ -335,6 +340,14 @@ public class ProtocolBuildDialog extends DialogWrapper {
 
     private FileNode getSelectedNode() {
         FileNode[] selectedNodes = tree.getSelectedNodes(FileNode.class, fileNode -> fileNode.isCatalog);
+        for (FileNode selectedNode : selectedNodes) {
+            return selectedNode;
+        }
+        return null;
+    }
+
+    private FileNode getSelectedNodeWithoutCatalog() {
+        FileNode[] selectedNodes = tree.getSelectedNodes(FileNode.class, fileNode -> !fileNode.isCatalog);
         for (FileNode selectedNode : selectedNodes) {
             return selectedNode;
         }

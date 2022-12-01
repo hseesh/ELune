@@ -10,6 +10,7 @@ import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.FormBuilder;
+import com.yatoufang.designer.event.EditorContext;
 import com.yatoufang.entity.Config;
 import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Table;
@@ -17,7 +18,6 @@ import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.test.event.EditorContext;
 import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
@@ -42,7 +42,6 @@ import java.util.Map;
  * @since 2022/5/15 0015
  */
 public class EntityTemplateDialog extends DialogWrapper {
-
     private EditorTextField editor;
 
     private final ArrayList<String> files = Lists.newArrayList();

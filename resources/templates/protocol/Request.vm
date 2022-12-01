@@ -16,16 +16,4 @@ public class ${table.name} {
     private ${item.alias} ${item.name};
     #end
 
-
-    #foreach($item in $table.fields)
-    public void ${item.setString}(${item.alias} value){
-        this.${item.name} = value;
-    }
-
-    public ${item.alias}  ${item.getString}(){
-        return this.${item.name};
-    }
-
-    #end
-
 }

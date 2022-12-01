@@ -23,4 +23,8 @@ public interface NotifyKeys {
     String CREATED = " created successfully\n";
 
     String SAVED = "File Saved Successfully";
+
+    String SELECT_FILE = "Select File";
+    String SELECT_FIELDS = "Select The Fields To New File";
+    String SELECT_VALUE_OF_FIELDS = "Select The Fields To New File";
 }

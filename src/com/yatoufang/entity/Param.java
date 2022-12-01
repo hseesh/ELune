@@ -60,8 +60,8 @@ public class Param {
     }
 
     public void initGetSetString() {
-        this.getString = "get" + StringUtil.getUpperCaseVariable(this.getAlias());
-        this.setString = "set" + StringUtil.getUpperCaseVariable(this.getAlias());
+        this.getString = "get" + StringUtil.getUpperCaseVariable(this.alias);
+        this.setString = "set" + StringUtil.getUpperCaseVariable(this.alias);
     }
 
     public String getTypeAlias() {
@@ -114,8 +114,12 @@ public class Param {
     }
 
     public void setDescription(String description) {
-        this.description = description;
         this.defaultValue = StringUtil.EMPTY;
+        if (description == null || description.isEmpty()) {
+            return;
+        }
+        this.description = description;
+        this.description = this.description.replaceAll(String.valueOf(StringUtil.NEW_LINE),"<br>");
     }
 
     public String getValue() {
@@ -157,16 +161,16 @@ public class Param {
         if (o == null || getClass() != o.getClass())
             return false;
         Param param = (Param) o;
-        return Objects.equals(name, param.name) && Objects.equals(type, param.type) && Objects.equals(typeAlias, param.typeAlias);
+        return Objects.equals(name, param.name) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, type, typeAlias);
+        return Objects.hash(name);
     }
 
     @Override
     public String toString() {
-        return "| " + name + " | " + type.getPresentableText() + " | " + required + " | " + description + " |";
+        return "| " + name + " | " + (type == null ? StringUtil.EMPTY : type.getPresentableText()) + " | " + required + " | " + description + " |";
     }
 }
