@@ -23,6 +23,7 @@ public class StringUtil {
     public static final char SEMICOLON = ';';
 
     public static final String TABLE_FLAG = "\t";
+    public static final String SPACE_FLAG = " ";
 
     public static final String SPLIT_FLAG = "#";
     public static final char LESS_THEN = '<';
@@ -147,6 +148,34 @@ public class StringUtil {
                 continue;
             }
             builder.append(aChar);
+        }
+        return builder.toString();
+    }
+    //SPACE KEY ASCII 32
+    public static String toCameCaseFormTranslate(String variable) {
+        char[] chars = variable.toCharArray();
+        StringBuilder builder = new StringBuilder();
+        if (chars[0] >= 65 && chars[0] < 97) {
+            builder.append(chars[0] += 32);
+        } else {
+            builder.append(chars[0]);
+        }
+        boolean upperCase = false;
+        for (int i = 1; i < chars.length; i++) {
+            if (chars[i] == 32) {
+                upperCase = true;
+                continue;
+            }
+            if(upperCase){
+                if (chars[i] > 96 && chars[i] < 123) {
+                    builder.append(chars[i] -= 32);
+                } else {
+                    builder.append(chars[i]);
+                }
+                upperCase = false;
+                continue;
+            }
+            builder.append(chars[i]);
         }
         return builder.toString();
     }
@@ -427,15 +456,6 @@ public class StringUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(getUpperCaseVariable("Rune"));
-        System.out.println(toUpper("rune"));
-        System.out.println(toUpper("Rune", ProjectKeys.PUSH, ProjectKeys.HELPER, ProjectKeys.JAVA));
-        System.out.println(toLowerCaseForFirstChar("testTable"));
-        System.out.println(collectChineseCharacter("\\module/Dds/升级/request/LevelRequest"));
-        System.out.println(toCameCaseForSmallCameCase("test_table"));
-        System.out.println(toUpperCaseForFirstCharacter("testTable"));
-        Struct struct = new Struct();
-        getStructInfo("abcsdefg", struct);
-        System.out.println(struct);
+        System.out.println(toCameCaseFormTranslate("Get personal information"));
     }
 }

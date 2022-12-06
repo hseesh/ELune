@@ -151,7 +151,7 @@ public class Param {
     }
 
     public String getPrimaryInfo() {
-        return alias + StringUtil.SPACE + name + StringUtil.SPACE + defaultValue;
+        return typeAlias + StringUtil.SPACE + StringUtil.SPACE + name + StringUtil.SPACE + StringUtil.SPACE + description;
     }
 
     @Override

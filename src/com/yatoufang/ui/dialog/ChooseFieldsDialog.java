@@ -42,7 +42,7 @@ public class ChooseFieldsDialog extends DialogWrapper {
     private ActionListener listener;
     private final Table table;
 
-    protected ChooseFieldsDialog(Table table) {
+    public ChooseFieldsDialog(Table table) {
         super(false);
         this.table = table;
         init();
@@ -125,10 +125,12 @@ public class ChooseFieldsDialog extends DialogWrapper {
             node.setAllowsChildren(false);
             defaultNode.add(node);
         }
-        for (Field field : table.getFields()) {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(field);
-            node.setAllowsChildren(false);
-            root.add(node);
+        if (table.getFields() != null) {
+            for (Field field : table.getFields()) {
+                DefaultMutableTreeNode node = new DefaultMutableTreeNode(field);
+                node.setAllowsChildren(false);
+                root.add(node);
+            }
         }
         ArrayList<DefaultMutableTreeNode> topNode = Lists.newArrayList();
 

@@ -141,6 +141,13 @@ public class Table {
         }
     }
 
+    public void addFields(List<Field> fields) {
+        for (Field field : fields) {
+            tryAddFields(field);
+        }
+    }
+
+
     public String getWorkSpace() {
         return workSpace;
     }

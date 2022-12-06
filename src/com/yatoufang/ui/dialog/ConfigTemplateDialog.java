@@ -11,10 +11,12 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.FormBuilder;
 import com.yatoufang.config.service.AppSettingService;
+import com.yatoufang.editor.type.NodeType;
+import com.yatoufang.editor.component.AbstractNode;
+import com.yatoufang.editor.Model;
 import com.yatoufang.entity.Config;
 import com.yatoufang.entity.ConfigParam;
 import com.yatoufang.service.NotifyService;
-import com.yatoufang.service.TranslateService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.Application;
@@ -46,7 +48,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
     private EditorTextField editor;
 
-    private String rootPath;
+    private final String rootPath;
     private String workSpace;
 
     private boolean designerModel;
@@ -57,6 +59,8 @@ public class ConfigTemplateDialog extends DialogWrapper {
     private HashSet<ConfigParam> params = new HashSet<>();
 
     private final VelocityService velocityService;
+
+    private AbstractNode baseNode;
 
     public ConfigTemplateDialog(String rootPath, String workSpace) {
         super(Application.project, true);
@@ -74,6 +78,21 @@ public class ConfigTemplateDialog extends DialogWrapper {
             Collection<ConfigParam> configParams = FileWrite.loadConfig(this.getClass(), ConfigParam.class, ProjectKeys.PATH_CONFIG_FIELDS);
             params.addAll(configParams);
         });
+    }
+
+    public ConfigTemplateDialog(String rootPath, AbstractNode baseNode) {
+        super(Application.project, true);
+        try {
+            params = new BankGroundTask().call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        this.rootPath = rootPath;
+        this.baseNode = baseNode;
+        velocityService = VelocityService.getInstance();
+        editor = SwingUtils.createEditor(baseNode.getNodeData().getContent());
+        editor.setFont(new Font(null, Font.PLAIN, 14));
+        init();
     }
 
     public ConfigTemplateDialog(String rootPath, String workSpace, Map<String, String> fileMap) {
@@ -126,6 +145,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
         }
         return config;
     }
+
     private void initData() {
         String text = velocityService.execute(ProjectKeys.CONFIG_TEMPLATE, new Config());
         editor = SwingUtils.createEditor(text);
@@ -244,6 +264,23 @@ public class ConfigTemplateDialog extends DialogWrapper {
         super.doCancelAction();
         if (designerModel) {
             EditorContext.setDesigner(fileMap);
+        }
+        if (baseNode == null) {
+            return;
+        }
+        int offset = 200;
+        Point startPoint = new Point(offset, offset);
+        Model nodeModel = baseNode.getModel();
+        for (Map.Entry<String, String> entry : fileMap.entrySet()) {
+            Optional<AbstractNode> optional = nodeModel.getNode(entry.getKey(), NodeType.NORMAL_CONFIG);
+            if (optional.isPresent()) {
+                AbstractNode abstractNode = optional.get();
+                startPoint = abstractNode.getStartPoint();
+                abstractNode.getNodeData().refresh(entry.getValue());
+                continue;
+            }
+            startPoint.setLocation(startPoint.getX(), startPoint.getY() + offset);
+            nodeModel.createNode(startPoint, NodeType.NORMAL_CONFIG, entry.getValue());
         }
     }
 

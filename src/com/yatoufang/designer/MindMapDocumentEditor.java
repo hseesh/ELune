@@ -6,7 +6,7 @@ import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.yatoufang.designer.component.MindMapEditor;
-import com.yatoufang.designer.event.EditorContext;
+import com.yatoufang.editor.component.RootPanel;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.StringUtil;
@@ -27,6 +27,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     private final VirtualFile file;
     private Document[] documents;
     private MindMapEditor mindMapEditor;
+    private final RootPanel rootPanel = new RootPanel();
     private FileEditorState fileEditorState;
     private final Map userdata = Maps.newHashMap();
 
@@ -38,7 +39,6 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     private void initConfig() {
         final Document document = FileDocumentManager.getInstance().getDocument(this.file);
         this.documents = new Document[]{document};
-        mindMapEditor = new MindMapEditor();
         String canonicalPath = this.file.getCanonicalPath();
         if (canonicalPath == null) {
             return;
@@ -51,9 +51,7 @@ public class MindMapDocumentEditor implements DocumentsEditor {
         } else if (canonicalPath.contains(ProjectKeys.BATTLE_SERVER)) {
             rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.BATTLE_SERVER);
         }
-        System.out.println("init config");
-        EditorContext.setFilePath(rootPath);
-        EditorContext.setDocument(documents[0]);
+        RootPanel.getDrawingSurface().getModel().setBasePath(rootPath);
     }
 
     @Override
@@ -65,13 +63,13 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     @Override
     public @NotNull
     JComponent getComponent() {
-        return mindMapEditor.getComponent();
+        return rootPanel;
     }
 
     @Override
     public @Nullable
     JComponent getPreferredFocusedComponent() {
-        return mindMapEditor.getPreferredFocusedComponent();
+        return rootPanel;
     }
 
     @Override

@@ -37,6 +37,14 @@ public class Canvas {
         return new Point((int) (bounds.getX() + x), (int) (bounds.getY() + y));
     }
 
+    public static int getWidth(String text, Font font){
+       return (int) font.getStringBounds(text, FONT_RENDER_CONTEXT).getWidth();
+    }
+
+    public static int getHeight(String text, Font font){
+        return (int) font.getStringBounds(text, FONT_RENDER_CONTEXT).getHeight();
+    }
+
     public static void setTextBounds(Element element) {
         int width = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getWidth();
         int height = (int) element.font.getStringBounds(element.text, FONT_RENDER_CONTEXT).getHeight();

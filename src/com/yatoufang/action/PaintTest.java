@@ -23,6 +23,7 @@ import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.ui.component.TextCellRender;
 import com.yatoufang.ui.dialog.EntityTemplateDialog;
 import com.yatoufang.ui.dialog.TextChooseDialog;
+import com.yatoufang.ui.dialog.edit.EntityBuildDialog;
 import com.yatoufang.utils.BuildUtil;
 import com.yatoufang.utils.PSIUtil;
 
@@ -50,45 +51,14 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-
-
-        PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
-        if (file == null) {
-            NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
-            return;
-        }
-        Application.project = file.getProject();
-        PsiClass[] classes = file.getClasses();
-        if (classes.length == 0)
-            return;
-        PsiClass aClass = classes[0];
-
-
-        final String[] DATA = { "    /**\n" + "     *  获取对象信息\n" + "     */\n" + "    public LordGodEntity getEntity(int configId) {\n"
-                + "        return entityMap.computeIfAbsent(configId, k -> LordGodEntity.valueOf(configId));\n" + "    }", "    /**\n" + "     *  添加记录\n" + "     */\n"
-                + "    public void addActivateRecord(int id) {\n" + "        activateList.add(id);\n" + "    }", "    public void addExp(int addExp){\n"
-                + "        this.exp += addExp;\n" + "    }" };
-        DefaultListModel<String> listModel = new DefaultListModel<>();
-        JBList<String> list = new JBList<>(listModel);
-        list.setCellRenderer(new TextCellRender());
-        for (String datum : DATA) {
-            listModel.addElement(datum);
-        }
-
-
-        ArrayList<String> arrayList = Lists.newArrayList();
-        for (int i = 0; i < 3; i++) {
-            TextChooseDialog dialog = new TextChooseDialog(list, null, listModel,"");
-            dialog.show();
-
-        }
-        System.out.println(arrayList);
+        new EntityBuildDialog().show();
     }
 
     private void test() {
         PsiExpressionStatement psiExpressionStatement;
         FindInProjectManager instance = FindInProjectManager.getInstance(Application.project);
         instance.findInProject(SimpleDataContext.getProjectContext(Application.project), null);
+
     }
 
 
@@ -127,7 +97,8 @@ public class PaintTest extends AnAction {
 
 
     private void createMethod(AnActionEvent e){
-        PsiElement data = e.getData(LangDataKeys.PSI_ELEMENT);
+
+
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
             NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
@@ -138,6 +109,30 @@ public class PaintTest extends AnAction {
         if (classes.length == 0)
             return;
         PsiClass aClass = classes[0];
+
+
+        final String[] DATA = { "    /**\n" + "     *  获取对象信息\n" + "     */\n" + "    public LordGodEntity getEntity(int configId) {\n"
+                + "        return entityMap.computeIfAbsent(configId, k -> LordGodEntity.valueOf(configId));\n" + "    }", "    /**\n" + "     *  添加记录\n" + "     */\n"
+                + "    public void addActivateRecord(int id) {\n" + "        activateList.add(id);\n" + "    }", "    public void addExp(int addExp){\n"
+                + "        this.exp += addExp;\n" + "    }" };
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        JBList<String> list = new JBList<>(listModel);
+        list.setCellRenderer(new TextCellRender());
+        for (String datum : DATA) {
+            listModel.addElement(datum);
+        }
+
+
+        ArrayList<String> arrayList = Lists.newArrayList();
+        for (int i = 0; i < 3; i++) {
+            TextChooseDialog dialog = new TextChooseDialog(list, null, listModel,"");
+            dialog.show();
+
+        }
+        System.out.println(arrayList);
+
+
+        PsiElement data = e.getData(LangDataKeys.PSI_ELEMENT);
         for (PsiField field : aClass.getAllFields()) {
             System.out.println(PSIUtil.getDescription(field.getDocComment()));
         }

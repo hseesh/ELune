@@ -32,6 +32,8 @@ public interface ProjectKeys {
     String MODEL = "model";
 
     String CORE = "core";
+
+    String SHARD = "shard";
     String GAME_SERVER = "gameserver";
     String WORLD_SERVER = "worldserver";
     String BATTLE_SERVER = "battleserver";

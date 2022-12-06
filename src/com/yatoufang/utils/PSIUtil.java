@@ -329,6 +329,12 @@ public class PSIUtil {
         }
     }
 
+    public static List<Param> getClassAllFields(PsiClass aClass) {
+        List<Param> list = Lists.newArrayList();
+        getClassAllFields(aClass, list);
+        return list;
+    }
+
     public static void delete(PsiElement psiElement) {
         if (psiElement.getContainingFile() == null) {
             psiElement = psiElement.getParent();
