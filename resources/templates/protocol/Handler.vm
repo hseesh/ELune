@@ -17,27 +17,35 @@ import org.springframework.stereotype.Component;
 * @since ${now}
 */
 @Component
-public class ${table.name}Handler extends GatewayRouterHandlerImpl {
+public class ${table.alias}Handler extends GatewayRouterHandlerImpl {
 
-@Autowired
-private ${table.name}Facade ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Facade;
+    @Autowired
+    private ${table.alias}Facade ${table.name}Facade;
 
-@Override
-public byte getModule() {
-return ModuleName.${table.alias};
-}
+    @Override
+    public byte getModule() {
+        return ModuleName.${table.alias};
+    }
 
 
 #foreach($item in $table.methods)
-@Cmd(Id = ${table.name}Cmd.${item.alias}, dispatchType = DispatchType.ACTOR)
-public void ${item.methodName}(Channel channel, Long actorId, DataPacket packet) {
-    #if($item.request =='request')
-    Result result = ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}Facade.${item.methodName}(actorId);
-    #else
+    @Cmd(Id = ${table.alias}Cmd.${item.alias}, dispatchType = DispatchType.ACTOR)
+    public void ${item.methodName}(Channel channel, Long actorId, DataPacket packet) {
+#if($item.request =='request')
+        Result result = ${table.alias}Facade.${item.methodName}(actorId);
+#else
         ${item.request}  request = packet.getValue(${item.request}.class);
-    #end
+        ${item.returnType} result = ${table.name}Facade.${item.methodName}(actorId#foreach($param in $item.params)#if($param.getString), request.${param.getString}#end#end);
+        #if(${item.response} != 'response')
+if (result.isOk()) {
+            channelWrite(channel, dataPacket,${item.response}.valueOf(result.item));
+            return;
+        }
+        #end
+#end
 channelWrite(channel, packet, result.statusCode);
-}
+    }
+
 #end
 
 

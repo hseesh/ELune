@@ -121,7 +121,7 @@
           "name": "attributeTTPercentMap",
           "typeAlias": "Map<SpriteAttributeType, Integer>",
           "defaultValue": " = Maps.newHashMap()",
-          "description": "加成属性Mapkey:SpriteAttributeType,value:value"
+          "description": "加成属性Map key:SpriteAttributeType,value:value"
         },
         "referenceExpression": "JSONArray additionAttributeArray = JSONArray.parseArray(attributeTTPercent);for (Object baseAttribute : additionAttributeArray) {\n            JSONArray attributeArray = JSONArray.parseArray(baseAttribute.toString());\n            attributeTTPercentMap.put(SpriteAttributeType.getType(attributeArray.getIntValue(0)), attributeArray.getIntValue(1));\n        }",
         "name": "attributeTTPercent",

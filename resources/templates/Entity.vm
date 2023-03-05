@@ -2,26 +2,18 @@ package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerC
 
 
 /**
- * ${table.comment}对象
+ * ${table.description}对象
  *
  * @author ${author}
  * @since ${now}
  */
-public class ${table.name} {
+public class ${table.alias} {
 
-    #foreach($item in $table.fields)
-   /**
+    #foreach($item in $table.pramList)
+/**
     * ${item.description}
     */
-    private ${item.alias} ${item.name};
+    private ${item.typeAlias} ${item.name} ${item.defaultValue};
     #end
-
-    public static ${table.name} valueOf(${table.name} ${table.name.substring(0, 1).toLowerCase()}${table.name.substring(1)}) {
-        ${table.name} entity = new ${table.name}();
-        #foreach($item in $table.fields)
-        entity.${item.name} = ${table.name}.${item.getString}();
-        #end
-        return entity;
-    }
 
 }

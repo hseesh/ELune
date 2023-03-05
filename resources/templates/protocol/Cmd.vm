@@ -6,10 +6,10 @@ package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerC
 * @author ${author}
 * @since ${now}
 */
-public interface ${table.name}Cmd {
+public interface ${table.alias}Cmd {
 
     #foreach($item in $table.methods)
-    /**
+/**
     * ${item.description}
     * <pre>
     *     请求：{@code ${item.request}}
@@ -21,10 +21,14 @@ public interface ${table.name}Cmd {
     #end
 
 
-    /**
-     * 推送${table.comment}
-     * 推送：{@code }
-     */
-    byte PUSH_${table.alias} = 100;
+    #foreach($item in $table.methods)
+#if(${item.pushCode})
+/**
+    * 推送${item.description}
+    * 推送：{@code ${item.push}}
+    */
+    byte PUSH_${item.alias} = ${item.pushCode};
+#end
+    #end
 
 }

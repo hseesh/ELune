@@ -3,12 +3,14 @@
         "name": "id",
         "typeAlias": "long",
         "description": "ID",
+        "defaultValue": "",
         "alias": "long"
     },
     {
         "name": "id",
         "typeAlias": "int",
         "description": "ID",
+        "defaultValue": "",
         "alias": "int"
     },
     {
@@ -36,6 +38,7 @@
         "name": "achieveTime",
         "typeAlias": "long",
         "alias": "long",
+        "defaultValue": "",
         "description": "达成时间"
     },
     {
@@ -53,39 +56,25 @@
         "description": "等级"
     },
     {
-        "name": "fragmentId",
-        "typeAlias": "int",
-        "alias": "int",
+        "name": "rewardResult",
+        "typeAlias": "RewardResult",
+        "alias": "RewardResult",
         "defaultValue": "",
-        "description": "碎片ID"
+        "description": "奖励结果"
     },
     {
-        "name": "rechargeReceiveMap",
-        "typeAlias": "Map<Integer, Integer>",
-        "alias": "Map<Integer, Integer>",
-        "defaultValue": "= Maps.newHashMap()",
-        "description": "单充-领取记录\n{key:charge,value:num}"
-    },
-    {
-        "name": "rechargeRecord",
+        "name": "recordMap",
         "alias": "Map<Integer, Integer>",
         "typeAlias": "Map<Integer, Integer>",
         "defaultValue": "= Maps.newHashMap()",
-        "description": "单充记录\n{key:charge,value:num}"
+        "description": "兑换记录 \n{key:id,value:num}"
     },
     {
-        "name": "goodsRecord",
-        "alias": "Map<Integer, Integer>",
-        "typeAlias": "Map<Integer, Integer>",
-        "defaultValue": "= Maps.newHashMap()",
-        "description": "兑换商店-兑换记录 \n{key:charge,value:num}"
-    },
-    {
-        "name": "receiveRewards",
+        "name": "receiveList",
         "alias": "Collection<Integer>",
         "typeAlias": "Collection<Integer>",
         "defaultValue": "= Sets.newHashSet()",
-        "description": "已领取免费奖励的记录  \n[id,id,id] id:宝箱id"
+        "description": "已领取记录  \n[id,id,id] id:配置id"
     },
     {
         "name": "attributes",

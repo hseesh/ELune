@@ -52,11 +52,13 @@ public class ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1
     private ${table.name.substring(0, 1).toUpperCase()}${table.name.substring(1)}Dao ${table.name}Dao;
 
 
+
+#foreach($item in $table.methods)
     @Override
-    #foreach($item in $table.methods)
-    public void ${item.methodName}(${item.valueOf}){
+    public ${item.returnType} ${item.methodName}(${item.valueOf}){
 
     }
-    #end
+
+#end
 
 }
