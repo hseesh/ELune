@@ -10,4 +10,5 @@ public interface NativeWords {
     String CONFIG = "配置";
     String PUSH = "推送";
     String RESPONSE = "响应";
+    String ARRAY = "集合";
 }

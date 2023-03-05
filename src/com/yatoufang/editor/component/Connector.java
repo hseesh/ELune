@@ -9,6 +9,7 @@ import com.yatoufang.editor.listeners.ConnectorMouseListener;
 import com.yatoufang.editor.listeners.ConnectorMouseMotionListener;
 import com.yatoufang.editor.type.Position;
 import com.yatoufang.editor.type.SourceType;
+import com.yatoufang.utils.StringUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +28,7 @@ public class Connector extends JPanel {
     private final AbstractNode abstractNode;
     private transient boolean mouseEntered = false;
     private transient boolean showErrorFlag = false;
-    private transient Point startPoint = new Point(0, 0);
+    private Point startPoint = new Point(0, 0);
 
     public Connector(AbstractNode abstractNode, Position position, SourceType sourceType) {
         this.abstractNode = abstractNode;
@@ -219,6 +220,6 @@ public class Connector extends JPanel {
 
     @Override
     public String toString() {
-        return "Connector{" + "position=" + position + ", sourceType=" + sourceType + ", startPoint=" + startPoint + '}';
+        return abstractNode.getNodeData().getName() + StringUtil.SPACE + sourceType;
     }
 }

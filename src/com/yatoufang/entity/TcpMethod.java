@@ -21,6 +21,8 @@ public class TcpMethod {
 
     private String moduleCode;
 
+    private String pushCode;
+
     private String cmdCode;
 
     private String push;
@@ -32,6 +34,8 @@ public class TcpMethod {
     private String description;
 
     private String valueOf;
+
+    private String returnType;
 
     private final List<Param> params = Lists.newArrayList();
 
@@ -45,6 +49,7 @@ public class TcpMethod {
         this.push = ProjectKeys.PUSH;
         this.request = ProjectKeys.REQUEST;
         this.response = ProjectKeys.RESPONSE;
+        this.returnType = ProjectKeys.RESULT_OF;
     }
 
     public String getModuleCode() {
@@ -138,6 +143,22 @@ public class TcpMethod {
 
     public void setValueOf(String valueOf) {
         this.valueOf = valueOf;
+    }
+
+    public String getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(String returnType) {
+        this.returnType = returnType;
+    }
+
+    public String getPushCode() {
+        return pushCode;
+    }
+
+    public void setPushCode(String pushCode) {
+        this.pushCode = pushCode;
     }
 
     @Override

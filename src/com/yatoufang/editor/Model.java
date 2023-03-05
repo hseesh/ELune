@@ -1,17 +1,15 @@
 package com.yatoufang.editor;
 
-import com.yatoufang.editor.component.Canvas;
-import com.yatoufang.editor.model.NodeData;
-import com.yatoufang.editor.type.NodeType;
-import com.yatoufang.editor.component.AbstractNode;
-import com.yatoufang.editor.component.BaseNode;
-import com.yatoufang.editor.component.Connector;
-import com.yatoufang.editor.component.LinkLine;
-import com.yatoufang.editor.component.impl.*;
+import com.google.common.collect.Maps;
+import com.yatoufang.editor.component.*;
+import com.yatoufang.editor.component.impl.DataBaseNode;
+import com.yatoufang.editor.component.impl.PushNode;
+import com.yatoufang.editor.component.impl.RequestNode;
+import com.yatoufang.editor.component.impl.ResponseNode;
 import com.yatoufang.editor.constant.ColorBox;
 import com.yatoufang.editor.constant.GlobalConstant;
-import com.yatoufang.editor.component.UndoRedo;
-import com.yatoufang.editor.component.UndoRedoNode;
+import com.yatoufang.editor.model.NodeData;
+import com.yatoufang.editor.type.NodeType;
 import com.yatoufang.editor.type.Position;
 import com.yatoufang.editor.type.SourceType;
 import com.yatoufang.entity.Param;
@@ -19,29 +17,32 @@ import com.yatoufang.entity.Protocol;
 import com.yatoufang.entity.TcpMethod;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.service.VelocityService;
+import com.yatoufang.templet.Expression;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.ui.dialog.edit.ProtocolPreviewDialog;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author hse
  * @since 2022/9/9 0009
  */
 public class Model implements Serializable {
+
     private static final long serialVersionUID = 1L;
-
     private String basePath;
-
     private String moduleName;
-    private transient Canvas canvas;
-    private transient Stack<ArrayList<UndoRedoNode>> undoable = new Stack<>();
-    private transient Stack<ArrayList<UndoRedoNode>> redoable = new Stack<>();
+    private transient RootCanvas rootCanvas;
+    private transient Stack<ArrayList<UndoRedoNode>> undoable;
+    private transient Stack<ArrayList<UndoRedoNode>> redouble;
     private transient String filePath = null;
     private final Set<AbstractNode> nodeList = new LinkedHashSet<>();
     private final Set<AbstractNode> selectedNodes = new HashSet<>();
@@ -51,8 +52,21 @@ public class Model implements Serializable {
     private boolean gridVisible = true;
     private boolean dragging = false;
 
-    public Model(Canvas canvas) {
-        this.canvas = canvas;
+    public Model(RootCanvas rootCanvas) {
+        this.rootCanvas = rootCanvas;
+    }
+
+    public Model() {
+        undoable = new Stack<>();
+        redouble = new Stack<>();
+    }
+
+    public RootCanvas getRootCanvas() {
+        return rootCanvas;
+    }
+
+    public void setRootCanvas(RootCanvas rootCanvas) {
+        this.rootCanvas = rootCanvas;
     }
 
     public String getFilePath() {
@@ -83,12 +97,8 @@ public class Model implements Serializable {
         return connectors[0];
     }
 
-    public void setDrawingSurface(Canvas canvas) {
-        this.canvas = canvas;
-    }
-
-    public Canvas getCanvas() {
-        return canvas;
+    public RootCanvas getCanvas() {
+        return rootCanvas;
     }
 
     public Set<LinkLine> getLines() {
@@ -115,11 +125,11 @@ public class Model implements Serializable {
         return connectors[0] != null;
     }
 
-    public void addTransientComponents() {
+    public void addComponents() {
         undoable = new Stack<>();
-        redoable = new Stack<>();
+        redouble = new Stack<>();
         for (AbstractNode node : nodeList) {
-            node.addTransientComponents();
+            node.reload();
         }
         for (LinkLine line : lines) {
             line.addTransientComponents();
@@ -143,15 +153,15 @@ public class Model implements Serializable {
             for (UndoRedoNode node : prevState) {
                 node.getItem().undo(node);
             }
-            redoable.push(currentState);
+            redouble.push(currentState);
             update();
         }
     }
 
     public void redo() {
-        if (!redoable.isEmpty()) {
+        if (!redouble.isEmpty()) {
             deSelectAll();
-            ArrayList<UndoRedoNode> prevState = redoable.pop();
+            ArrayList<UndoRedoNode> prevState = redouble.pop();
             ArrayList<UndoRedoNode> currentState = new ArrayList<>(prevState.size());
             for (UndoRedoNode node : prevState) {
                 currentState.add(new UndoRedoNode(node.getItem(), new Rectangle(node.getItem().getBounds()), node.getAndToggleEvents()));
@@ -170,10 +180,15 @@ public class Model implements Serializable {
             list.add(new UndoRedoNode(item, new Rectangle(item.getBounds()), indexes));
         }
         undoable.push(list);
-        redoable.clear();
+        redouble.clear();
     }
 
     public void add(AbstractNode node) {
+        if (node.getNodeData().getNodeType() == NodeType.DATA_BASE) {
+            if (getNodesByType(NodeType.DATA_BASE).size() > 0) {
+                return;
+            }
+        }
         add(node, true);
     }
 
@@ -218,10 +233,10 @@ public class Model implements Serializable {
             nodeList.remove(node);
             selectedNodes.remove(node);
             node.removeInternalComponents();
-            canvas.remove(node);
+            rootCanvas.remove(node);
         }
 
-        canvas.requestFocus();
+        rootCanvas.requestFocus();
     }
 
     private void cleanUpConnections(AbstractNode node) {
@@ -238,22 +253,21 @@ public class Model implements Serializable {
         nodeList.clear();
         lines.clear();
         filePath = null;
-        canvas.removeAll();
         clearMakeLine();
+        rootCanvas.removeAll();
         update();
     }
 
     private void updateAfterAdded(AbstractNode node) {
-        canvas.add(node, 0);
+        rootCanvas.add(node, 0);
         node.addInternalComponents();
-
         update();
     }
 
     public void updateAfterOpened() {
-        canvas.removeAll();
+        rootCanvas.removeAll();
         for (AbstractNode node : nodeList) {
-            canvas.add(node);
+            rootCanvas.add(node);
             node.addInternalComponents();
         }
         update();
@@ -261,8 +275,8 @@ public class Model implements Serializable {
 
     public void update() {
         updateLines();
-        canvas.revalidate();
-        canvas.repaint();
+        rootCanvas.revalidate();
+        rootCanvas.repaint();
     }
 
     public void updateLines() {
@@ -280,7 +294,7 @@ public class Model implements Serializable {
 
     public void toggleGrid() {
         gridVisible = !gridVisible;
-        canvas.repaint();
+        rootCanvas.repaint();
     }
 
     public void clearMakeLine() {
@@ -302,7 +316,7 @@ public class Model implements Serializable {
             selectedNodes.remove(node);
             node.setMouseEntered(false);
         }
-        canvas.repaint();
+        rootCanvas.repaint();
     }
 
     public boolean isSelected(AbstractNode node) {
@@ -310,6 +324,7 @@ public class Model implements Serializable {
     }
 
     public void deSelectAll() {
+        //todo ConcurrentModificationException
         for (AbstractNode node : selectedNodes) {
             setSelected(node, false);
         }
@@ -327,7 +342,7 @@ public class Model implements Serializable {
             node.dragMove(dx, dy);
         }
         updateLines();
-        canvas.repaint();
+        rootCanvas.repaint();
     }
 
     public int[] calcImageArea() {
@@ -378,7 +393,7 @@ public class Model implements Serializable {
                     addLine(line);
                 }
                 clearMakeLine();
-                canvas.repaint();
+                rootCanvas.repaint();
             }
         }
     }
@@ -500,39 +515,70 @@ public class Model implements Serializable {
         }
     }
 
-    public void onExecute() {
+
+    public List<AbstractNode> getNodesByType(NodeType nodeType) {
+        return nodeList.stream().filter(e -> e.getNodeData().getNodeType() == nodeType).collect(Collectors.toList());
+    }
+
+    public List<AbstractNode> getNodesByType(Collection<NodeType> nodeTypes) {
+        return nodeList.stream().filter(e -> nodeTypes.contains(e.getNodeData().getNodeType())).collect(Collectors.toList());
+    }
+
+    public Optional<AbstractNode> getNodeByName(String alias) {
+        return nodeList.stream().filter(e -> e.getNodeData().getAlias().equals(alias)).findFirst();
+    }
+
+
+    public void onExecute(boolean preview, boolean execute) {
         if (moduleName == null || moduleName.length() == 0) {
             NotifyService.notifyWarning(NotifyKeys.NO_MODULE_SELECTED);
             return;
         }
+        HashMap<String, String> map = Maps.newHashMap();
         ArrayList<AbstractNode> protocols = Lists.newArrayList();
         for (AbstractNode node : nodeList) {
             if (node.getNodeData().getNodeType() == NodeType.PROTOCOL_NODE) {
                 protocols.add(node);
                 continue;
             }
-            if (NodeType.AUTO_WRITE.contains(node.getNodeData().getNodeType())) {
-                FileWrite.write(node.getNodeData().getContent(), node.getWorkPath(), true, false);
+            if (node.getNodeData().getNodeType() == NodeType.DATA_BASE) {
+                DataBaseNode dataBaseNode = (DataBaseNode) node;
+                map.putAll(dataBaseNode.getContent());
+                continue;
+            }
+            if (execute) {
+                if (NodeType.AUTO_WRITE.contains(node.getNodeData().getNodeType())) {
+                    FileWrite.write(node.getNodeData().getContent(), node.getWorkPath(), true, false);
+                }
             }
         }
-        int cmdIndex = 0;
+        int cmdIndex = 0, pushIndex = 100;
+        ArrayList<String> pushNodes = Lists.newArrayList();
         ArrayList<TcpMethod> methods = Lists.newArrayList();
-        Param param = new Param(ProjectKeys.ACTOR_ID,ProjectKeys.ACTOR_ID,long.class.getSimpleName());
-        for (AbstractNode protocol : protocols) {
-            NodeData nodeData = protocol.getNodeData();
-            TcpMethod method = new TcpMethod(nodeData.getName(), nodeData.getName());
-            for (AbstractNode node : protocol.getAllLinkNode()) {
-                switch (node.getNodeData().getNodeType()){
+        List<AbstractNode> entities = getNodesByType(List.of(NodeType.ENTITY_NODE, NodeType.DATA_BASE));
+        Param param = new Param(ProjectKeys.ACTOR_ID, ProjectKeys.ACTOR_ID, long.class.getSimpleName());
+        for (AbstractNode abstractNode : protocols) {
+            NodeData nodeData = abstractNode.getNodeData();
+            TcpMethod method = new TcpMethod(nodeData.getExtra(), nodeData.getName());
+            for (AbstractNode node : abstractNode.getAllLinkNode()) {
+                String alias = node.getNodeData().getAlias();
+                switch (node.getNodeData().getNodeType()) {
                     case RUSH_NODE:
-                        method.setPush(node.getNodeData().getAlias());
+                        if (!pushNodes.contains(alias)) {
+                            pushNodes.add(alias);
+                            method.setPushCode(String.valueOf(pushIndex++));
+                        }
+                        method.setPush(alias);
                         break;
                     case REQUEST_NODE:
-                        method.setRequest(node.getNodeData().getAlias());
+                        method.setRequest(alias);
                         break;
                     case RESPONSE_NODE:
-                        method.setResponse(node.getNodeData().getAlias());
+                        method.setResponse(alias);
+                        calcMethodReturnType(method, abstractNode, entities);
                         break;
-                    default:break;
+                    default:
+                        break;
                 }
             }
             method.add(param);
@@ -541,9 +587,59 @@ public class Model implements Serializable {
             method.setCmdCode(String.valueOf(++cmdIndex));
             method.addAll(nodeData.getMetaData().getPramList());
         }
-        Protocol protocol = Protocol.valueOf(moduleName, moduleName, moduleName, methods);
+        Protocol protocol = Protocol.valueOf(moduleName, StringUtil.getUpperCaseVariable(moduleName), moduleName, methods);
         VelocityService velocityService = VelocityService.getInstance();
-        String execute = velocityService.execute(ProjectKeys.CMD_TEMPLATE, protocol);
-        System.out.println(execute);
+
+        String cmd = velocityService.execute(ProjectKeys.CMD_TEMPLATE, protocol);
+        String facade = velocityService.execute(ProjectKeys.FACADE_TEMPLATE, protocol);
+        String handler = velocityService.execute(ProjectKeys.HANDLER_TEMPLATE, protocol);
+        String facadeImpl = velocityService.execute(ProjectKeys.FACADE_IMPL_TEMPLATE, protocol);
+
+        if (preview) {
+            map.put(ProjectKeys.CMD, cmd);
+            map.put(ProjectKeys.FACADE, facade);
+            map.put(ProjectKeys.IMPL, facadeImpl);
+            map.put(ProjectKeys.HANDLER, handler);
+            new ProtocolPreviewDialog(map, moduleName, basePath).show();
+        }
     }
+
+    private void calcMethodReturnType(TcpMethod method, AbstractNode node, List<AbstractNode> entities) {
+        Optional<AbstractNode> optional = node.getLinkNode(NodeType.RUSH_NODE);
+        if (optional.isPresent()) {
+            node = optional.get();
+        } else {
+            Optional<AbstractNode> nodeOptional = node.getLinkNode(NodeType.RESPONSE_NODE);
+            if (nodeOptional.isEmpty()) {
+                return;
+            }
+            node = nodeOptional.get();
+        }
+        Collection<Param> pramList = node.getNodeData().getMetaData().getPramList();
+        if (pramList.isEmpty()) {
+            return;
+        }
+        Map<String, Integer> countMap = Maps.newHashMap();
+        for (AbstractNode entity : entities) {
+            String alias = entity.getNodeData().getAlias();
+            Collection<Param> params = entity.getNodeData().getMetaData().getPramList();
+            for (Param param : params) {
+                for (Param customary : pramList) {
+                    if (customary.getName().equals(param.getName())) {
+                        countMap.put(alias, countMap.getOrDefault(alias, 0) + 1);
+                    }
+                }
+            }
+        }
+        int counter = 0;
+        String key = ProjectKeys.RESULT_OF;
+        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+            if (entry.getValue() > counter) {
+                key = entry.getKey();
+                key = String.format(Expression.RESULT_OF, key);
+            }
+        }
+        method.setReturnType(key);
+    }
+
 }

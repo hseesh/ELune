@@ -1,12 +1,12 @@
 package com.yatoufang.editor.component;
 
 import com.intellij.util.ui.UIUtil;
+import com.yatoufang.editor.Model;
 import com.yatoufang.editor.constant.*;
 import com.yatoufang.editor.listeners.RootPanelKeyListener;
 import com.yatoufang.editor.listeners.RootPanelMouseListener;
 import com.yatoufang.editor.listeners.RootPanelMouseMotionListener;
 import com.yatoufang.editor.listeners.RootPanelMouseWheelListener;
-import com.yatoufang.editor.Model;
 import com.yatoufang.editor.menus.RootPanelMenu;
 
 import javax.swing.*;
@@ -18,20 +18,19 @@ import java.awt.image.BufferedImage;
  * @author hse
  * @since 2022/9/6 0006
  */
-public class Canvas extends JPanel {
+public class RootCanvas extends JPanel {
     private static final long serialVersionUID = 1L;
-
-    private Model model;
-
+    private final Model model;
     private final RootPanel rootPanel;
     private final RootPanelMenu contextMenu;
     private Point clickedPoint = new Point(0, 0);
     private Point cursorPoint = new Point(0, 0);
     private final Rectangle selection = new Rectangle();
 
-    public Canvas(RootPanel rootPanel) {
+    public RootCanvas(RootPanel rootPanel, Model model) {
+        this.model = model;
         this.rootPanel = rootPanel;
-        model = new Model(this);
+        this.model.setRootCanvas(this);
         contextMenu = new RootPanelMenu(this);
 
         setLayout(null);
@@ -60,10 +59,6 @@ public class Canvas extends JPanel {
             model.update();
         } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_A) {
             model.selectAll();
-        } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
-            FileManager.save(model);
-        } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_O) {
-            openFile();
         } else if (e.getKeyCode() == KeyEvent.VK_DELETE) {
             model.deleteSelected();
         } else if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -76,6 +71,12 @@ public class Canvas extends JPanel {
             model.moveSelected(e.isControlDown() ? -1 : -5, 0);
         } else {
             CommandHelper.setCommand(e);
+        }
+    }
+
+    public void processReleaseEvent(KeyEvent e) {
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S) {
+            FileHelper.save(model);
         }
     }
 
@@ -103,18 +104,6 @@ public class Canvas extends JPanel {
         return selection;
     }
 
-    public void openFile() {
-        Model tempModel = FileManager.loadFromFile();
-        if (tempModel != null) {
-            model = tempModel;
-            model.setDrawingSurface(this);
-            model.addTransientComponents();
-            model.addListeners();
-            model.updateAfterOpened();
-        }
-    }
-
-
     public void exportAsImage() {
         final int minX = 0;
         final int minY = 1;
@@ -125,7 +114,7 @@ public class Canvas extends JPanel {
         Graphics2D g2 = image.createGraphics();
         paint(g2);
         image = image.getSubimage(imageArea[minX], imageArea[minY], imageArea[maxX] - imageArea[minX], imageArea[maxY] - imageArea[minY]);
-        FileManager.saveImage(image);
+        FileHelper.saveImage(image, model);
     }
 
     @Override

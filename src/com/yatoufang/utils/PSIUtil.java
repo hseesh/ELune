@@ -30,6 +30,7 @@ import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
 import com.yatoufang.templet.ProjectKeys;
 import org.apache.commons.compress.utils.Lists;
+import org.apache.commons.compress.utils.Sets;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -75,7 +76,6 @@ public class PSIUtil {
             String paraName = parameter.getName();
             Param param = new Param(trims(paraName));
             param.setType(parameter.getType());
-            System.out.println("param = " + param);
             PsiAnnotation[] parameterAnnotations = parameter.getAnnotations();
             for (PsiAnnotation psiAnnotation : parameterAnnotations) {
                 if (psiAnnotation.hasQualifiedName(Annotations.REQUESTPARAM)) {
@@ -166,7 +166,6 @@ public class PSIUtil {
 
     public static ArrayList<Param> getParamList(PsiParameterList list) {
         ArrayList<Param> paramsDetail = getParamsDetailList(list);
-        System.out.println(paramsDetail.toString());
         ArrayList<Param> myParams = new ArrayList<>();
         for (Param param : paramsDetail) {
             getClassFields(param, myParams, null);
@@ -174,6 +173,28 @@ public class PSIUtil {
         myParams.removeIf(next -> ProjectKeys.SERIAL_UID.equals(next.getName()));
         myParams = removeDuplicates(myParams);
         return myParams;
+    }
+
+    public static Collection<Param> getParams(PsiParameterList list) {
+        Collection<Param> params = new ArrayList<>();
+        List<PsiParameter> parameterList = PsiTreeUtil.getChildrenOfTypeAsList(list, PsiParameter.class);
+        for (PsiParameter parameter : parameterList) {
+            String paraName = parameter.getName();
+            Param param = new Param(trims(paraName));
+            param.setType(parameter.getType());
+            params.add(param);
+        }
+        return params;
+    }
+
+    public static Optional<Param> getParams(PsiVariable variable) {
+        PsiLocalVariable child = PsiTreeUtil.getChildOfType(variable, PsiLocalVariable.class);
+        if (child == null) {
+            return Optional.empty();
+        }
+        Param param = new Param(child.getName());
+        param.setType(child.getType());
+        return Optional.of(param);
     }
 
     public static ArrayList<Param> removeDuplicates(ArrayList<Param> params) {
@@ -225,8 +246,7 @@ public class PSIUtil {
     }
 
     public static void getClassFields(PsiClass psiClass, List<Param> result, List<Param> superResult, boolean isSuperClass, PsiType originType) {
-        if (psiClass == null)
-            return;
+        if (psiClass == null) return;
         PsiField[] fields = psiClass.getFields();
         for (PsiField field : fields) {
             if (ProjectKeys.SERIAL_UID.equals(field.getName())) {
@@ -252,15 +272,13 @@ public class PSIUtil {
 
         }
         PsiClass superClass = psiClass.getSuperClass();
-        if (superClass == null)
-            return;
+        if (superClass == null) return;
         PsiClass aClass = findClass(superClass.getQualifiedName());
         getClassFields(aClass, result, superResult, true, null);
     }
 
     public static void getClassFields(PsiClass psiClass, Collection<Param> result, PsiType originType) {
-        if (psiClass == null)
-            return;
+        if (psiClass == null) return;
         if (psiClass.isEnum()) {
             Param param = new Param(psiClass.getName());
             param.setType(originType);
@@ -293,8 +311,7 @@ public class PSIUtil {
     }
 
     public static void getClassFields(PsiClass psiClass, Collection<Param> result) {
-        if (psiClass == null)
-            return;
+        if (psiClass == null) return;
         if (Application.isBasicType(psiClass.getName())) {
             return;
         }
@@ -317,8 +334,7 @@ public class PSIUtil {
     }
 
     public static void getClassAllFields(PsiClass psiClass, Collection<Param> result) {
-        if (psiClass == null)
-            return;
+        if (psiClass == null) return;
         PsiField[] fields = psiClass.getFields();
         for (PsiField field : fields) {
             PsiType type = field.getType();
@@ -358,8 +374,7 @@ public class PSIUtil {
     }
 
     public static boolean isLocalClass(PsiClass psiClass) {
-        if (psiClass == null)
-            return false;
+        if (psiClass == null) return false;
         String qualifiedName = psiClass.getQualifiedName();
         if (qualifiedName != null) {
             return qualifiedName.startsWith(Application.basePackage);
@@ -368,11 +383,9 @@ public class PSIUtil {
     }
 
     public static boolean isNativeClass(PsiClass psiClass) {
-        if (psiClass == null)
-            return false;
+        if (psiClass == null) return false;
         String qualifiedName = psiClass.getQualifiedName();
-        if (qualifiedName == null)
-            return false;
+        if (qualifiedName == null) return false;
         qualifiedName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
         PsiPackage aPackage = JavaPsiFacade.getInstance(Application.project).findPackage(qualifiedName);
         return aPackage != null;
@@ -410,6 +423,14 @@ public class PSIUtil {
 
     public static PsiClass[] findClassWithShortName(String name, GlobalSearchScope searchScope) {
         return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, searchScope);
+    }
+
+    public static PsiClass loadClassWithShortName(String name){
+        PsiClass[] classes = findClassWithShortName(name);
+        if (classes.length == 0) {
+            return null;
+        }
+        return classes[0];
     }
 
     public static void getParameterDescription(PsiDocTag tag, HashMap<String, String> desc) {
@@ -607,8 +628,7 @@ public class PSIUtil {
     }
 
     public static String getFiledValue(PsiElement element) {
-        if (element == null)
-            return null;
+        if (element == null) return null;
         if (element instanceof PsiJavaToken) {
             if (StringUtil.EQUAL == element.getText().charAt(0)) {
                 PsiElement nextSibling = element.getNextSibling();
@@ -709,8 +729,7 @@ public class PSIUtil {
         String comment = " * ";
         String commentEnd = " */\n";
         for (Param param : fieldsList) {
-            builder.append(commentStart).append(comment).append(param.getDescription()).append(StringUtil.NEW_LINE).append(commentEnd).append(param.getTypeAlias())
-                    .append(StringUtil.SPACE).append(param.getName()).append(StringUtil.NEW_LINE);
+            builder.append(commentStart).append(comment).append(param.getDescription()).append(StringUtil.NEW_LINE).append(commentEnd).append(param.getTypeAlias()).append(StringUtil.SPACE).append(param.getName()).append(StringUtil.NEW_LINE);
         }
         return builder.toString();
     }
@@ -746,8 +765,7 @@ public class PSIUtil {
     }
 
     public static void getClassField(PsiClass psiClass, Collection<Field> result) {
-        if (psiClass == null)
-            return;
+        if (psiClass == null) return;
         if (Application.isBasicType(psiClass.getName())) {
             return;
         }
@@ -784,5 +802,28 @@ public class PSIUtil {
             result[i] = buildFieldMember(fields[i], psiClass);
         }
         return result;
+    }
+
+    public static Set<Param> loadSuperFields(Collection<Param> elements) {
+        Set<Param> superParams = Sets.newHashSet();
+        for (Param element : elements) {
+            String type = element.getType().getPresentableText();
+            if (Application.isBasicType(type)) {
+                continue;
+            }
+            PsiClass aClass = loadClassWithShortName(type);
+            if (aClass == null) {
+                continue;
+            }
+            PsiField[] fields = aClass.getAllFields();
+            for (PsiField field : fields) {
+                Param param = new Param(field.getName());
+                param.setType(field.getType());
+                param.setName(param.getGetString());
+                param.setDescription(getDescription(field.getDocComment()));
+                superParams.add(param);
+            }
+        }
+        return superParams;
     }
 }

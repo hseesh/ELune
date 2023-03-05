@@ -18,7 +18,11 @@ public class MetaData {
 
     private String description;
 
-    public Collection<Param> pramList = Lists.newArrayList();
+    private Collection<Param> pramList = Lists.newArrayList();
+
+    public void setPramList(Collection<Param> pramList) {
+        this.pramList = pramList;
+    }
 
     public String getName() {
         return name;
@@ -75,5 +79,16 @@ public class MetaData {
         for (Param field : fields) {
             tryAddFields(field);
         }
+    }
+    public Param getKey(){
+        for (Param param : this.pramList) {
+            if (int.class.getSimpleName().equals(param.getTypeAlias())) {
+                return param;
+            }
+            if (long.class.getSimpleName().equals(param.getTypeAlias())) {
+                return param;
+            }
+        }
+        return null;
     }
 }

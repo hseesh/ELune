@@ -44,17 +44,23 @@ public class NodeMenu extends JPopupMenu {
             String name = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
             if (name != null && name.length() != 0) {
                 node.getNodeData().setName(name);
-                if (node.getNodeData().getNodeType() == NodeType.PROTOCOL_NODE) {
-                    TranslateService service = TranslateService.getInstance();
+                if (NodeType.AUTO_TRANSLATE.contains(node.getNodeData().getNodeType())) {
                     ApplicationManager.getApplication().invokeLater(() -> {
-                        String fileName = service.action(name);
+                        String fileName = TranslateService.translate(name);
                         if (fileName == null || fileName.length() == 0) {
                             return;
                         }
-                        String allUpperCase = fileName.replace(StringUtil.SPACE_FLAG, StringUtil.UNDER_LINE).toUpperCase(Locale.ROOT);
-                        String cameCase = StringUtil.toCameCaseFormTranslate(fileName);
-                        node.getNodeData().setAlias(allUpperCase);
-                        node.getNodeData().setExtra(cameCase);
+                        if (node.getNodeData().getNodeType() == NodeType.PROTOCOL_NODE) {
+                            String allUpperCase = fileName.replace(StringUtil.SPACE_FLAG, StringUtil.UNDER_LINE).toUpperCase(Locale.ROOT);
+                            String cameCase = StringUtil.toCameCaseFormTranslate(fileName);
+                            node.getNodeData().setAlias(allUpperCase);
+                            node.getNodeData().setExtra(cameCase);
+                            asyncCalcAlia(node);
+                        } else if (node.getNodeData().getNodeType() == NodeType.ENTITY_NODE) {
+                            String[] split = fileName.split(String.valueOf(StringUtil.SPACE));
+                            String cameCase = StringUtil.toUpper(split);
+                            node.getNodeData().setAlias(cameCase);
+                        }
                         node.refreshBounds();
                     });
                 }
@@ -69,7 +75,9 @@ public class NodeMenu extends JPopupMenu {
     }
 
 
-    private void asyncCalcAlia() {
-
+    private void asyncCalcAlia(AbstractNode node) {
+        for (AbstractNode abstractNode : node.getAllLinkNode()) {
+            abstractNode.sync(node.getNodeData().getName(), node.getNodeData().getExtra());
+        }
     }
 }

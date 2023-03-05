@@ -62,7 +62,7 @@ public class BaseNode extends AbstractNode implements NodeStyle {
     public String getWorkPath() {
         NodeData data = getNodeData();
         String basePath = getModel().getBasePath();
-        return StringUtil.buildPath(basePath, data.getWorkingSpace(), getModel().getModuleName(), getKey(), data.getName() + ProjectKeys.JAVA);
+        return StringUtil.buildPath(basePath, getModel().getModuleName(), ProjectKeys.MODULE, getKey(), data.getAlias() + ProjectKeys.JAVA);
     }
 
     @Override
@@ -141,7 +141,7 @@ public class BaseNode extends AbstractNode implements NodeStyle {
 
         g2d.setStroke(GlobalConstant.STROKE_THREE);
         g2d.setColor(ColorBox.NODE_PENCIL.getColor());
-        for (Param param : nodeData.getMetaData().pramList) {
+        for (Param param : nodeData.getMetaData().getPramList()) {
             g2d.drawString(param.getPrimaryInfo(), 15, offsetY + 30);
             offsetY += 25;
         }
@@ -160,7 +160,7 @@ public class BaseNode extends AbstractNode implements NodeStyle {
         if (this == o) return true;
         if (!(o instanceof BaseNode)) return false;
         BaseNode baseNode = (BaseNode) o;
-        return nodeData.equals(baseNode.nodeData);
+        return this.nodeData.equals(baseNode.nodeData);
     }
 
     @Override

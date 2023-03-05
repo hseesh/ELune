@@ -1,10 +1,14 @@
 package com.yatoufang.utils;
 
 import com.google.gson.Gson;
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.util.io.FileUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.ParameterizedTypeImpl;
 import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.NotifyService;
+import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 
 import java.io.File;
@@ -57,7 +61,17 @@ public class FileWrite {
             }
         } catch (IOException ioException) {
             ioException.printStackTrace();
+            return Collections.emptyList();
         }
         return Collections.emptyList();
+    }
+
+    public static String getSelectedPath() {
+        FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
+        VirtualFile[] virtualFiles = FileChooser.chooseFiles(fileChooserDescriptor, Application.project, null);
+        for (VirtualFile virtualFile : virtualFiles) {
+            return virtualFile.getPath();
+        }
+        return null;
     }
 }

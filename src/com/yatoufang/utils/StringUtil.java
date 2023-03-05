@@ -151,6 +151,7 @@ public class StringUtil {
         }
         return builder.toString();
     }
+
     //SPACE KEY ASCII 32
     public static String toCameCaseFormTranslate(String variable) {
         char[] chars = variable.toCharArray();
@@ -166,7 +167,7 @@ public class StringUtil {
                 upperCase = true;
                 continue;
             }
-            if(upperCase){
+            if (upperCase) {
                 if (chars[i] > 96 && chars[i] < 123) {
                     builder.append(chars[i] -= 32);
                 } else {
@@ -432,7 +433,6 @@ public class StringUtil {
     }
 
 
-
     public static void translateIfNecessary(Config config, List<String> param) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < param.size(); i++) {
@@ -455,7 +455,31 @@ public class StringUtil {
         }
     }
 
+    public static String getMetaType(String type) {
+        StringBuilder builder = new StringBuilder();
+        boolean flag = false;
+        for (char c : type.toCharArray()) {
+            if (c == LESS_THEN) {
+                builder.setLength(0);
+                flag = true;
+                continue;
+            }
+            if (c == GRATE_THEN) {
+                flag = true;
+                continue;
+            }
+            if (flag) {
+                builder.append(c);
+            }
+        }
+        if (builder.length() == 0) {
+            return type;
+        }
+        return builder.toString();
+    }
+
     public static void main(String[] args) {
         System.out.println(toCameCaseFormTranslate("Get personal information"));
+        System.out.println(getMetaType("TResult<Integer>"));
     }
 }

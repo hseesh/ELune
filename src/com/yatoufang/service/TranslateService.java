@@ -4,9 +4,10 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.yatoufang.core.HttpUtils;
 import com.yatoufang.entity.translate.Response;
+import com.yatoufang.entity.translate.deepl.DeepLResult;
 import com.yatoufang.utils.Md5;
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * @author GongHuang（hse）
@@ -16,8 +17,13 @@ public class TranslateService {
 
     // 百度翻译API
     private static final String URL = "https://fanyi-api.baidu.com/api/trans/vip/translate";
-    private static final  String APPID = "20220619001252176";
-    private static final  String KEY = "SBdjN9EaHVsFXIXsRKJn";
+    private static final String APPID = "20220619001252176";
+    private static final String KEY = "SBdjN9EaHVsFXIXsRKJn";
+
+
+    // deepl API
+    public static final String DEEPL_URL = "https://api-free.deepl.com/v2/translate";
+    public static final String DEEPL_TOKEN = "5db718af-ae30-1991-6ff2-58ed8a965601:fx";
 
     private static TranslateService service;
 
@@ -57,6 +63,34 @@ public class TranslateService {
             return querySource;
         }
         return translateResult;
+    }
+
+
+    /**
+     * POST /v2/translate HTTP/2
+     * Host: api-free.deepl.com
+     * Authorization: DeepL-Auth-Key 5db718af-ae30-1991-6ff2-58ed8a965601:fx
+     * User-Agent: YourApp/1.2.3
+     * Content-Length: 37
+     * Content-Type: application/x-www-form-urlencoded
+     * text=Hello%2C%20world!&target_lang=DE
+     */
+    public static String translate(String worlds) {
+        HashMap<String, Object> param = Maps.newHashMap();
+        param.put("text", worlds);
+        param.put("target_lang", "EN");
+        param.put("auth_key", DEEPL_TOKEN);
+        String result = HttpUtils.sendPost(DEEPL_URL, param, "application/x-www-form-urlencoded", Maps.newHashMap());
+        Gson gson = new Gson();
+        DeepLResult response = gson.fromJson(result, DeepLResult.class);
+        return response.getTranslateResult();
+    }
+
+    public static void main(String[] args) {
+        long l = System.currentTimeMillis();
+        //System.out.println(translate("龙神BOSS=五绝塔=天道四灵塔=弑神令=灵草=神晶"));
+        System.out.println(translate("攻击"));
+        System.out.println(System.currentTimeMillis() - l);
     }
 
 }

@@ -8,6 +8,7 @@ import com.yatoufang.utils.BuildUtil;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ import java.util.Objects;
  * @author hse
  * @since 2022/9/11 0011
  */
-public class NodeData {
+public class NodeData implements Serializable {
 
     public static final long serialVersionUID = 123L;
     private String name;
@@ -67,7 +68,7 @@ public class NodeData {
     }
 
     public MetaData getMetaData() {
-        return metaData == null ? new MetaData() : metaData;
+        return metaData;
     }
 
     public void setMetaData(MetaData metaData) {
@@ -96,6 +97,12 @@ public class NodeData {
 
     public void refreshWorkingSpace(String workingSpace){
         this.workingSpace = workingSpace;
+    }
+
+
+    public void reload(){
+        this.metaData = new MetaData();
+        refresh(this.content);
     }
 
     public void refresh(String content) {

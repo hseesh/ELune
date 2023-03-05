@@ -1,13 +1,15 @@
 package com.yatoufang.designer;
 
 import com.google.common.collect.Maps;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.yatoufang.designer.component.MindMapEditor;
+import com.yatoufang.editor.Model;
 import com.yatoufang.editor.component.RootPanel;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.thread.ELuneScheduledThreadPoolExecutor;
 import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.StringUtil;
 import org.jetbrains.annotations.Nls;
@@ -16,7 +18,11 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.util.Calendar;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author GongHuang（hse）
@@ -26,10 +32,8 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     private final VirtualFile file;
     private Document[] documents;
-    private MindMapEditor mindMapEditor;
-    private final RootPanel rootPanel = new RootPanel();
-    private FileEditorState fileEditorState;
-    private final Map userdata = Maps.newHashMap();
+    private RootPanel rootPanel;
+    private Map<Object, Object> userdata = Maps.newHashMap();
 
     public MindMapDocumentEditor(VirtualFile virtualFile) {
         this.file = virtualFile;
@@ -51,7 +55,35 @@ public class MindMapDocumentEditor implements DocumentsEditor {
         } else if (canonicalPath.contains(ProjectKeys.BATTLE_SERVER)) {
             rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.BATTLE_SERVER);
         }
-        RootPanel.getDrawingSurface().getModel().setBasePath(rootPath);
+        if (this.documents[0].getText().length() == 0) {
+            Model model = new Model();
+            rootPanel = new RootPanel(model);
+            model.setFilePath(file.getPath());
+            model.setBasePath(rootPath);
+            return;
+        }
+        try {
+            ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file.getPath()));
+            Model model = (Model) (inputStream.readObject());
+            inputStream.close();
+            if (model == null) {
+                model = new Model();
+            }
+            Model finalModel = model;
+            String finalRootPath = rootPath;
+            rootPanel = new RootPanel(model);
+            ELuneScheduledThreadPoolExecutor executor = ELuneScheduledThreadPoolExecutor.getInstance();
+            executor.schedule(() -> ApplicationManager.getApplication().invokeLater(() -> {
+                finalModel.setFilePath(file.getPath());
+                finalModel.setBasePath(finalRootPath);
+                finalModel.addListeners();
+                finalModel.addComponents();
+                finalModel.updateAfterOpened();
+            }), Calendar.DATE, TimeUnit.SECONDS);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -81,7 +113,6 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     @Override
     public void setState(@NotNull FileEditorState fileEditorState) {
-        this.fileEditorState = fileEditorState;
     }
 
     @Override
@@ -96,12 +127,10 @@ public class MindMapDocumentEditor implements DocumentsEditor {
 
     @Override
     public void addPropertyChangeListener(@NotNull PropertyChangeListener propertyChangeListener) {
-
     }
 
     @Override
     public void removePropertyChangeListener(@NotNull PropertyChangeListener propertyChangeListener) {
-
     }
 
     @Override
@@ -132,7 +161,6 @@ public class MindMapDocumentEditor implements DocumentsEditor {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> void putUserData(@NotNull Key<T> key, @Nullable T t) {
         userdata.put(key, t);
     }

@@ -37,7 +37,7 @@ public enum NodeType {
 
     public static final Collection<NodeType> AUTO_WRITE = List.of(REQUEST_NODE, RESPONSE_NODE);
 
-    public static final Collection<NodeType> PROTOCOL = List.of(REQUEST_NODE, RESPONSE_NODE, RUSH_NODE, PROTOCOL_NODE);
+    public static final Collection<NodeType> AUTO_TRANSLATE = List.of(DATA_BASE, PROTOCOL_NODE, ENTITY_NODE);
 
 
     @Override

@@ -9,6 +9,7 @@ import com.yatoufang.editor.listeners.NodeMouseListener;
 import com.yatoufang.editor.listeners.NodeMouseMotionListener;
 import com.yatoufang.editor.menus.NodeMenu;
 import com.yatoufang.editor.model.NodeData;
+import com.yatoufang.editor.type.NodeType;
 import com.yatoufang.editor.type.Position;
 import org.apache.commons.compress.utils.Lists;
 
@@ -23,7 +24,7 @@ import java.util.*;
  */
 public abstract class AbstractNode extends JPanel implements UndoRedo {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 123456L;
     private final Map<Position, Connector> connectors = new HashMap<>();
     private transient Point startPoint = new Point(0, 0);
     private final Set<LinkLine> linkLines = new HashSet<>();
@@ -47,7 +48,7 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
         this.nodeData = nodeData;
         this.model = model;
         setFocusable(true);
-        addTransientComponents();
+        reload();
     }
 
     public void addConnectors() {
@@ -56,14 +57,12 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
     public void refreshBounds() {
         Rectangle bounds = getBounds();
         int size = nodeData.getMetaData().getPramList().size();
+        int width = nodeData.getMetaData().calcOptimumWidth();
+        width = Math.max(width, nodeData.getTitleWidth());
+        width = Math.max(width, GlobalConstant.NODE_WIDTH);
         if (size > 2) {
-            int width = nodeData.getMetaData().calcOptimumWidth();
-            width = Math.max(width, nodeData.getTitleWidth());
-            width = Math.min(width, GlobalConstant.NODE_WIDTH * 2);
-            width = Math.max(width, GlobalConstant.NODE_WIDTH);
             setBounds((int) bounds.getX(), (int) bounds.getY(), width, GlobalConstant.NODE_HEIGHT + (size - 2) * 25);
         } else {
-            int width = Math.max(GlobalConstant.NODE_WIDTH, nodeData.getTitleWidth());
             setBounds((int) bounds.getX(), (int) bounds.getY(), width, (int) bounds.getHeight());
         }
         setConnectorLocation();
@@ -74,8 +73,10 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
     }
 
 
-    public void addTransientComponents() {
+    public void reload() {
         contextMenu = new NodeMenu(this);
+        this.nodeData.reload();
+        refreshBounds();
     }
 
     public void addListeners() {
@@ -274,5 +275,30 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
             list.add(outPutNode);
         }
         return list;
+    }
+
+    public Optional<AbstractNode> getLinkNode(NodeType nodeType) {
+        for (LinkLine linkLine : linkLines) {
+            AbstractNode outPutNode = linkLine.getOutPutNode();
+            if (this.equals(outPutNode)) {
+                continue;
+            }
+            if (nodeType.equals(outPutNode.getNodeData().getNodeType())) {
+                return Optional.of(outPutNode);
+            }
+            AbstractNode inPutNode = linkLine.getInPutNode();
+            if (this.equals(outPutNode)) {
+                continue;
+            }
+            if (nodeType.equals(inPutNode.getNodeData().getNodeType())) {
+                return Optional.of(inPutNode);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public String toString() {
+        return nodeData.getName();
     }
 }

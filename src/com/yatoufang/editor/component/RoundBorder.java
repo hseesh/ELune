@@ -5,12 +5,15 @@ import com.intellij.util.ui.JBUI;
 
 import javax.swing.border.Border;
 import java.awt.*;
+import java.io.Serializable;
 
 /**
  * @author hse
  * @since 2022/09/1 0001
  */
-public class RoundBorder implements Border {
+public class RoundBorder implements Border, Serializable {
+
+    private static final long serialVersionUID = 2023L;
     private final Color color;
 
     public RoundBorder(Color color) {// 有参数的构造方法

@@ -1,13 +1,10 @@
 package com.yatoufang.ui.dialog;
 
-import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.JBScrollPane;
-import com.yatoufang.templet.Application;
 import com.yatoufang.service.NotifyService;
+import com.yatoufang.utils.FileWrite;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,7 +88,7 @@ public class DocumentExportDialog extends DialogWrapper {
     }
 
     private void saveFile(){
-        String selectPath = getSelectedPath();
+        String selectPath = FileWrite.getSelectedPath();
         if(selectPath != null){
             File file = new File(selectPath + "\\" +fileName + ".md");
             try {
@@ -110,13 +107,5 @@ public class DocumentExportDialog extends DialogWrapper {
         dispose();
     }
 
-    private String getSelectedPath() {
-        FileChooserDescriptor fileChooserDescriptor = new FileChooserDescriptor(false, true, false, false, false, false);
-        VirtualFile[] virtualFiles = FileChooser.chooseFiles(fileChooserDescriptor, Application.project, null);
-        for (VirtualFile virtualFile : virtualFiles) {
-            return virtualFile.getPath();
-        }
-        return null;
-    }
 
 }

@@ -82,6 +82,9 @@ public class BuildUtil {
     }
 
     public static PsiClass createClass(String text) {
+        if (text == null) {
+            return null;
+        }
         PsiJavaFile fileFromText = (PsiJavaFile) PsiFileFactory.getInstance(Application.project).createFileFromText("tts.java", JavaFileType.INSTANCE, text);
         PsiClass[] classes = fileFromText.getClasses();
         if (classes.length == 0) {

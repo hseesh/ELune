@@ -10,6 +10,7 @@ import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.MethodCallExpression;
+import com.yatoufang.templet.ProjectKeys;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -115,6 +116,10 @@ public class DataUtil implements MethodCallExpression {
             child.parent = element;
             initialise(child);
         }
+    }
+
+    public static String getInitValue(String type){
+        return  StringUtil.SPACE + StringUtil.SPACE + getDefaultValue(type);
     }
 
     public static String getDefaultValue(String type) {

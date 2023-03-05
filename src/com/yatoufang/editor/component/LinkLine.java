@@ -31,7 +31,6 @@ public class LinkLine implements Serializable, UndoRedo {
         this.startConnector = startConnector;
         this.endConnector = endConnector;
         addTransientComponents();
-        update();
     }
 
     @Override
@@ -63,6 +62,7 @@ public class LinkLine implements Serializable, UndoRedo {
 
     public void addTransientComponents() {
         contextMenu = new LinkLineMenu(this);
+        update();
     }
 
     public Model getModel() {
@@ -144,9 +144,6 @@ public class LinkLine implements Serializable, UndoRedo {
 
 
     public AbstractNode getOutPutNode() {
-        if (startConnector.getSourceType() == SourceType.OUT_PUT) {
-            return startConnector.getAbstractNode();
-        }
         return endConnector.getAbstractNode();
     }
 

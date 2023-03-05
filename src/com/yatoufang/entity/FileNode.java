@@ -49,6 +49,13 @@ public class FileNode extends DefaultMutableTreeNode {
         this.isCatalog = flag;
     }
 
+    public FileNode(String name, boolean isCatalog,boolean isInterface) {
+        super(name);
+        this.name = name;
+        this.isCatalog = isCatalog;
+        this.isInterface = isInterface;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

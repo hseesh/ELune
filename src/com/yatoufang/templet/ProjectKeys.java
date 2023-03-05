@@ -59,6 +59,8 @@ public interface ProjectKeys {
 
     String DELETE = "delete";
     String RESULT = "result";
+    String RESULT_OF = "Result";
+
     String T_RESULT = "TResult";
 
     String METHOD_FIND_CONFIG = "findConfig";
@@ -68,9 +70,9 @@ public interface ProjectKeys {
     String COST = "cost";
 
     String REWARD = "reward";
-
     String ID = "id";
     String ATTRIBUTE = "attribute";
+    String DEFAULT_NODE = "defaultNode";
     String ATTRIBUTE_PERCENT = "attributeTTPercent";
 
     String RESPONSE = "response";

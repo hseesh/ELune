@@ -18,8 +18,6 @@ public class EntityNode extends BaseNode {
         super(model, clickedPoint, NodeType.ENTITY_NODE);
     }
 
-
-
     @Override
     public String getKey() {
         return ProjectKeys.MODEL;

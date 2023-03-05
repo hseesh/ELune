@@ -4,12 +4,12 @@ package com.yatoufang.editor.menus;
 import com.intellij.icons.AllIcons;
 import com.intellij.javaee.J2EEBundle;
 import com.intellij.openapi.ui.Messages;
-import com.yatoufang.editor.component.Canvas;
+import com.yatoufang.editor.component.RootCanvas;
 import com.yatoufang.editor.component.impl.ConfigNode;
 import com.yatoufang.editor.component.impl.DataBaseNode;
 import com.yatoufang.editor.component.impl.EntityNode;
 import com.yatoufang.editor.constant.CopyPasteHelper;
-import com.yatoufang.editor.constant.FileManager;
+import com.yatoufang.editor.constant.FileHelper;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import icons.Icon;
@@ -22,16 +22,14 @@ import javax.swing.*;
  */
 public class RootPanelMenu extends JPopupMenu {
 
-    public RootPanelMenu(Canvas canvas) {
-
-
+    public RootPanelMenu(RootCanvas rootCanvas) {
         JMenu subMenuInsert = new JMenu("New");
         JMenuItem dateBaseNode = new JMenuItem("DateBase Node", Icon.NODE_DATA_BASE);
         JMenuItem entityNode = new JMenuItem("Entity Node", Icon.NODE_ENTITY);
         JMenuItem configNode = new JMenuItem("Config Node", Icon.NODE_SETTING);
-        dateBaseNode.addActionListener(e -> canvas.getModel().add(new DataBaseNode(canvas.getModel(), canvas.getClickedPoint())));
-        entityNode.addActionListener(e -> canvas.getModel().add(new EntityNode(canvas.getModel(), canvas.getClickedPoint())));
-        configNode.addActionListener(e -> canvas.getModel().add(new ConfigNode(canvas.getModel(), canvas.getClickedPoint())));
+        dateBaseNode.addActionListener(e -> rootCanvas.getModel().add(new DataBaseNode(rootCanvas.getModel(), rootCanvas.getClickedPoint())));
+        entityNode.addActionListener(e -> rootCanvas.getModel().add(new EntityNode(rootCanvas.getModel(), rootCanvas.getClickedPoint())));
+        configNode.addActionListener(e -> rootCanvas.getModel().add(new ConfigNode(rootCanvas.getModel(), rootCanvas.getClickedPoint())));
         subMenuInsert.add(dateBaseNode);
         subMenuInsert.add(entityNode);
         subMenuInsert.add(configNode);
@@ -42,10 +40,10 @@ public class RootPanelMenu extends JPopupMenu {
         JMenuItem world = new JMenuItem("World", Icon.NODE_DATA_BASE);
         JMenuItem battle = new JMenuItem("Battle", Icon.NODE_DATA_BASE);
         JMenuItem shard = new JMenuItem("Shard", Icon.NODE_DATA_BASE);
-        game.addActionListener(e -> canvas.getModel().refreshWorkingSpace(ProjectKeys.GAME_SERVER));
-        world.addActionListener(e -> canvas.getModel().refreshWorkingSpace(ProjectKeys.WORLD_SERVER));
-        battle.addActionListener(e -> canvas.getModel().refreshWorkingSpace(ProjectKeys.BATTLE_SERVER));
-        shard.addActionListener(e -> canvas.getModel().refreshWorkingSpace(ProjectKeys.SHARD));
+        game.addActionListener(e -> rootCanvas.getModel().refreshWorkingSpace(ProjectKeys.GAME_SERVER));
+        world.addActionListener(e -> rootCanvas.getModel().refreshWorkingSpace(ProjectKeys.WORLD_SERVER));
+        battle.addActionListener(e -> rootCanvas.getModel().refreshWorkingSpace(ProjectKeys.BATTLE_SERVER));
+        shard.addActionListener(e -> rootCanvas.getModel().refreshWorkingSpace(ProjectKeys.SHARD));
         markAs.add(game);
         markAs.add(world);
         markAs.add(battle);
@@ -53,40 +51,37 @@ public class RootPanelMenu extends JPopupMenu {
         add(markAs);
 
         JMenuItem execute = new JMenuItem("Execute");
-        execute.addActionListener(e -> canvas.getModel().onExecute());
+        execute.addActionListener(e -> rootCanvas.getModel().onExecute(true, false));
         add(new JSeparator(SwingConstants.HORIZONTAL));
         add(execute);
 
-        JMenuItem menuItemToggleConnectors = new JMenuItem("Show connectors",AllIcons.Ide.HectorOn);
-        menuItemToggleConnectors.addActionListener(e -> canvas.getModel().toggleConnectors());
+        JMenuItem menuItemToggleConnectors = new JMenuItem("Show connectors", AllIcons.Ide.HectorOn);
+        menuItemToggleConnectors.addActionListener(e -> rootCanvas.getModel().toggleConnectors());
 
         JMenuItem menuItemToggleGrid = new JMenuItem("Show grid", AllIcons.Actions.OpenNewTab);
-        menuItemToggleGrid.addActionListener(e -> canvas.getModel().toggleGrid());
+        menuItemToggleGrid.addActionListener(e -> rootCanvas.getModel().toggleGrid());
 
         JMenuItem menuItemClearAll = new JMenuItem("Clear all", AllIcons.Actions.Cancel);
         menuItemClearAll.addActionListener(e -> {
             if (Messages.showYesNoDialog(Application.project, "CLear all", J2EEBundle.message("action.name.delete"), null) == Messages.YES) {
-                canvas.getModel().clear();
+                rootCanvas.getModel().clear();
             }
         });
 
         JMenuItem menuItemCopy = new JMenuItem("Copy", AllIcons.Actions.Copy);
-        menuItemCopy.addActionListener(e -> CopyPasteHelper.copy(canvas.getModel()));
+        menuItemCopy.addActionListener(e -> CopyPasteHelper.copy(rootCanvas.getModel()));
 
         JMenuItem menuItemPaste = new JMenuItem("Paste", AllIcons.Actions.MenuPaste);
-        menuItemPaste.addActionListener(e -> CopyPasteHelper.paste(canvas.getModel()));
+        menuItemPaste.addActionListener(e -> CopyPasteHelper.paste(rootCanvas.getModel()));
 
         JMenuItem menuItemSave = new JMenuItem("Save", AllIcons.Actions.MenuSaveall);
-        menuItemSave.addActionListener(e -> FileManager.save(canvas.getModel()));
+        menuItemSave.addActionListener(e -> FileHelper.save(rootCanvas.getModel()));
 
         JMenuItem menuItemSaveAs = new JMenuItem("Save As", AllIcons.Actions.Menu_saveall);
-        menuItemSaveAs.addActionListener(e -> FileManager.saveAs(canvas.getModel()));
-
-        JMenuItem menuItemOpen = new JMenuItem("Open", AllIcons.Actions.MenuOpen);
-        menuItemOpen.addActionListener(e -> canvas.openFile());
+        menuItemSaveAs.addActionListener(e -> FileHelper.saveAs(rootCanvas.getModel()));
 
         JMenuItem menuItemExport = new JMenuItem("Export png", AllIcons.Actions.Expandall);
-        menuItemExport.addActionListener(e -> canvas.exportAsImage());
+        menuItemExport.addActionListener(e -> rootCanvas.exportAsImage());
 
         add(new JSeparator(SwingConstants.HORIZONTAL));
         add(menuItemToggleConnectors);
@@ -98,7 +93,6 @@ public class RootPanelMenu extends JPopupMenu {
         add(new JSeparator(SwingConstants.HORIZONTAL));
         add(menuItemSave);
         add(menuItemSaveAs);
-        add(menuItemOpen);
         add(new JSeparator(SwingConstants.HORIZONTAL));
         add(menuItemExport);
     }

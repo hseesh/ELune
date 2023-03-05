@@ -1,7 +1,7 @@
 package com.yatoufang.editor.listeners;
 
 
-import com.yatoufang.editor.component.Canvas;
+import com.yatoufang.editor.component.RootCanvas;
 import com.yatoufang.editor.component.LinkLine;
 import com.yatoufang.editor.component.impl.ProtocolNode;
 
@@ -16,30 +16,30 @@ import java.awt.geom.Path2D;
  * @since 2022/9/23 0023
  */
 public class RootPanelMouseListener implements MouseListener {
-    private final Canvas canvas;
+    private final RootCanvas rootCanvas;
 
-    public RootPanelMouseListener(Canvas canvas) {
-        this.canvas = canvas;
+    public RootPanelMouseListener(RootCanvas rootCanvas) {
+        this.rootCanvas = rootCanvas;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        canvas.setCursor(Cursor.getDefaultCursor());
-        canvas.getSelection().setBounds(0, 0, 0, 0);
-        canvas.repaint();
+        rootCanvas.setCursor(Cursor.getDefaultCursor());
+        rootCanvas.getSelection().setBounds(0, 0, 0, 0);
+        rootCanvas.repaint();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        canvas.requestFocus();
-        canvas.setClickedPoint(e.getPoint());
+        rootCanvas.requestFocus();
+        rootCanvas.setClickedPoint(e.getPoint());
         if (SwingUtilities.isRightMouseButton(e)) {
             LinkLine chartLine = clickedOnLine(e);
             if (chartLine != null) {
                 chartLine.showContextMenu(e);
             } else {
-                if (canvas.getModel().shouldClearLinkLine()) {
-                    canvas.getModel().clearMakeLine();
+                if (rootCanvas.getModel().shouldClearLinkLine()) {
+                    rootCanvas.getModel().clearMakeLine();
                 }
                 showContextMenu(e);
             }
@@ -57,32 +57,32 @@ public class RootPanelMouseListener implements MouseListener {
     @Override
     public void mouseClicked(MouseEvent e) {
         if (!e.isControlDown()) {
-            canvas.getModel().deSelectAll();
+            rootCanvas.getModel().deSelectAll();
         }
         if (SwingUtilities.isMiddleMouseButton(e) && e.isControlDown()) {
-            canvas.getRootPanel().getZoomPanel().setScale(1.0);
-            canvas.getRootPanel().getSideBar().updateZoomLabel(canvas);
+            rootCanvas.getRootPanel().getZoomPanel().setScale(1.0);
+            rootCanvas.getRootPanel().getSideBar().updateZoomLabel(rootCanvas);
         } else if (SwingUtilities.isMiddleMouseButton(e)) {
-            canvas.getModel().toggleConnectors();
+            rootCanvas.getModel().toggleConnectors();
         } else if (SwingUtilities.isLeftMouseButton(e)) {
             if (e.getClickCount() == 2) {
-                canvas.getModel().add(new ProtocolNode(canvas.getModel(), e.getPoint()));
+                rootCanvas.getModel().add(new ProtocolNode(rootCanvas.getModel(), e.getPoint()));
             } else {
-                canvas.getModel().tryCreate(e.getPoint());
+                rootCanvas.getModel().tryCreate(e.getPoint());
             }
         }
     }
 
     private void showContextMenu(MouseEvent e) {
-        double zoomFactor = canvas.getRootPanel().getZoomPanel().getScale();
+        double zoomFactor = rootCanvas.getRootPanel().getZoomPanel().getScale();
         int x = (int) (e.getX() * zoomFactor);
         int y = (int) (e.getY() * zoomFactor);
-        canvas.getContextMenu().show(e.getComponent(), x, y);
+        rootCanvas.getContextMenu().show(e.getComponent(), x, y);
     }
 
     private LinkLine clickedOnLine(MouseEvent e) {
         Point p = e.getPoint();
-        for (LinkLine line : canvas.getModel().getLines()) {
+        for (LinkLine line : rootCanvas.getModel().getLines()) {
             Path2D path = line.getPath();
             if (path.contains(p)) {
                 return line;

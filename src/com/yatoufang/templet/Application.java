@@ -28,6 +28,8 @@ public class Application {
 
     public static String PROJECT_ID = "com.yatoufang.hse.code.generator";
 
+    public static String PROJECT_NAME = "Elune";
+
 
     public static Project project;
 

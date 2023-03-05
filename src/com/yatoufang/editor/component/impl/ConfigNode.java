@@ -1,15 +1,12 @@
 package com.yatoufang.editor.component.impl;
 
-import com.yatoufang.editor.model.NodeData;
-import com.yatoufang.editor.type.NodeType;
+import com.yatoufang.editor.Model;
 import com.yatoufang.editor.component.BaseNode;
 import com.yatoufang.editor.component.Connector;
 import com.yatoufang.editor.constant.ColorBox;
-import com.yatoufang.editor.Model;
+import com.yatoufang.editor.type.NodeType;
 import com.yatoufang.editor.type.Position;
 import com.yatoufang.editor.type.SourceType;
-import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.utils.StringUtil;
 
 import java.awt.*;
 

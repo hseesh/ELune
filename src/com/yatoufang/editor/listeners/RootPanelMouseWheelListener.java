@@ -1,6 +1,6 @@
 package com.yatoufang.editor.listeners;
 
-import com.yatoufang.editor.component.Canvas;
+import com.yatoufang.editor.component.RootCanvas;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -11,21 +11,21 @@ import java.awt.event.MouseWheelListener;
  * @since 2022/9/23 0023
  */
 public class RootPanelMouseWheelListener implements MouseWheelListener {
-    private final Canvas canvas;
+    private final RootCanvas rootCanvas;
 
-    public RootPanelMouseWheelListener(Canvas canvas) {
-        this.canvas = canvas;
+    public RootPanelMouseWheelListener(RootCanvas rootCanvas) {
+        this.rootCanvas = rootCanvas;
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         if(e.isControlDown()) {
             if(e.getWheelRotation() < 0) {
-                canvas.getRootPanel().getZoomPanel().zoomIn();
+                rootCanvas.getRootPanel().getZoomPanel().zoomIn();
             }else if(e.getWheelRotation() > 0) {
-                canvas.getRootPanel().getZoomPanel().zoomOut();
+                rootCanvas.getRootPanel().getZoomPanel().zoomOut();
             }
-            canvas.getRootPanel().getSideBar().updateZoomLabel(canvas);
+            rootCanvas.getRootPanel().getSideBar().updateZoomLabel(rootCanvas);
         }
     }
 }
