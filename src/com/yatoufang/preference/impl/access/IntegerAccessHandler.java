@@ -14,7 +14,7 @@ public class IntegerAccessHandler extends AccessPreferenceHandler {
     @Override
     public boolean check(PsiField field) {
         for (String key : getKey()) {
-            if (key.equals( field.getType().getPresentableText())) {
+            if (key.equals(field.getType().getPresentableText())) {
                 return true;
             }
         }
@@ -33,6 +33,6 @@ public class IntegerAccessHandler extends AccessPreferenceHandler {
 
     @Override
     public String[] getKey() {
-        return new String[] {int.class.getName(), Integer.class.getSimpleName()};
+        return new String[]{int.class.getName(), long.class.getName(), Integer.class.getSimpleName(), Long.class.getSimpleName(), float.class.getName(), double.class.getName()};
     }
 }

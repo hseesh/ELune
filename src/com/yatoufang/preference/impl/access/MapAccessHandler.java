@@ -15,7 +15,7 @@ public class MapAccessHandler extends AccessPreferenceHandler {
     @Override
     public boolean check(PsiField field) {
         for (String key : getKey()) {
-            if (field.getType().getPresentableText().startsWith(key)) {
+            if (field.getType().getPresentableText().endsWith(key)) {
                 return true;
             }
         }
