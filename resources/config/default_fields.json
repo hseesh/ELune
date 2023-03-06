@@ -56,6 +56,13 @@
         "description": "等级"
     },
     {
+        "name": "type",
+        "typeAlias": "int",
+        "alias": "int",
+        "defaultValue": "",
+        "description": "类型"
+    },
+    {
         "name": "rewardResult",
         "typeAlias": "RewardResult",
         "alias": "RewardResult",

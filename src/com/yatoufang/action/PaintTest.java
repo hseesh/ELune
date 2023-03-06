@@ -17,16 +17,19 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBList;
 import com.yatoufang.entity.Param;
 import com.yatoufang.service.NotifyService;
+import com.yatoufang.service.TranslateService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.ui.component.TextCellRender;
 import com.yatoufang.ui.dialog.EntityTemplateDialog;
+import com.yatoufang.ui.dialog.EnumTemplateDialog;
 import com.yatoufang.ui.dialog.TextChooseDialog;
 import com.yatoufang.ui.dialog.edit.EntityBuildDialog;
 import com.yatoufang.utils.BuildUtil;
 import com.yatoufang.utils.PSIUtil;
 
+import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.compress.utils.Sets;
 import org.apache.commons.io.IOUtils;
@@ -51,7 +54,7 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        new EntityBuildDialog().show();
+        new EnumTemplateDialog("","","").show();
     }
 
     private void test() {
@@ -109,7 +112,16 @@ public class PaintTest extends AnAction {
         if (classes.length == 0)
             return;
         PsiClass aClass = classes[0];
+        TranslateService instance = TranslateService.getInstance();
+        String text = "仙草\n板凳\n椅子".replace(StringUtil.NEW_LINE,StringUtil.EQUAL);
+        String action = instance.action(text);
+        System.out.println(action);
+        String Sencho = "Lingcao";
+        new EnumTemplateDialog("","","").show();
+    }
 
+
+    public void test_1(){
 
         final String[] DATA = { "    /**\n" + "     *  获取对象信息\n" + "     */\n" + "    public LordGodEntity getEntity(int configId) {\n"
                 + "        return entityMap.computeIfAbsent(configId, k -> LordGodEntity.valueOf(configId));\n" + "    }", "    /**\n" + "     *  添加记录\n" + "     */\n"
@@ -132,13 +144,6 @@ public class PaintTest extends AnAction {
         System.out.println(arrayList);
 
 
-        PsiElement data = e.getData(LangDataKeys.PSI_ELEMENT);
-        for (PsiField field : aClass.getAllFields()) {
-            System.out.println(PSIUtil.getDescription(field.getDocComment()));
-        }
-        PsiMethod activity2028GradeConfig = BuildUtil.createMethod(aClass, "public static Activity2028GradeConfig getGradeConfig (int data,int level){\n"
-            + " Map<Integer,Activity2028GradeConfig> Activity2028GradeConfig = Activity2028GradeConfig.get(data);\n" + "return levelKeyMap.get(level);\n" + "}");
-        System.out.println("activity2028GradeConfig = " + activity2028GradeConfig.getText());
     }
 
     private void psiFile(AnActionEvent e) {

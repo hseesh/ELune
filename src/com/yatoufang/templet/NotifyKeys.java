@@ -18,6 +18,10 @@ public interface NotifyKeys {
 
     String INPUT = "Please Input Your File Name";
 
+    String INPUT_VALUE = "Input Value To Fill";
+
+    String SELECT_VALUE = "Select Value To Fill";
+
     String INPUT_TITLE = "Export File";
 
     String CREATED = " created successfully\n";

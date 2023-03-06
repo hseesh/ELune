@@ -46,8 +46,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class HttpUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
-
     private static PoolingHttpClientConnectionManager cm;
     private static CloseableHttpClient httpclient;
 
@@ -120,7 +118,7 @@ public class HttpUtils {
             requestConfig = RequestConfig.custom().setSocketTimeout(soTimeout).setConnectTimeout(connectionTimeout).build();// 设置请求和传输超时时间
 
         } catch (Exception e) {
-            LOGGER.error("{}", e);
+            e.printStackTrace();
         }
 
     }
@@ -162,15 +160,13 @@ public class HttpUtils {
             for (Entry<String, String> entry : header.entrySet()) {
                 httpget.setHeader(entry.getKey(), entry.getValue());
             }
-            LOGGER.debug(String.format("httputil request url:[%s] ", urlPath));
             CloseableHttpResponse response = httpclient.execute(httpget);
             HttpEntity entity = null;
             try {
                 entity = response.getEntity();
-                return EntityUtils.toString(entity, StandardCharsets.UTF_8 );
+                return EntityUtils.toString(entity, StandardCharsets.UTF_8);
             } finally {
                 int statusCode = response.getStatusLine().getStatusCode();
-                LOGGER.debug(String.format("url:[%s] status:[%s]", urlPath, statusCode));
                 if (entity != null) {
                     EntityUtils.consume(entity);
                 }
@@ -178,7 +174,7 @@ public class HttpUtils {
 
             }
         } catch (Exception e) {
-            LOGGER.error("{}", e);
+            e.printStackTrace();
         }
         return "";
     }
@@ -190,7 +186,6 @@ public class HttpUtils {
     public static String sendPostJson(String url, String params, Map<String, String> headerMap) {
         return sendPost(url, params, "application/json", headerMap);
     }
-
 
 
     public static String sendPost(String url, Map<String, Object> paramsMaps) {
@@ -211,7 +206,7 @@ public class HttpUtils {
             }
             return sendPost(url, requestEntity, header);
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("{}", e);
+            e.printStackTrace();
         }
         return "";
     }
@@ -229,7 +224,7 @@ public class HttpUtils {
             }
             return sendPost(url, requestEntity, header);
         } catch (UnsupportedEncodingException e) {
-            LOGGER.error("{}", e);
+            e.printStackTrace();
         }
         return "";
     }
@@ -249,14 +244,13 @@ public class HttpUtils {
                 return EntityUtils.toString(entity, StandardCharsets.UTF_8);
             } finally {
                 int statusCode = response.getStatusLine().getStatusCode();
-                LOGGER.debug(String.format("url:[%s] status:[%s]", url, statusCode));
                 if (entity != null) {
                     EntityUtils.consume(entity);
                 }
                 response.close();
             }
         } catch (Exception e) {
-            LOGGER.error("{}", e);
+            e.printStackTrace();
         }
         return "";
     }
@@ -278,7 +272,7 @@ public class HttpUtils {
             }
             return "";
         } catch (Exception ex) {
-            LOGGER.warn("{}", ex);
+            ex.printStackTrace();
         }
         return "";
     }
