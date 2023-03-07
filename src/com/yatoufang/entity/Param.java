@@ -25,8 +25,8 @@ public class Param {
     public Param(String paramName) {
         this.required = true;
         this.description = StringUtil.EMPTY;
-        this.name = paramName;
-        this.alias = paramName;
+        this.name = paramName.trim();
+        this.alias = paramName.trim();
         initGetSetString();
     }
 

@@ -189,6 +189,9 @@ public class Model implements Serializable {
                 return;
             }
         }
+        if (nodeList.contains(node)) {
+            return;
+        }
         add(node, true);
     }
 

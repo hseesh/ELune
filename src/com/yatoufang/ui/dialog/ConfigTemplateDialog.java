@@ -11,6 +11,7 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.ui.FormBuilder;
 import com.yatoufang.config.service.AppSettingService;
+import com.yatoufang.editor.component.impl.ConfigNode;
 import com.yatoufang.editor.type.NodeType;
 import com.yatoufang.editor.component.AbstractNode;
 import com.yatoufang.editor.Model;
@@ -50,6 +51,9 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
     private final String rootPath;
     private String workSpace;
+
+    private Model model;
+    private Point clickedPoint;
 
     private boolean designerModel;
 
@@ -111,6 +115,18 @@ public class ConfigTemplateDialog extends DialogWrapper {
         editor = SwingUtils.createEditor(defaultContent);
         editor.setFont(new Font(null, Font.PLAIN, 14));
         files.addAll(fileMap.keySet());
+        init();
+    }
+
+    public ConfigTemplateDialog(Model model, Point clickedPoint) {
+        super(Application.project, true);
+        this.rootPath = model.getBasePath() + ProjectKeys.GAME_SERVER;
+        velocityService = VelocityService.getInstance();
+        editor = SwingUtils.createEditor(StringUtil.EMPTY);
+        editor.setFont(new Font(null, Font.PLAIN, 14));
+        this.clickedPoint = clickedPoint;
+        files.addAll(fileMap.keySet());
+        this.model = model;
         init();
     }
 
@@ -265,22 +281,23 @@ public class ConfigTemplateDialog extends DialogWrapper {
         if (designerModel) {
             EditorContext.setDesigner(fileMap);
         }
-        if (baseNode == null) {
-            return;
-        }
-        int offset = 200;
-        Point startPoint = new Point(offset, offset);
-        Model nodeModel = baseNode.getModel();
-        for (Map.Entry<String, String> entry : fileMap.entrySet()) {
-            Optional<AbstractNode> optional = nodeModel.getNode(entry.getKey(), NodeType.NORMAL_CONFIG);
-            if (optional.isPresent()) {
-                AbstractNode abstractNode = optional.get();
-                startPoint = abstractNode.getStartPoint();
-                abstractNode.getNodeData().refresh(entry.getValue());
-                continue;
+        if (model != null && clickedPoint != null) {
+            int offset = 300;
+            Model nodeModel = this.model;
+            Point startPoint = this.clickedPoint;
+            for (Map.Entry<String, String> entry : fileMap.entrySet()) {
+                Optional<AbstractNode> optional = nodeModel.getNode(entry.getKey(), NodeType.NORMAL_CONFIG);
+                if (optional.isPresent()) {
+                    AbstractNode abstractNode = optional.get();
+                    startPoint = abstractNode.getStartPoint();
+                    abstractNode.refresh(entry.getValue());
+                    continue;
+                }
+                ConfigNode configNode = new ConfigNode(nodeModel, startPoint);
+                configNode.refresh(entry.getValue());
+                model.add(configNode);
+                startPoint.setLocation(startPoint.getX() + offset, startPoint.getY());
             }
-            startPoint.setLocation(startPoint.getX(), startPoint.getY() + offset);
-            nodeModel.createNode(startPoint, NodeType.NORMAL_CONFIG, entry.getValue());
         }
     }
 

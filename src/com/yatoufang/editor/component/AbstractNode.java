@@ -34,6 +34,8 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
     protected NodeData nodeData;
     private Model model;
 
+    public abstract void onInitialize();
+
     public abstract AbstractNode copy();
 
     public abstract String getWorkPath();
@@ -76,6 +78,7 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
     public void reload() {
         contextMenu = new NodeMenu(this);
         this.nodeData.reload();
+        this.onInitialize();
         refreshBounds();
     }
 

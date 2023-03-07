@@ -51,7 +51,9 @@ public class EntityBuildDialog extends DialogWrapper {
         super(Application.project, true);
         initData(classNode);
         init();
-        onEdit();
+        if (classNode.getNodeData().getContent().length() == 0) {
+            onEdit();
+        }
     }
 
     private void initData(AbstractNode classNode) {
@@ -78,8 +80,11 @@ public class EntityBuildDialog extends DialogWrapper {
         if (workPath == null || moduleName == null) {
             return;
         }
-        String filePath = StringUtil.buildPath(workPath, ProjectKeys.MODULE, moduleName, ProjectKeys.MODEL, classNode.getName() + ProjectKeys.JAVA);
-        FileWrite.write(classNode.getNodeData().getContent(), filePath, true, false);
+        if (NodeType.COULD_WRITE.contains(classNode.getNodeData().getNodeType())) {
+            String filePath = StringUtil.buildPath(workPath, ProjectKeys.MODULE, moduleName, ProjectKeys.MODEL, classNode.getNodeData().getMetaData().getName() + ProjectKeys.JAVA);
+            FileWrite.write(classNode.getNodeData().getContent(), filePath, true, false);
+            doCancelAction();
+        }
     }
 
 
@@ -128,6 +133,7 @@ public class EntityBuildDialog extends DialogWrapper {
 
     private void onEdit() {
         MetaData metaData = new MetaData();
+        metaData.setDescription(classNode.getNodeData().getName());
         metaData.setAlias(classNode.getNodeData().getAlias());
         if (classNode.getNodeData().getName() == null) {
             String name = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);

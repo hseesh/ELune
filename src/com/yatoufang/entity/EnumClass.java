@@ -88,6 +88,6 @@ public class EnumClass {
                 maxId = value;
             }
         }
-        return maxId;
+        return ++ maxId;
     }
 }

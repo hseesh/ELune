@@ -37,6 +37,7 @@ public class NewNodeActionListener implements ActionListener {
             case RUSH_NODE:
             case REQUEST_NODE:
             case RESPONSE_NODE:
+            case ENUM_CONFIG:
                 new EntityBuildDialog(node).show();
                 break;
             case NORMAL_CONFIG:

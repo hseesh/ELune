@@ -2,22 +2,23 @@ package cn.daxiang.lyltd.gameserver.module.${table.name.substring(0, 1).toLowerC
 
 
 /**
- * ${table.comment}对象
+ * ${table.description}
  *
  * @author ${author}
  * @since ${now}
  */
-public class ${table.name} {
+public enum ${table.name} {
 
-    #foreach($item in $table.params)
-   /**
+    #foreach($item in $table.params)/**
     * ${item.description}
     */
-    ${item.name}
-    #if($foreach.hasNext),
-    #else;
+    ${item.name}(${item.defaultValue}),
     #end
-    #end
+
+    /**
+    * 0.NONE
+    */
+    NONE(0);
 
     private int id;
     

@@ -6,6 +6,7 @@ import com.yatoufang.entity.translate.Response;
 import com.yatoufang.entity.translate.deepl.DeepLResult;
 import com.yatoufang.utils.HttpUtils;
 import com.yatoufang.utils.Md5;
+import com.yatoufang.utils.StringUtil;
 
 import java.util.*;
 
@@ -83,6 +84,9 @@ public class TranslateService {
         String result = HttpUtils.sendPost(DEEPL_URL, param, "application/x-www-form-urlencoded", Maps.newHashMap());
         Gson gson = new Gson();
         DeepLResult response = gson.fromJson(result, DeepLResult.class);
+        if (response == null) {
+            return StringUtil.EMPTY;
+        }
         return response.getTranslateResult();
     }
 

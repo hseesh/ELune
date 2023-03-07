@@ -114,7 +114,7 @@ public class NodeData implements Serializable {
         List<Param> list = PSIUtil.getClassAllFields(aClass);
         this.metaData.setDescription(description);
         this.metaData.setName(aClass.getName());
-        this.metaData.addFields(list);
+        this.metaData.setPramList(list);
         this.content = content;
     }
 

@@ -5,6 +5,8 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.components.JBSlider;
 import com.intellij.util.ui.FormBuilder;
+import com.yatoufang.editor.Model;
+import com.yatoufang.editor.component.impl.EnumNode;
 import com.yatoufang.entity.EnumClass;
 import com.yatoufang.entity.Param;
 import com.yatoufang.service.TranslateService;
@@ -12,6 +14,7 @@ import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.thread.ELuneScheduledThreadPoolExecutor;
 import com.yatoufang.utils.StringUtil;
 import com.yatoufang.utils.SwingUtils;
 import org.jetbrains.annotations.Nullable;
@@ -41,6 +44,10 @@ public class EnumTemplateDialog extends DialogWrapper {
 
     private final EnumClass enumClass = new EnumClass();
 
+    private Model model;
+
+    private Point clickedPoint;
+
     public EnumTemplateDialog(String rootPath, String workSpace, String content) {
         super(Application.project, true);
         this.rootPath = rootPath;
@@ -58,6 +65,34 @@ public class EnumTemplateDialog extends DialogWrapper {
         this.fileName = fileName;
     }
 
+    public EnumTemplateDialog(Model model, Point clickedPoint) {
+        super(Application.project, true);
+        this.rootPath = model.getBasePath();
+        this.workSpace = model.getModuleName();
+        editor = SwingUtils.createEditor(StringUtil.EMPTY);
+        editor.setFont(new Font(null, Font.PLAIN, 14));
+        velocityService = VelocityService.getInstance();
+        init();
+        String fileName = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
+        if (fileName == null || fileName.isEmpty()) {
+            dispose();
+            return;
+        }
+        this.model = model;
+        this.clickedPoint = clickedPoint;
+        ELuneScheduledThreadPoolExecutor instance = ELuneScheduledThreadPoolExecutor.getInstance();
+        instance.execute(() -> {
+            String translate = TranslateService.translate(fileName);
+            enumClass.setDescription(fileName);
+            enumClass.setAlias(translate.replaceAll(String.valueOf(StringUtil.SPACE), StringUtil.EMPTY));
+            enumClass.setName(enumClass.getAlias());
+            String execute = velocityService.execute(ProjectKeys.ENUM_TEMPLATE, enumClass);
+            SwingUtilities.invokeLater(() ->{
+                editor.setText(execute);
+            });
+        });
+    }
+
 
     @Override
     protected @Nullable JComponent createCenterPanel() {
@@ -67,7 +102,6 @@ public class EnumTemplateDialog extends DialogWrapper {
         configData.setRows(15);
         configData.setFont(new Font(null, Font.PLAIN, 14));
         configData.setMinimumSize(new Dimension(300, 100));
-        TranslateService instance = TranslateService.getInstance();
 
         configData.addFocusListener(new FocusListener() {
             @Override
@@ -81,19 +115,19 @@ public class EnumTemplateDialog extends DialogWrapper {
                 if (text.isEmpty()) {
                     return;
                 }
-                String result = instance.action(text);
+                String result = TranslateService.translate(text);
                 if (result == null) {
                     return;
                 }
                 result = result.toUpperCase(Locale.ROOT);
-                String[] meta = text.replaceAll(String.valueOf(StringUtil.SPACE), StringUtil.UNDER_LINE).split(String.valueOf(StringUtil.EQUAL));
                 String[] split = result.split(String.valueOf(StringUtil.EQUAL));
+                String[] meta = text.split(String.valueOf(StringUtil.EQUAL));
                 for (int i = 0; i < split.length; i++) {
                     String origin = meta[i];
                     if (origin.isEmpty()) {
                         continue;
                     }
-                    Param param = new Param(split[i]);
+                    Param param = new Param(split[i].trim().replaceAll(String.valueOf(StringUtil.SPACE), StringUtil.UNDER_LINE));
                     param.setDescription(origin);
                     enumClass.tryAddFields(param);
                 }
@@ -131,5 +165,16 @@ public class EnumTemplateDialog extends DialogWrapper {
         rootPane.setRightComponent(rightRootPanel);
         return rootPane;
 
+    }
+
+
+    @Override
+    public void doCancelAction() {
+        super.doCancelAction();
+        if (model != null && clickedPoint != null) {
+            EnumNode configNode = new EnumNode(model, clickedPoint);
+            configNode.refresh(editor.getText());
+            model.add(configNode);
+        }
     }
 }

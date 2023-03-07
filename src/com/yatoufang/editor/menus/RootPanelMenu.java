@@ -12,6 +12,8 @@ import com.yatoufang.editor.constant.CopyPasteHelper;
 import com.yatoufang.editor.constant.FileHelper;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.ui.dialog.ConfigTemplateDialog;
+import com.yatoufang.ui.dialog.EnumTemplateDialog;
 import icons.Icon;
 
 import javax.swing.*;
@@ -27,12 +29,15 @@ public class RootPanelMenu extends JPopupMenu {
         JMenuItem dateBaseNode = new JMenuItem("DateBase Node", Icon.NODE_DATA_BASE);
         JMenuItem entityNode = new JMenuItem("Entity Node", Icon.NODE_ENTITY);
         JMenuItem configNode = new JMenuItem("Config Node", Icon.NODE_SETTING);
+        JMenuItem enumNode = new JMenuItem("Enum Node", Icon.NODE_SETTING);
         dateBaseNode.addActionListener(e -> rootCanvas.getModel().add(new DataBaseNode(rootCanvas.getModel(), rootCanvas.getClickedPoint())));
         entityNode.addActionListener(e -> rootCanvas.getModel().add(new EntityNode(rootCanvas.getModel(), rootCanvas.getClickedPoint())));
-        configNode.addActionListener(e -> rootCanvas.getModel().add(new ConfigNode(rootCanvas.getModel(), rootCanvas.getClickedPoint())));
+        configNode.addActionListener(e -> new ConfigTemplateDialog(rootCanvas.getModel(), rootCanvas.getClickedPoint()).show());
+        enumNode.addActionListener(e -> new EnumTemplateDialog(rootCanvas.getModel(), rootCanvas.getClickedPoint()).show());
         subMenuInsert.add(dateBaseNode);
         subMenuInsert.add(entityNode);
         subMenuInsert.add(configNode);
+        subMenuInsert.add(enumNode);
         add(subMenuInsert);
 
         JMenu markAs = new JMenu("Mark as");

@@ -54,7 +54,7 @@ public class ContextHelp {
             Param self = new Param(paramName);
             self.setTypeAlias(alias);
             self.setDescription(metaData.getDescription());
-            defaultList.add(mapParam);
+            defaultList.add(self);
         }
         result.put(ProjectKeys.DEFAULT_NODE, defaultList);
         return result;

@@ -52,6 +52,11 @@ public class BaseNode extends AbstractNode implements NodeStyle {
     }
 
     @Override
+    public void onInitialize() {
+
+    }
+
+    @Override
     public BaseNode copy() {
         BaseNode baseNode = new BaseNode(getModel(), getBounds(), getNodeType());
         baseNode.setNodeData(getNodeData());

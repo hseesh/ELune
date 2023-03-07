@@ -30,9 +30,9 @@ public enum ColorBox {
     CONNECTOR_DEFAULT(new Color(94, 52, 72)),
     BOX_BORDER(new Color(93,96,99)),
 
-    CONFIG(new Color(132, 227, 238)),
+    CONFIG(new Color(38, 79, 218, 102)),
 
-    CONFIG_START(new Color(83, 103, 82, 80)),
+    CONFIG_START(new Color(49, 119, 147, 51)),
 
     DATABASE(new Color(243, 125, 125)),
 
@@ -56,6 +56,11 @@ public enum ColorBox {
     RESPONSE(new Color(234, 65, 211, 128)),
 
     RESPONSE_START(new Color(234, 172, 223, 80)),
+
+    ENUM(new Color(179, 248, 5, 128)),
+
+
+    ENUM_START(new Color(202, 245, 98, 77)),
 
     NODE_DARK_BANK_GROUND(Color.BLACK);
 

@@ -41,6 +41,7 @@ public final class FileHelper {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
             oos.writeObject(model);
             oos.close();
+            NotifyService.notify(NotifyKeys.SAVED);
         } catch (IOException e) {
             e.printStackTrace();
         }

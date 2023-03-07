@@ -59,7 +59,13 @@ public class DataUtil implements MethodCallExpression {
     }
 
 
-    public static PsiClass getClass(@NotNull AnActionEvent e){
+    public static String getWorkSpace(String canonicalPath, String key) {
+        String[] split = canonicalPath.split(key);
+        return split[0] + key + "/src/main/java/cn/daxiang/lyltd/";
+    }
+
+
+    public static PsiClass getClass(@NotNull AnActionEvent e) {
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
             return null;
@@ -118,8 +124,8 @@ public class DataUtil implements MethodCallExpression {
         }
     }
 
-    public static String getInitValue(String type){
-        return  StringUtil.SPACE + StringUtil.SPACE + getDefaultValue(type);
+    public static String getInitValue(String type) {
+        return StringUtil.SPACE + StringUtil.SPACE + getDefaultValue(type);
     }
 
     public static String getDefaultValue(String type) {
