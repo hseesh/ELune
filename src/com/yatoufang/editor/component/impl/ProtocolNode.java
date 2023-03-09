@@ -17,6 +17,8 @@ import java.awt.*;
  */
 public class ProtocolNode extends BaseNode {
 
+    private static final long serialVersionUID  = NodeType.PROTOCOL_NODE.getId();
+
     private transient Connector inPutConnector;
     private final transient Connector[] outPutConnector = new Connector[2];
 

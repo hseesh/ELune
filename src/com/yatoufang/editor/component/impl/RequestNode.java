@@ -19,6 +19,8 @@ import java.awt.*;
  */
 public class RequestNode extends BaseNode {
 
+    private static final long serialVersionUID  = NodeType.REQUEST_NODE.getId();
+
     private final transient Connector outPutConnector;
 
     public RequestNode(Model model, Point clickedPoint) {

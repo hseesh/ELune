@@ -4,6 +4,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.ui.FormBuilder;
+import com.yatoufang.editor.component.AbstractNode;
 import com.yatoufang.editor.constant.GlobalConstant;
 import com.yatoufang.entity.FileNode;
 import com.yatoufang.templet.Application;
@@ -20,6 +21,7 @@ import javax.swing.*;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,6 +31,8 @@ import java.util.List;
  */
 public class ProtocolPreviewDialog extends DialogWrapper {
 
+
+    private ArrayList<AbstractNode> returnNodes;
     private final HashMap<String, String> map;
     private final String moduleName;
     private EditorTextField editor;
@@ -36,9 +40,10 @@ public class ProtocolPreviewDialog extends DialogWrapper {
     public String filePath;
     private Tree tree;
 
-    public ProtocolPreviewDialog(HashMap<String, String> map, String moduleName, String filePath) {
+    public ProtocolPreviewDialog(HashMap<String, String> map, String moduleName, String filePath, ArrayList<AbstractNode> returnNodes) {
         super(Application.project, true);
         this.filePath = StringUtil.buildPath(filePath, ProjectKeys.MODULE);
+        this.returnNodes = returnNodes;
         this.moduleName = moduleName;
         this.map = map;
         init();
@@ -157,6 +162,9 @@ public class ProtocolPreviewDialog extends DialogWrapper {
                 continue;
             }
             FileWrite.write(content, paths.get(i), true, false);
+        }
+        for (AbstractNode node : returnNodes) {
+            FileWrite.write(node.getNodeData().getContent(), node.getWorkPath(), true, false);
         }
         dispose();
     }

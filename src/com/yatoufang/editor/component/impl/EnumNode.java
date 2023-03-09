@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class EnumNode extends BaseNode {
 
+    private static final long serialVersionUID  = NodeType.ENUM_CONFIG.getId();
+
     public static final Collection<String> AUTO_FILTER = List.of(ProjectKeys.ID, "NONE");
 
     public EnumNode(Model model, Point clickedPoint) {
@@ -35,6 +37,11 @@ public class EnumNode extends BaseNode {
         nodeData.setName(nodeData.getMetaData().getDescription() + Enum.class.getSimpleName());
         nodeData.getMetaData().getPramList().removeIf(e -> AUTO_FILTER.contains(e.getName()));
         refreshBounds();
+    }
+
+    @Override
+    public String getKey() {
+        return ProjectKeys.ENUM;
     }
 
     @Override

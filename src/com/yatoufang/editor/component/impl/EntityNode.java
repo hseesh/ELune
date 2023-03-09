@@ -14,6 +14,8 @@ import java.awt.*;
  */
 public class EntityNode extends BaseNode {
 
+    private static final long serialVersionUID  = NodeType.ENTITY_NODE.getId();
+
     public EntityNode(Model model, Point clickedPoint) {
         super(model, clickedPoint, NodeType.ENTITY_NODE);
     }

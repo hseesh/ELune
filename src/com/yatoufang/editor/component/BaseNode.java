@@ -67,7 +67,7 @@ public class BaseNode extends AbstractNode implements NodeStyle {
     public String getWorkPath() {
         NodeData data = getNodeData();
         String basePath = getModel().getBasePath();
-        return StringUtil.buildPath(basePath, getModel().getModuleName(), ProjectKeys.MODULE, getKey(), data.getAlias() + ProjectKeys.JAVA);
+        return StringUtil.buildPath(basePath, ProjectKeys.MODULE, getModel().getModuleName(), getKey(), data.getAlias() + ProjectKeys.JAVA);
     }
 
     @Override

@@ -539,6 +539,7 @@ public class Model implements Serializable {
         }
         HashMap<String, String> map = Maps.newHashMap();
         ArrayList<AbstractNode> protocols = Lists.newArrayList();
+        ArrayList<AbstractNode> returnNodes = Lists.newArrayList();
         for (AbstractNode node : nodeList) {
             if (node.getNodeData().getNodeType() == NodeType.PROTOCOL_NODE) {
                 protocols.add(node);
@@ -549,10 +550,8 @@ public class Model implements Serializable {
                 map.putAll(dataBaseNode.getContent());
                 continue;
             }
-            if (execute) {
-                if (NodeType.AUTO_WRITE.contains(node.getNodeData().getNodeType())) {
-                    FileWrite.write(node.getNodeData().getContent(), node.getWorkPath(), true, false);
-                }
+            if (NodeType.AUTO_WRITE.contains(node.getNodeData().getNodeType())) {
+                returnNodes.add(node);
             }
         }
         int cmdIndex = 0, pushIndex = 100;
@@ -603,7 +602,7 @@ public class Model implements Serializable {
             map.put(ProjectKeys.FACADE, facade);
             map.put(ProjectKeys.IMPL, facadeImpl);
             map.put(ProjectKeys.HANDLER, handler);
-            new ProtocolPreviewDialog(map, moduleName, basePath).show();
+            new ProtocolPreviewDialog(map, moduleName, basePath, returnNodes).show();
         }
     }
 

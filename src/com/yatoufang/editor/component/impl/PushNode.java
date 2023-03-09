@@ -19,6 +19,8 @@ import java.awt.*;
  */
 public class PushNode extends BaseNode {
 
+    private static final long serialVersionUID  = NodeType.RUSH_NODE.getId();
+
     private final transient Connector inPutConnector;
 
     public PushNode(Model model, Point clickedPoint) {

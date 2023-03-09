@@ -95,6 +95,8 @@ public interface ProjectKeys {
     String RETURN = "return";
     String NULL = "null";
 
+    String ENUM = "type";
+
     String GET_VALUE_METHOD = "getValue";
     String CLEAN_METHOD = "clean";
     String INITIALIZE_METHOD = "initialize";

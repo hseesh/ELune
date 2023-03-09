@@ -18,6 +18,8 @@ import java.awt.*;
  */
 public class ConfigNode extends BaseNode {
 
+    private static final long serialVersionUID  = NodeType.NORMAL_CONFIG.getId();
+
     private final transient Connector connector;
 
     public ConfigNode(Model model, Point clickedPoint) {

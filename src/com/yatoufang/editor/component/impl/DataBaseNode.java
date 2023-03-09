@@ -25,6 +25,8 @@ import java.util.Map;
  */
 public class DataBaseNode extends BaseNode {
 
+    private static final long serialVersionUID  = NodeType.DATA_BASE.getId();
+
     public DataBaseNode(Model model, Point clickedPoint) {
         super(model, clickedPoint, NodeType.DATA_BASE);
     }

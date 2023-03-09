@@ -35,12 +35,15 @@ public enum NodeType {
         this.id = id;
     }
 
-    public static final Collection<NodeType> AUTO_WRITE = List.of(REQUEST_NODE, RESPONSE_NODE);
+    public int getId() {
+        return id;
+    }
 
     public static final Collection<NodeType> COULD_WRITE = List.of(ENTITY_NODE, ENUM_CONFIG);
 
     public static final Collection<NodeType> AUTO_TRANSLATE = List.of(DATA_BASE, PROTOCOL_NODE, ENTITY_NODE);
 
+    public static final Collection<NodeType> AUTO_WRITE = List.of(REQUEST_NODE, RESPONSE_NODE, ENTITY_NODE, ENUM_CONFIG);
 
     @Override
     public String toString() {
