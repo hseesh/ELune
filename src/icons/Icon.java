@@ -38,4 +38,18 @@ public interface Icon {
     javax.swing.Icon NODE_ENTITY = IconLoader.getIcon("/image/editorMenu/node_entity.svg", Icon.class);
     javax.swing.Icon NODE_RETURN = IconLoader.getIcon("/image/editorMenu/node_return.svg", Icon.class);
     javax.swing.Icon NODE_SETTING = IconLoader.getIcon("/image/editorMenu/node_setting.svg", Icon.class);
+
+
+    javax.swing.Icon NODE_GAME = IconLoader.getIcon("/image/editorMenu/location/game.svg", Icon.class);
+    javax.swing.Icon NODE_WORLD = IconLoader.getIcon("/image/editorMenu/location/world.svg", Icon.class);
+    javax.swing.Icon NODE_SHARE = IconLoader.getIcon("/image/editorMenu/location/share.svg", Icon.class);
+    javax.swing.Icon NODE_BATTLE = IconLoader.getIcon("/image/editorMenu/location/battle.svg", Icon.class);
+
+
+    javax.swing.Icon NODE_ENUM = IconLoader.getIcon("/image/editorMenu/type/enum.svg", Icon.class);
+    javax.swing.Icon NODE_CONFIGURATION = IconLoader.getIcon("/image/editorMenu/type/config.svg", Icon.class);
+    javax.swing.Icon NODE_DATA = IconLoader.getIcon("/image/editorMenu/type/data.svg", Icon.class);
+    javax.swing.Icon NODE_ENTITIES = IconLoader.getIcon("/image/editorMenu/type/entity.svg", Icon.class);
+
+
 }

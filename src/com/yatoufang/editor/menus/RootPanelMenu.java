@@ -26,10 +26,10 @@ public class RootPanelMenu extends JPopupMenu {
 
     public RootPanelMenu(RootCanvas rootCanvas) {
         JMenu subMenuInsert = new JMenu("New");
-        JMenuItem dateBaseNode = new JMenuItem("DateBase Node", Icon.NODE_DATA_BASE);
-        JMenuItem entityNode = new JMenuItem("Entity Node", Icon.NODE_ENTITY);
-        JMenuItem configNode = new JMenuItem("Config Node", Icon.NODE_SETTING);
-        JMenuItem enumNode = new JMenuItem("Enum Node", Icon.NODE_SETTING);
+        JMenuItem dateBaseNode = new JMenuItem("DateBase Node", Icon.NODE_DATA);
+        JMenuItem entityNode = new JMenuItem("Entity Node", Icon.NODE_ENTITIES);
+        JMenuItem configNode = new JMenuItem("Config Node", Icon.NODE_CONFIGURATION);
+        JMenuItem enumNode = new JMenuItem("Enum Node", Icon.NODE_ENUM);
         dateBaseNode.addActionListener(e -> rootCanvas.getModel().add(new DataBaseNode(rootCanvas.getModel(), rootCanvas.getClickedPoint())));
         entityNode.addActionListener(e -> rootCanvas.getModel().add(new EntityNode(rootCanvas.getModel(), rootCanvas.getClickedPoint())));
         configNode.addActionListener(e -> new ConfigTemplateDialog(rootCanvas.getModel(), rootCanvas.getClickedPoint()).show());
@@ -41,18 +41,18 @@ public class RootPanelMenu extends JPopupMenu {
         add(subMenuInsert);
 
         JMenu markAs = new JMenu("Mark as");
-        JMenuItem game = new JMenuItem("Game", Icon.NODE_DATA_BASE);
-        JMenuItem world = new JMenuItem("World", Icon.NODE_DATA_BASE);
-        JMenuItem battle = new JMenuItem("Battle", Icon.NODE_DATA_BASE);
-        JMenuItem shard = new JMenuItem("Shard", Icon.NODE_DATA_BASE);
+        JMenuItem game = new JMenuItem("Game", Icon.NODE_GAME);
+        JMenuItem world = new JMenuItem("World", Icon.NODE_WORLD);
+        JMenuItem battle = new JMenuItem("Battle", Icon.NODE_BATTLE);
+        JMenuItem shard = new JMenuItem("Shard", Icon.NODE_SHARE);
         game.addActionListener(e -> rootCanvas.getModel().refreshWorkingSpace(ProjectKeys.GAME_SERVER));
         world.addActionListener(e -> rootCanvas.getModel().refreshWorkingSpace(ProjectKeys.WORLD_SERVER));
         battle.addActionListener(e -> rootCanvas.getModel().refreshWorkingSpace(ProjectKeys.BATTLE_SERVER));
         shard.addActionListener(e -> rootCanvas.getModel().refreshWorkingSpace(ProjectKeys.SHARD));
         markAs.add(game);
+        markAs.add(shard);
         markAs.add(world);
         markAs.add(battle);
-        markAs.add(shard);
         add(markAs);
 
         JMenuItem execute = new JMenuItem("Execute");

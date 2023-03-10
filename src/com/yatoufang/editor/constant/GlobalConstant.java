@@ -24,7 +24,7 @@ public class GlobalConstant {
 
     public static final Font FONT = new Font(null, Font.BOLD, 14);
 
-    public static final Font FONT_MIN = new Font(null, Font.BOLD, 8);
+    public static final Font FONT_MIN = new Font(null, Font.BOLD, 10);
     public static final int SELECTED_OBJECT_BORDER_OFFSET = 40;
 
     public static final int NODE_WIDTH = 220;

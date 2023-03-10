@@ -75,7 +75,7 @@ public class MetaData {
         }
     }
 
-    public void addFields(List<Param> fields) {
+    public void addFields(Collection<Param> fields) {
         for (Param field : fields) {
             tryAddFields(field);
         }
