@@ -23,7 +23,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author GongHuang（hse）
@@ -74,20 +76,22 @@ public class EnumTemplateDialog extends DialogWrapper {
         velocityService = VelocityService.getInstance();
         init();
         String fileName = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
+        ELuneScheduledThreadPoolExecutor instance = ELuneScheduledThreadPoolExecutor.getInstance();
         if (fileName == null || fileName.isEmpty()) {
-            dispose();
+            instance.schedule(() -> {
+                SwingUtilities.invokeLater(this::dispose);
+            }, Calendar.FEBRUARY, TimeUnit.SECONDS);
             return;
         }
         this.model = model;
         this.clickedPoint = clickedPoint;
-        ELuneScheduledThreadPoolExecutor instance = ELuneScheduledThreadPoolExecutor.getInstance();
         instance.execute(() -> {
             String translate = TranslateService.translate(fileName);
             enumClass.setDescription(fileName);
             enumClass.setAlias(translate.replaceAll(String.valueOf(StringUtil.SPACE), StringUtil.EMPTY));
             enumClass.setName(enumClass.getAlias());
             String execute = velocityService.execute(ProjectKeys.ENUM_TEMPLATE, enumClass);
-            SwingUtilities.invokeLater(() ->{
+            SwingUtilities.invokeLater(() -> {
                 editor.setText(execute);
             });
         });

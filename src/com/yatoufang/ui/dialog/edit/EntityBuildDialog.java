@@ -140,8 +140,11 @@ public class EntityBuildDialog extends DialogWrapper {
             if (name == null || name.isEmpty()) {
                 return;
             }
+            classNode.getNodeData().setName(name);
             metaData.setName(name);
         }
+        metaData.setName(classNode.getModel().getModuleName());
+        metaData.addFields(classNode.getNodeData().getMetaData().getPramList());
         ActionListener actionListener = new ActionListener() {
             /**
              * Invoked when an action occurs.
