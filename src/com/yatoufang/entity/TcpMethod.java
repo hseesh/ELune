@@ -89,8 +89,7 @@ public class TcpMethod {
     }
 
     public void add(Param param) {
-        this.params.add(param);
-        this.valueOf = DataUtil.valueOf(params);
+        this.params.add(0,param);
     }
 
     public String getAlias() {
@@ -164,5 +163,18 @@ public class TcpMethod {
     @Override
     public String toString() {
         return "td.ServerDelegate.sendMessage({ module : " + moduleCode + ", cmd : " + cmdCode + (content.isEmpty() ? StringUtil.EMPTY : ", ") + content + "\n" + "})";
+    }
+
+    public void createValueOf() {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < params.size(); i++) {
+            Param param = params.get(i);
+            builder.append(param.getTypeAlias()).append(StringUtil.SPACE).append(param.getName());
+            if (i == params.size() -1) {
+                continue;
+            }
+            builder.append(StringUtil.COMMA).append(StringUtil.SPACE);
+        }
+        this.valueOf = builder.toString();
     }
 }

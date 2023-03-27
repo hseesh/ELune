@@ -8,8 +8,8 @@ import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.yatoufang.editor.Model;
 import com.yatoufang.editor.component.RootPanel;
+import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.thread.ELuneScheduledThreadPoolExecutor;
 import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.StringUtil;
 import org.jetbrains.annotations.Nls;
@@ -22,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.Calendar;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -72,15 +74,24 @@ public class MindMapDocumentEditor implements DocumentsEditor {
             Model finalModel = model;
             String finalRootPath = rootPath;
             rootPanel = new RootPanel(model);
-            ELuneScheduledThreadPoolExecutor executor = ELuneScheduledThreadPoolExecutor.getInstance();
-            executor.schedule(() -> ApplicationManager.getApplication().invokeLater(() -> {
-                finalModel.setFilePath(file.getPath());
-                finalModel.setBasePath(finalRootPath);
-                finalModel.addListeners();
-                finalModel.addComponents();
-                finalModel.updateAfterOpened();
-            }), Calendar.DATE, TimeUnit.SECONDS);
-
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (Application.project == null) {
+                        return;
+                    }
+                    ApplicationManager.getApplication().runReadAction(() ->{
+                        finalModel.setFilePath(file.getPath());
+                        finalModel.setBasePath(finalRootPath);
+                        finalModel.addListeners();
+                        finalModel.addComponents();
+                        finalModel.updateAfterOpened();
+                    });
+                    timer.cancel();
+                }
+            };
+            timer.scheduleAtFixedRate(timerTask, TimeUnit.SECONDS.toMillis(Calendar.APRIL), TimeUnit.SECONDS.toMillis(Calendar.APRIL));
         } catch (Exception e) {
             e.printStackTrace();
         }

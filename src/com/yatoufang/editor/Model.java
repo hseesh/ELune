@@ -2,10 +2,7 @@ package com.yatoufang.editor;
 
 import com.google.common.collect.Maps;
 import com.yatoufang.editor.component.*;
-import com.yatoufang.editor.component.impl.DataBaseNode;
-import com.yatoufang.editor.component.impl.PushNode;
-import com.yatoufang.editor.component.impl.RequestNode;
-import com.yatoufang.editor.component.impl.ResponseNode;
+import com.yatoufang.editor.component.impl.*;
 import com.yatoufang.editor.constant.ColorBox;
 import com.yatoufang.editor.constant.GlobalConstant;
 import com.yatoufang.editor.model.NodeData;
@@ -574,10 +571,10 @@ public class Model implements Serializable {
                         break;
                     case REQUEST_NODE:
                         method.setRequest(alias);
+                        method.addAll(node.getNodeData().getMetaData().getPramList());
                         break;
                     case RESPONSE_NODE:
                         method.setResponse(alias);
-                        calcMethodReturnType(method, abstractNode, entities);
                         break;
                     default:
                         break;
@@ -587,7 +584,7 @@ public class Model implements Serializable {
             methods.add(method);
             method.setAlias(nodeData.getAlias());
             method.setCmdCode(String.valueOf(++cmdIndex));
-            method.addAll(nodeData.getMetaData().getPramList());
+            calcMethodReturnType(method, abstractNode, entities);
         }
         Protocol protocol = Protocol.valueOf(moduleName, StringUtil.getUpperCaseVariable(moduleName), moduleName, methods);
         VelocityService velocityService = VelocityService.getInstance();
@@ -607,15 +604,17 @@ public class Model implements Serializable {
     }
 
     private void calcMethodReturnType(TcpMethod method, AbstractNode node, List<AbstractNode> entities) {
-        Optional<AbstractNode> optional = node.getLinkNode(NodeType.RUSH_NODE);
-        if (optional.isPresent()) {
-            node = optional.get();
-        } else {
-            Optional<AbstractNode> nodeOptional = node.getLinkNode(NodeType.RESPONSE_NODE);
-            if (nodeOptional.isEmpty()) {
-                return;
-            }
-            node = nodeOptional.get();
+        method.createValueOf();
+        Optional<AbstractNode> optional = node.getLinkNode(NodeType.RESPONSE_NODE);
+        if (optional.isEmpty()) {
+            return;
+        }
+        node = optional.get();
+        if (node.getNodeData().getMetaData().getPramList().size() == 1) {
+            Param next = node.getNodeData().getMetaData().getPramList().iterator().next();
+            String returnType = String.format(Expression.RESULT_OF, next.getTypeAlias());
+            method.setReturnType(returnType);
+            return;
         }
         Collection<Param> pramList = node.getNodeData().getMetaData().getPramList();
         if (pramList.isEmpty()) {

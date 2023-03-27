@@ -120,6 +120,11 @@ public class ConfigTemplateDialog extends DialogWrapper {
 
     public ConfigTemplateDialog(Model model, Point clickedPoint) {
         super(Application.project, true);
+        try {
+            params = new BankGroundTask().call();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.rootPath = model.getBasePath() + ProjectKeys.GAME_SERVER;
         velocityService = VelocityService.getInstance();
         editor = SwingUtils.createEditor(StringUtil.EMPTY);
