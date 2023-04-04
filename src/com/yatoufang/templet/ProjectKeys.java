@@ -33,6 +33,14 @@ public interface ProjectKeys {
 
     String CORE = "core";
 
+    String KEY = "Key";
+
+    String UPDATE = "update";
+
+    String RANK_KEY = "Rank";
+
+    String CACHE_KEY = "cacheKey";
+
     String SHARD = "shard";
     String GAME_SERVER = "gameserver";
     String WORLD_SERVER = "worldserver";

@@ -69,6 +69,10 @@
                 text="Create ValueOf Method" icon="/icons/config.svg">
             <add-to-group group-id="JavaGenerateGroup1" anchor="last"/>
         </action>
+        <action id="com.yatoufang.hse.Elune.init.build.dao.complete" class="com.yatoufang.action.SerializeCompleteAction"
+                text="Auto Complete" icon="/icons/config.svg">
+            <add-to-group group-id="JavaGenerateGroup1" anchor="last"/>
+        </action>
         <action id="com.yatoufang.hse.paint.test" class="com.yatoufang.action.PaintTest" text="PaintTest">
             <add-to-group group-id="HelpMenu" anchor="last"/>
         </action>

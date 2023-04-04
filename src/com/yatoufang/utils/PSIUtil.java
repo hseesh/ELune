@@ -826,4 +826,23 @@ public class PSIUtil {
         }
         return superParams;
     }
+
+
+    public static Field getFirstFields(String  targetClass){
+        PsiClass[] classes = findClassWithShortName(targetClass.trim());
+        for (PsiClass aClass : classes) {
+            if (aClass.getFields().length > 0) {
+                PsiField field = aClass.getFields()[0];
+                if (field == null) {
+                    return null;
+                }
+                Field param = new Field(field.getName());
+                param.setType(field.getType());
+                param.setName(param.getGetString());
+                param.setDescription(getDescription(field.getDocComment()));
+                return param;
+            }
+        }
+        return null;
+    }
 }

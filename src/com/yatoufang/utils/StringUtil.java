@@ -21,11 +21,10 @@ public class StringUtil {
     public static final char EQUAL = '=';
     public static final char POINT = '.';
     public static final char SEMICOLON = ';';
-
     public static final String TABLE_FLAG = "\t";
     public static final String SPACE_FLAG = " ";
-
     public static final String SPLIT_FLAG = "#";
+    public static final char EMAIL = '@';
     public static final char LESS_THEN = '<';
     public static final char GRATE_THEN = '>';
     public static final char LEFT_BRACKET = '[';
@@ -193,6 +192,27 @@ public class StringUtil {
                 continue;
             }
             builder.append(chars[i]);
+        }
+        return builder.toString();
+    }
+
+    // _ ASIC 95
+    public static String toCamelCaseFromUpperSnake(String variable) {
+        int len = variable.length();
+        StringBuilder builder = new StringBuilder(len);
+        char[] charArray = variable.toCharArray();
+        boolean capitalizeNextLetter = false;
+        for (char c : charArray) {
+            if (c == '_') {
+                capitalizeNextLetter = true;
+            } else {
+                if (capitalizeNextLetter) {
+                    builder.append(Character.toUpperCase(c));
+                    capitalizeNextLetter = false;
+                } else {
+                    builder.append(Character.toLowerCase(c));
+                }
+            }
         }
         return builder.toString();
     }
@@ -478,8 +498,43 @@ public class StringUtil {
         return builder.toString();
     }
 
+
+    public static boolean getAllCharacter(String content, List<String> result) {
+        char[] chars = content.toCharArray();
+        int i = 0, j = 0, k = 0, l = 0;
+        while (i < chars.length) {
+            if (chars[i] == LESS_THEN) {
+                k++;
+            }
+            if (k == 0) {
+                i++;
+                continue;
+            }
+            if (Character.isLetterOrDigit(chars[i])) {
+                StringBuilder builder = new StringBuilder();
+                while (i < chars.length && Character.isLetterOrDigit(chars[i])) {
+                    builder.append(chars[i]);
+                    i++;
+                }
+                result.add(builder.toString());
+                ++ j;
+                if (j > 1) {
+                    l = 0;
+                    j = 0;
+                }
+            } else {
+                if (chars[i] == LESS_THEN) {
+                    l++;
+                }
+                i++;
+            }
+        }
+        return l > 0;
+    }
+
+
     public static void main(String[] args) {
-        System.out.println(toCameCaseFormTranslate("Get personal information"));
-        System.out.println(getMetaType("TResult<Integer>"));
+        System.out.println(Override.class.getSimpleName());
+        System.out.println(toCamelCaseFromUpperSnake("ENDLESS_MAGIC_TOWER_RANK_MAP"));
     }
 }

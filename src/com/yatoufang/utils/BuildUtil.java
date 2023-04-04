@@ -22,6 +22,12 @@ public class BuildUtil {
     }
 
     @NotNull
+    public static PsiField createField(PsiElement element, String content) {
+        PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
+        return factory.createFieldFromText(content,element);
+    }
+
+    @NotNull
     public static PsiMethod createMethod(PsiElement element, String type, String content) {
         PsiElementFactory factory = JavaPsiFacade.getInstance(Application.project).getElementFactory();
         PsiType psiType = factory.createTypeFromText(type, element);

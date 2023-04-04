@@ -140,7 +140,7 @@ public class DataUtil implements MethodCallExpression {
             case "Set":
                 return "Sets.newSet()";
             default:
-                return type;
+                return ProjectKeys.NEW  + type + StringUtil.LEFT_ROUND_BRACKET + StringUtil.RIGHT_ROUND_BRACKET;
         }
     }
 

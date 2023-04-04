@@ -16,6 +16,8 @@ public interface Expression {
     String RETURN_CONFIG_NOT_FOUND = " return %s.valueOf(CONFIG_NOT_FOUND);";
     String LOG_CONFIG_NOT_FOUND = "LOGGER.error(\"%s not fund %s\", %s);";
     String CONFIG_LIST_ALL = "Collection<%s> %s = dataConfig.listAll(this, %s.class);";
+    String RANK = "ConsistentLadderRankCache<Long, %s>";
+    String NEW_RANK = "new ConsistentLadderRankCache(RankHelp.LIMIT, RankHelp.LIMIT)";
     String CONFIG_FOR_LOOP = "for (%s config : %s)";
 
     String OPTION_NULL = "Optional.ofNullable(%s)";
@@ -29,6 +31,8 @@ public interface Expression {
     String MAP_TYPE = "Map<%s, %s>";
 
     String MAP_DES_TYPE = "<%s, %s> ";
+
+    String FORMAT = " String.format(%s,%s)";
 
 
 }

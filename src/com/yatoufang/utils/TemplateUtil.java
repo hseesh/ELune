@@ -1,12 +1,12 @@
 package com.yatoufang.utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.intellij.codeInsight.generation.PsiFieldMember;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiModifier;
 import com.yatoufang.entity.Struct;
+import com.yatoufang.entity.complete.SerializeLayer;
 import com.yatoufang.templet.Expression;
 import com.yatoufang.templet.MethodCallExpression;
 import com.yatoufang.templet.ProjectKeys;
@@ -272,9 +272,127 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
         return builder.toString();
     }
 
+    public static String buildMap(SerializeLayer serializeLayer) {
+        if (serializeLayer.getNames().size() <= 1) {
+            return EMPTY;
+        }
+        List<String> keys = serializeLayer.getNames();
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format(COMMENT, serializeLayer.getDescription())).append(NEW_LINE);
+        builder.append(PsiModifier.PUBLIC).append(SPACE).append(PsiModifier.STATIC).append(SPACE).append(PsiModifier.FINAL);
+        for (int i = 0; i < keys.size() - 1; i++) {
+            builder.append(SPACE).append(Map.class.getSimpleName()).append(LESS_THEN);
+            String mappingKey = serializeLayer.getTypes().get(i);
+            builder.append(mappingKey).append(COMMA);
+        }
+        String mappingKey = keys.get(keys.size() - 1);
+        if (mappingKey.toLowerCase().contains(ProjectKeys.RANK_KEY.toLowerCase())) {
+            builder.append(String.format(RANK, mappingKey));
+        } else {
+            builder.append(SPACE).append(mappingKey);
+        }
+        builder.append(String.valueOf(GRATE_THEN).repeat(keys.size() - 1));
+        builder.append(SPACE).append(serializeLayer.getName()).append(UNDER_LINE).append(Map.class.getSimpleName().toUpperCase()).
+                append(SPACE).append(EQUAL).append(SPACE).append(NEW_CON_MAP).append(SEMICOLON);
+        return builder.toString();
+    }
+
+    public static void buildOperatorMethod(SerializeLayer serializeLayer, Map<String, String> methodMap) {
+        if (serializeLayer.isCollection()) {
+            return;
+        }
+        String name, finaValue, returnType;
+        StringBuilder builder = new StringBuilder();
+        String map = Map.class.getSimpleName().toUpperCase();
+        boolean rankCacheFlag = serializeLayer.getLastElement().toLowerCase().contains(ProjectKeys.RANK_KEY.toLowerCase());
+        if (rankCacheFlag) {
+            finaValue = NEW_RANK;
+            returnType = String.format(RANK, serializeLayer.getLastElement()).replace(SEMICOLON, SPACE);
+        } else {
+            returnType = serializeLayer.getLastElement();
+            finaValue = DataUtil.getDefaultValue(serializeLayer.getLastElement());
+        }
+        builder.append(EMAIL).append(Override.class.getSimpleName()).append(NEW_LINE);
+        builder.append(PsiModifier.PUBLIC).append(SPACE).append(returnType).append(SPACE);
+        if (rankCacheFlag) {
+            name = ProjectKeys.GET + toUpperCaseForFirstCharacter(toCamelCaseFromUpperSnake(serializeLayer.getName().replace(map, EMPTY)));
+            builder.append(name);
+        } else {
+            name = ProjectKeys.GET + serializeLayer.getLastElement();
+            builder.append(name);
+        }
+        builder.append(SPACE).append(LEFT_ROUND_BRACKET);
+        for (int i = 0; i < serializeLayer.getNames().size() - 1; i++) {
+            String key = serializeLayer.getNames().get(i);
+            String type = serializeLayer.getTypes().get(i);
+            if (i > 0) {
+                builder.append(COMMA);
+            }
+            builder.append(type).append(SPACE).append(key);
+        }
+        builder.append(RIGHT_ROUND_BRACKET).append(LEFT_BRACE).append(NEW_LINE).append(ProjectKeys.RETURN).append(SPACE);
+        if (serializeLayer.getNames().size() > 1) {
+            builder.append(String.format(IF_ABSENT, serializeLayer.getName() + UNDER_LINE + map, serializeLayer.getNames().get(0), NEW_CON_MAP)).append(NEW_LINE);
+        }
+        for (int i = 1; i < serializeLayer.getNames().size() - 2; i++) {
+            builder.append(String.format(IF_ABSENT, EMPTY, serializeLayer.getNames().get(i), NEW_CON_MAP)).append(NEW_LINE);
+        }
+        if (serializeLayer.getNames().size() == 1) {
+            builder.append(String.format(GET_CACHE, serializeLayer.getLastElement(), serializeLayer.getName()));
+        } else {
+            builder.append(String.format(IF_ABSENT, EMPTY, serializeLayer.getPenultimateElement(), finaValue));
+        }
+        builder.append(SEMICOLON).append(NEW_LINE).append(RIGHT_BRACE);
+        methodMap.put(name, builder.toString());
+        builder.setLength(0);
+        builder.append(EMAIL).append(Override.class.getSimpleName()).append(NEW_LINE);
+        builder.append(PsiModifier.PUBLIC).append(SPACE).append(void.class.getSimpleName()).append(SPACE);
+        if (rankCacheFlag) {
+            name = ProjectKeys.UPDATE + toUpperCaseForFirstCharacter(toCamelCaseFromUpperSnake(serializeLayer.getName().replace(map, EMPTY)));
+            builder.append(name);
+        } else {
+            name = ProjectKeys.UPDATE + serializeLayer.getLastElement();
+            builder.append(name);
+        }
+        builder.append(LEFT_ROUND_BRACKET);
+        StringBuilder formatBuilder = new StringBuilder();
+        for (int i = 0; i < serializeLayer.getNames().size() - 1; i++) {
+            String key = serializeLayer.getNames().get(i);
+            String type = serializeLayer.getTypes().get(i);
+            if (i > 0) {
+                builder.append(COMMA);
+                formatBuilder.append(COMMA);
+            }
+            builder.append(type).append(SPACE).append(key);
+            formatBuilder.append(key).append(SPACE);
+        }
+        if (rankCacheFlag) {
+            builder.append(COMMA).append(SPACE).append(List.class.getSimpleName()).append(LESS_THEN).append(serializeLayer.getLastElement()).append(GRATE_THEN)
+                    .append(SPACE).append(List.class.getSimpleName().toLowerCase());
+        } else {
+            if (serializeLayer.getNames().size() > 1) {
+                builder.append(COMMA);
+            }
+            builder.append(SPACE).append(serializeLayer.getLastElement()).append(SPACE).append(toLowerCaseForFirstChar(serializeLayer.getLastElement()));
+        }
+        builder.append(RIGHT_ROUND_BRACKET).append(LEFT_BRACE).append(NEW_LINE).append(SPACE);
+        if (serializeLayer.getNames().size() == 1) {
+            builder.append(String.format(UPDATE_CACHE, toLowerCaseForFirstChar(serializeLayer.getLastElement()), serializeLayer.getName()));
+        } else {
+            builder.append(String.class.getSimpleName()).append(SPACE).append(ProjectKeys.CACHE_KEY).append(SPACE).append(EQUAL).append(String.format(FORMAT, serializeLayer.getName(), formatBuilder)).append(SEMICOLON);
+            if (rankCacheFlag) {
+                builder.append(NEW_LINE).append(SPACE).append(CLEAR_SORT_SET).append(NEW_LINE).append(ADD_LIST_OBJECT);
+            } else {
+                String variable = toLowerCaseForFirstChar(serializeLayer.getLastElement());
+                builder.append(NEW_LINE).append(SPACE).append(String.format(PUT_HASH_OBJECT, variable + POINT + serializeLayer.getRecommendName(), variable));
+            }
+        }
+        builder.append(NEW_LINE).append(RIGHT_BRACE);
+        methodMap.put(name, builder.toString());
+    }
+
+
     public static void main(String[] args) {
-        Map<String, String> maps = Maps.newTreeMap();
-        List<Object> lists = Lists.newArrayList();
-        System.out.println(getFileName("Activity2028RankConfig"));
+
     }
 }

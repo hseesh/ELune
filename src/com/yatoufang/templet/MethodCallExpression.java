@@ -9,6 +9,7 @@ public interface MethodCallExpression {
 
     String CONFIG_IN_ABSENT = "%s.computeIfAbsent(%s, k -> %s);";
 
+    String IF_ABSENT = "%s.computeIfAbsent(%s, k -> %s)";
     String CLEAR = "%s.clear();";
 
     String PUT = "put";
@@ -16,8 +17,20 @@ public interface MethodCallExpression {
     String ADD = "add";
 
     String GET = "get";
+
     String SET = "set";
 
+    String NEW_CON_MAP = "Maps.newConcurrentMap()";
+
+    String GET_CACHE = "this.get(%s.class, %s);";
+
+    String UPDATE_CACHE  = "this.update(%s, %s);";
+
+    String PUT_HASH_OBJECT = "putHashObject(cacheKey, String.valueOf(%s), %s);";
+
+    String CLEAR_SORT_SET = "clearSortSet(cacheKey);";
+
+    String ADD_LIST_OBJECT = "addListObject(cacheKey, list);";
 
 
 }
