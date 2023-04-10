@@ -43,7 +43,7 @@ public class PackagingFormFactory {
     private ConsoleService instance;
 
     public JComponent createCenterPanel(Project project, ToolWindow toolWindow) {
-        ConsoleService consoleService = new ConsoleService();
+        ConsoleService consoleService = ConsoleService.getInstance();
         instance = consoleService.getInstance(project);
         var branchesBox = Box.createHorizontalBox();
         combobox = new ComboBox<>();
@@ -271,11 +271,13 @@ public class PackagingFormFactory {
         var requestBodyVO = new RequestBodyVO(token, String.valueOf(combobox.getSelectedItem()), map);
         var json = new Gson().toJson(requestBodyVO);
         changeTextArea("请求:" + "url:" + url + "token:" + token);
-        HttpUtils.sendPost(url, json);
+        String result = HttpUtils.sendPost(url, json);
         changeTextArea("更新远程标签...");
         var updateTags = List.of("git tag -d packaged", "git push origin :refs/tags/packaged", "git tag packaged", "git push origin packaged");
         for (var tag : updateTags) {
             var run = executeCommand(tag, project);
         }
+        ConsoleService consoleService = ConsoleService.getInstance();
+        consoleService.printInfo(result);
     }
 }

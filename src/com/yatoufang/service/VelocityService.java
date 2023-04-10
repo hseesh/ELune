@@ -24,6 +24,10 @@ public class VelocityService {
 
     private VelocityEngine velocityEngine;
 
+    private VelocityService(){
+
+    }
+
     public static VelocityService getInstance() {
         if (instance == null) {
             instance = new VelocityService();

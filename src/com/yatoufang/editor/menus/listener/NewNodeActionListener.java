@@ -6,6 +6,8 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.ui.popup.JBPopupListener;
 import com.intellij.openapi.ui.popup.LightweightWindowEvent;
 import com.yatoufang.editor.component.AbstractNode;
+import com.yatoufang.templet.Expression;
+import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.ui.dialog.ConfigTemplateDialog;
 import com.yatoufang.ui.dialog.TableTemplateDialog;
 import com.yatoufang.ui.dialog.edit.EntityBuildDialog;
@@ -30,8 +32,8 @@ public class NewNodeActionListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) {
         String moduleName = node.getModel().getModuleName();
-        String workPath = node.getModel().getBasePath();
         String content = node.getNodeData().getContent();
+        String workPath = node.getModel().getBasePath().replaceAll(Expression.FORMAT_FLAG, ProjectKeys.GAME_SERVER);
         switch (node.getNodeData().getNodeType()) {
             case ENTITY_NODE:
             case RUSH_NODE:

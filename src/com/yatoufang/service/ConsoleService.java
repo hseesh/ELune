@@ -31,6 +31,10 @@ public class ConsoleService implements Console {
 
     private ConsoleService packagedInstance;
 
+    private ConsoleService(){
+
+    }
+
     public static ConsoleService getInstance(Table table, String rootPath) {
         if (instance == null) {
             instance = new ConsoleService();

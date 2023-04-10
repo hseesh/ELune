@@ -400,8 +400,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
                 }
                 map.put(methods.get(i), i);
             }
-            TranslateService instance = TranslateService.getInstance();
-            String action = instance.action(builder.toString());
+            String action = TranslateService.translate(builder.toString());
             if (action == null) {
                 return;
             }
@@ -511,8 +510,7 @@ public class ProtocolBuildDialog extends DialogWrapper {
                 builder.append(StringUtil.EQUAL);
             }
         }
-        TranslateService instance = TranslateService.getInstance();
-        String action = instance.action(builder.toString());
+        String action = TranslateService.translate(builder.toString());
         if (action == null) {
             return;
         }

@@ -2,7 +2,10 @@ package com.yatoufang.editor;
 
 import com.google.common.collect.Maps;
 import com.yatoufang.editor.component.*;
-import com.yatoufang.editor.component.impl.*;
+import com.yatoufang.editor.component.impl.DataBaseNode;
+import com.yatoufang.editor.component.impl.PushNode;
+import com.yatoufang.editor.component.impl.RequestNode;
+import com.yatoufang.editor.component.impl.ResponseNode;
 import com.yatoufang.editor.constant.ColorBox;
 import com.yatoufang.editor.constant.GlobalConstant;
 import com.yatoufang.editor.model.NodeData;
@@ -18,7 +21,6 @@ import com.yatoufang.templet.Expression;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.ui.dialog.edit.ProtocolPreviewDialog;
-import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 
@@ -26,6 +28,7 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +45,7 @@ public class Model implements Serializable {
     private transient Stack<ArrayList<UndoRedoNode>> redouble;
     private transient String filePath = null;
     private final Set<AbstractNode> nodeList = new LinkedHashSet<>();
-    private final Set<AbstractNode> selectedNodes = new HashSet<>();
+    private final Set<AbstractNode> selectedNodes = new CopyOnWriteArraySet<>();
     private final Set<LinkLine> lines = new HashSet<>();
     private final Connector[] connectors = new Connector[2];
     private boolean connectorsVisible = true;
@@ -485,6 +488,11 @@ public class Model implements Serializable {
                 break;
         }
         clearMakeLine();
+    }
+
+
+    public Set<AbstractNode> getNodeList() {
+        return nodeList;
     }
 
     public void createNode(Point point, NodeType nodeType, String content) {
