@@ -463,8 +463,7 @@ public class StringUtil {
         }
         String character = StringUtil.collectChineseCharacter(builder.toString());
         if (character.length() > 0) {
-            TranslateService translateService = TranslateService.getInstance();
-            String action = translateService.action(character);
+            String action = TranslateService.translate(character);
             String[] strings = action.split(StringUtil.SPLIT_FLAG);
             if (strings.length < 1) {
                 return;
@@ -530,6 +529,18 @@ public class StringUtil {
             }
         }
         return l > 0;
+    }
+
+    public static String splitCamelCase(String input) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (Character.isUpperCase(c)) {
+                result.append(SPACE);
+            }
+            result.append(c);
+        }
+        return result.toString().trim();
     }
 
 

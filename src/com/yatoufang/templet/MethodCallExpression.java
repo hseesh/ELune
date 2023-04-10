@@ -12,6 +12,8 @@ public interface MethodCallExpression {
     String IF_ABSENT = "%s.computeIfAbsent(%s, k -> %s)";
     String CLEAR = "%s.clear();";
 
+    String VALUES = "%s.values();";
+
     String PUT = "put";
 
     String ADD = "add";

@@ -24,6 +24,8 @@ public interface Expression {
     String GET_SOME = "%s.get(%s);";
     String COMMENT = "/**\n" + " *  %s\n" + "*/";
 
+    String LOG_FLAG = " :{}";
+
     String RESULT_OF = "TResult<%s>";
 
     String COLLECTION_TYPE = "Collection<%s>";
@@ -33,6 +35,8 @@ public interface Expression {
     String MAP_DES_TYPE = "<%s, %s> ";
 
     String FORMAT = " String.format(%s,%s)";
+
+    String FORMAT_FLAG = "%s";
 
 
 }

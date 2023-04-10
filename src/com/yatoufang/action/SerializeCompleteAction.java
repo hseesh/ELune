@@ -16,10 +16,12 @@ import com.yatoufang.thread.ELuneScheduledThreadPoolExecutor;
 import com.yatoufang.utils.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author GongHuang（hse）
@@ -34,13 +36,16 @@ public class SerializeCompleteAction extends AnAction {
         if (aClass == null) {
             return;
         }
+        List<String> fields = Lists.newArrayList();
         List<SerializeLayer> infos = Lists.newArrayList();
         List<Field> classField = PSIUtil.getClassField(aClass);
+        List<String> methods = Arrays.stream(aClass.getMethods()).map(PsiMethod::getName).collect(Collectors.toList());
         for (Field field : classField) {
-            SerializeLayer serializeLayer = new SerializeLayer();
             if (!field.getTypeAlias().equals(String.class.getName())) {
+                fields.add(field.getName());
                 continue;
             }
+            SerializeLayer serializeLayer = new SerializeLayer();
             boolean flag = StringUtil.getAllCharacter(field.getDescription(), serializeLayer.getNames());
             if (serializeLayer.isEmpty()) {
                 continue;
@@ -50,20 +55,20 @@ public class SerializeCompleteAction extends AnAction {
                 if (name.contains(ProjectKeys.KEY)) {
                     serializeLayer.addTypes(String.class.getSimpleName());
                 } else {
-                    if (i == serializeLayer.getNames().size() - 1) {
+                    if (i == serializeLayer.getNames().size() - 1 && serializeLayer.getNames().size() > 1) {
                         Field firstFields = PSIUtil.getFirstFields(name);
                         if (firstFields != null) {
-                            if (firstFields.getTypeAlias().equals(Long.class.getName())) {
-                                serializeLayer.getTypes().add(Long.class.getSimpleName());
+                            if (firstFields.getTypeAlias().equals(long.class.getName())) {
+                                serializeLayer.getTypes().set(serializeLayer.getTypes().size() - 1, long.class.getSimpleName());
                             } else {
-                                serializeLayer.getTypes().add(Integer.class.getSimpleName());
+                                serializeLayer.getTypes().add(int.class.getSimpleName());
                             }
                             serializeLayer.setLastKey(firstFields.getName());
                         } else {
-                            serializeLayer.getTypes().add(Integer.class.getSimpleName());
+                            serializeLayer.getTypes().add(int.class.getSimpleName());
                         }
                     } else {
-                        serializeLayer.getTypes().add(Integer.class.getSimpleName());
+                        serializeLayer.getTypes().add(int.class.getSimpleName());
                     }
                 }
             }
@@ -87,16 +92,23 @@ public class SerializeCompleteAction extends AnAction {
         WriteCommandAction.runWriteCommandAction(Application.project, () -> {
             for (String variable : variables) {
                 PsiField field = BuildUtil.createField(aClass, variable);
+                if (fields.contains(field.getName())) {
+                    continue;
+                }
                 aClass.add(field);
             }
         });
+        int index = 0;
+        for (String method : methods) {
+            maps.remove(method.trim());
+        }
         for (String value : maps.values()) {
             executor.schedule(() -> {
                 WriteCommandAction.runWriteCommandAction(Application.project, () -> {
                     PsiMethod method = BuildUtil.createMethod(aClass, value);
                     aClass.add(method);
                 });
-            }, Calendar.HOUR * Calendar.ZONE_OFFSET * Calendar.APRIL, TimeUnit.MILLISECONDS);
+            }, (long) Calendar.HOUR * Calendar.ZONE_OFFSET * index++, TimeUnit.MILLISECONDS);
         }
 
     }

@@ -21,7 +21,7 @@ import java.util.*;
 public class TemplateUtil extends StringUtil implements Expression, MethodCallExpression {
 
     public static String valueOf(String className, List<PsiField> fields) {
-        StringBuilder builder = new StringBuilder("public static ");
+        StringBuilder builder =  new StringBuilder(PsiModifier.PUBLIC + SPACE + PsiModifier.STATIC + SPACE);
         builder.append(className).append(SPACE).append(ProjectKeys.VALUE_OF).append(SPACE).append(LEFT_ROUND_BRACKET);
         for (int i = 0; i < fields.size(); i++) {
             if (i != 0) {
@@ -165,8 +165,7 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
 
     public static String ifNullThenReturn(String variable, String variableType, String returnType, String define, String paramList) {
         returnType = trim(returnType);
-        String replace = String.valueOf(SPACE + COLON + LEFT_BRACE + RIGHT_BRACE + COMMA);
-        define = define.replaceAll(String.valueOf(COMMA), replace) + LEFT_BRACE + RIGHT_BRACE;
+        define = define.replaceAll(String.valueOf(COMMA), LOG_FLAG) + LEFT_BRACE + RIGHT_BRACE;
         String content = String.format(LOG_CONFIG_NOT_FOUND, variableType, define, paramList) + String.format(RETURN_CONFIG_NOT_FOUND, returnType);
         return String.format(IF_NULL, variable) + LEFT_BRACE + content + RIGHT_BRACE;
     }
@@ -231,7 +230,7 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
 
     public static String buildGetName(String variable) {
         String replace = variable.replace(toUpper(ProjectKeys.ACTIVITY), GET).trim();
-        return toLowerCaseForFirstChar(filterNumber(replace)) + SPACE;
+        return toLowerCaseForFirstChar(filterNumber(replace));
     }
 
     public static String buildAccessMethod(Struct struct) {
@@ -283,6 +282,11 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
         for (int i = 0; i < keys.size() - 1; i++) {
             builder.append(SPACE).append(Map.class.getSimpleName()).append(LESS_THEN);
             String mappingKey = serializeLayer.getTypes().get(i);
+            if (long.class.getName().equals(mappingKey)) {
+                mappingKey = Long.class.getSimpleName();
+            } else if (int.class.getName().equals(mappingKey)) {
+                mappingKey = Integer.class.getSimpleName();
+            }
             builder.append(mappingKey).append(COMMA);
         }
         String mappingKey = keys.get(keys.size() - 1);
@@ -318,7 +322,7 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
             name = ProjectKeys.GET + toUpperCaseForFirstCharacter(toCamelCaseFromUpperSnake(serializeLayer.getName().replace(map, EMPTY)));
             builder.append(name);
         } else {
-            name = ProjectKeys.GET + serializeLayer.getLastElement();
+            name = buildGetName(serializeLayer.getLastElement());
             builder.append(name);
         }
         builder.append(SPACE).append(LEFT_ROUND_BRACKET);
@@ -340,9 +344,9 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
         if (serializeLayer.getNames().size() == 1) {
             builder.append(String.format(GET_CACHE, serializeLayer.getLastElement(), serializeLayer.getName()));
         } else {
-            builder.append(String.format(IF_ABSENT, EMPTY, serializeLayer.getPenultimateElement(), finaValue));
+            builder.append(String.format(IF_ABSENT, EMPTY, serializeLayer.getPenultimateElement(), finaValue)).append(SEMICOLON);
         }
-        builder.append(SEMICOLON).append(NEW_LINE).append(RIGHT_BRACE);
+        builder.append(NEW_LINE).append(RIGHT_BRACE);
         methodMap.put(name, builder.toString());
         builder.setLength(0);
         builder.append(EMAIL).append(Override.class.getSimpleName()).append(NEW_LINE);
@@ -351,7 +355,7 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
             name = ProjectKeys.UPDATE + toUpperCaseForFirstCharacter(toCamelCaseFromUpperSnake(serializeLayer.getName().replace(map, EMPTY)));
             builder.append(name);
         } else {
-            name = ProjectKeys.UPDATE + serializeLayer.getLastElement();
+            name = ProjectKeys.UPDATE + filterNumber(serializeLayer.getLastElement().replaceAll(toUpperCaseForFirstCharacter(ProjectKeys.ACTIVITY), EMPTY));
             builder.append(name);
         }
         builder.append(LEFT_ROUND_BRACKET);
@@ -388,6 +392,29 @@ public class TemplateUtil extends StringUtil implements Expression, MethodCallEx
             }
         }
         builder.append(NEW_LINE).append(RIGHT_BRACE);
+        methodMap.put(name, builder.toString());
+        if (rankCacheFlag || serializeLayer.getNames().size() <= 1) {
+            return;
+        }
+        builder.setLength(0);
+        builder.append(EMAIL).append(Override.class.getSimpleName()).append(NEW_LINE);
+        builder.append(PsiModifier.PUBLIC).append(SPACE).append(String.format(COLLECTION_TYPE, serializeLayer.getLastElement())).append(SPACE);
+        name = buildGetName(serializeLayer.getLastElement() + List.class.getSimpleName());
+        builder.append(name).append(SPACE).append(LEFT_ROUND_BRACKET);
+        for (int i = 0; i < serializeLayer.getNames().size() - 2; i++) {
+            String key = serializeLayer.getNames().get(i);
+            String type = serializeLayer.getTypes().get(i);
+            if (i > 0) {
+                builder.append(COMMA);
+            }
+            builder.append(type).append(SPACE).append(key);
+        }
+        builder.append(RIGHT_ROUND_BRACKET).append(LEFT_BRACE).append(NEW_LINE).append(ProjectKeys.RETURN).append(SPACE);
+        builder.append(String.format(IF_ABSENT, serializeLayer.getName() + UNDER_LINE + map, serializeLayer.getNames().get(0), NEW_CON_MAP)).append(NEW_LINE);
+        for (int i = 1; i < serializeLayer.getNames().size() - 2; i++) {
+            builder.append(String.format(IF_ABSENT, EMPTY, serializeLayer.getNames().get(i), NEW_CON_MAP)).append(NEW_LINE);
+        }
+        builder.append(String.format(VALUES, EMPTY)).append(NEW_LINE).append(RIGHT_BRACE);
         methodMap.put(name, builder.toString());
     }
 
