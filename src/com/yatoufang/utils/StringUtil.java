@@ -25,6 +25,8 @@ public class StringUtil {
     public static final String SPACE_FLAG = " ";
     public static final String SPLIT_FLAG = "#";
     public static final char EMAIL = '@';
+    public static final char CHINESE_FULL_STOP = '。';
+    public static final String ENGLISH_FULL_STOP = "\\.";
     public static final char LESS_THEN = '<';
     public static final char GRATE_THEN = '>';
     public static final char LEFT_BRACKET = '[';

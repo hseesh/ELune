@@ -115,7 +115,7 @@ public class EnumTemplateDialog extends DialogWrapper {
 
             @Override
             public void focusLost(FocusEvent e) {
-                String text = configData.getText().replace(StringUtil.NEW_LINE, StringUtil.EQUAL);
+                String text = configData.getText().replace(StringUtil.NEW_LINE, StringUtil.CHINESE_FULL_STOP);
                 if (text.isEmpty()) {
                     return;
                 }
@@ -123,9 +123,9 @@ public class EnumTemplateDialog extends DialogWrapper {
                 if (result == null) {
                     return;
                 }
-                result = result.toUpperCase(Locale.ROOT);
-                String[] split = result.split(String.valueOf(StringUtil.EQUAL));
-                String[] meta = text.split(String.valueOf(StringUtil.EQUAL));
+                result = result.toUpperCase(Locale.ROOT).replaceAll("THE", StringUtil.EMPTY);
+                String[] meta = text.split(String.valueOf(StringUtil.CHINESE_FULL_STOP));
+                String[] split = result.split(StringUtil.ENGLISH_FULL_STOP);
                 for (int i = 0; i < split.length; i++) {
                     String origin = meta[i];
                     if (origin.isEmpty()) {

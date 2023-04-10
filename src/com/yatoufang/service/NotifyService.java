@@ -26,4 +26,8 @@ public class NotifyService {
         notify.createNotification(content, NotificationType.ERROR).notify(Application.project);
     }
 
+    public static void notifyErrorInfo(String content) {
+        notify.createNotification(content, NotificationType.ERROR).notify(Application.project);
+    }
+
 }

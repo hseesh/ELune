@@ -5,7 +5,6 @@ import com.intellij.icons.AllIcons;
 import com.intellij.javaee.J2EEBundle;
 import com.intellij.openapi.ui.Messages;
 import com.yatoufang.editor.component.RootCanvas;
-import com.yatoufang.editor.component.impl.ConfigNode;
 import com.yatoufang.editor.component.impl.DataBaseNode;
 import com.yatoufang.editor.component.impl.EntityNode;
 import com.yatoufang.editor.constant.CopyPasteHelper;

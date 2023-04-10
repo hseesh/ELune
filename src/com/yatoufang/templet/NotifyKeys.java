@@ -29,6 +29,8 @@ public interface NotifyKeys {
     String SAVED = "File Saved Successfully";
 
     String SELECT_FILE = "Select File";
+
+    String REQUEST_ERROR = "Translate Service Access Frequency Was Limited";
     String SELECT_FIELDS = "Select The Fields To New File";
     String SELECT_VALUE_OF_FIELDS = "Select The Fields To New File";
 }

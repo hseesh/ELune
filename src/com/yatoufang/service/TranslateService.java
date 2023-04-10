@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.yatoufang.entity.translate.Response;
 import com.yatoufang.entity.translate.deepl.DeepLResult;
+import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.utils.HttpUtils;
 import com.yatoufang.utils.Md5;
 import com.yatoufang.utils.StringUtil;
@@ -21,6 +22,7 @@ public class TranslateService {
     private static final String ULTIMATE_URL = "https://fanyi-api.baidu.com/api/trans/vip/fieldtranslate";
     private static final String APPID = "20220619001252176";
     private static final String KEY = "SBdjN9EaHVsFXIXsRKJn";
+    public static final String ERROR_CODE = "54003";
 
 
     // deepl API
@@ -50,11 +52,18 @@ public class TranslateService {
         param.put("to", "en");
         param.put("q", querySource);
         param.put("domain", "novel");
-        String result = HttpUtils.sendGet(ULTIMATE_URL, param, true);
+        return doTranslate(querySource, param, ULTIMATE_URL);
+    }
+
+    private static String doTranslate(String querySource, HashMap<String, Object> param, String ultimateUrl) {
+        String result = HttpUtils.sendGet(ultimateUrl, param, true);
         Gson gson = new Gson();
         Response response = gson.fromJson(result, Response.class);
         String translateResult = response.getTranslateResult();
-        if (translateResult == null) {
+        if (translateResult == null ) {
+            if (ERROR_CODE.equals(response.getErrorCode())) {
+                NotifyService.notifyErrorInfo(NotifyKeys.REQUEST_ERROR);
+            }
             return querySource;
         }
         return translateResult;
@@ -70,14 +79,7 @@ public class TranslateService {
         param.put("q", querySource);
         param.put("from", fromChines ? "zh" : "en");
         param.put("to", toEnglish ? "en" : "zh");
-        String result = HttpUtils.sendGet(URL, param, true);
-        Gson gson = new Gson();
-        Response response = gson.fromJson(result, Response.class);
-        String translateResult = response.getTranslateResult();
-        if (translateResult == null) {
-            return querySource;
-        }
-        return translateResult;
+        return doTranslate(querySource, param, URL);
     }
 
 
