@@ -19,10 +19,7 @@ import com.yatoufang.entity.Config;
 import com.yatoufang.entity.ConfigParam;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.service.VelocityService;
-import com.yatoufang.templet.Annotations;
-import com.yatoufang.templet.Application;
-import com.yatoufang.templet.NotifyKeys;
-import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.templet.*;
 import com.yatoufang.designer.event.EditorContext;
 import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.PSIUtil;
@@ -125,7 +122,7 @@ public class ConfigTemplateDialog extends DialogWrapper {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        this.rootPath = model.getBasePath() + ProjectKeys.GAME_SERVER;
+        this.rootPath = model.getBasePath().replaceAll(Expression.FORMAT_FLAG, ProjectKeys.GAME_SERVER);
         velocityService = VelocityService.getInstance();
         editor = SwingUtils.createEditor(StringUtil.EMPTY);
         editor.setFont(new Font(null, Font.PLAIN, 14));

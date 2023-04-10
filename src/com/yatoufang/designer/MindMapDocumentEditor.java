@@ -51,11 +51,11 @@ public class MindMapDocumentEditor implements DocumentsEditor {
         }
         String rootPath = StringUtil.EMPTY;
         if (canonicalPath.contains(ProjectKeys.GAME_SERVER)) {
-            rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.GAME_SERVER);
+            rootPath = DataUtil.getWorkSpace(canonicalPath, ProjectKeys.GAME_SERVER);
         } else if (canonicalPath.contains(ProjectKeys.WORLD_SERVER)) {
-            rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.WORLD_SERVER);
+            rootPath = DataUtil.getWorkSpace(canonicalPath, ProjectKeys.WORLD_SERVER);
         } else if (canonicalPath.contains(ProjectKeys.BATTLE_SERVER)) {
-            rootPath = DataUtil.getRootPath(canonicalPath, ProjectKeys.BATTLE_SERVER);
+            rootPath = DataUtil.getWorkSpace(canonicalPath, ProjectKeys.BATTLE_SERVER);
         }
         if (this.documents[0].getText().length() == 0) {
             Model model = new Model();

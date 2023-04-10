@@ -8,6 +8,7 @@ import com.yatoufang.editor.Model;
 import com.yatoufang.editor.constant.ColorBox;
 import com.yatoufang.editor.constant.GlobalConstant;
 import com.yatoufang.entity.Param;
+import com.yatoufang.templet.Expression;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.StringUtil;
 
@@ -66,7 +67,7 @@ public class BaseNode extends AbstractNode implements NodeStyle {
     @Override
     public String getWorkPath() {
         NodeData data = getNodeData();
-        String basePath = getModel().getBasePath();
+        String basePath = getModel().getBasePath().replaceAll(Expression.FORMAT_FLAG,data.getWorkingSpace());
         return StringUtil.buildPath(basePath, ProjectKeys.MODULE, getModel().getModuleName(), getKey(), data.getAlias() + ProjectKeys.JAVA);
     }
 

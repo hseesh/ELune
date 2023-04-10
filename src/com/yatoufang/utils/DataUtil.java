@@ -9,6 +9,7 @@ import com.yatoufang.entity.Field;
 import com.yatoufang.entity.Param;
 import com.yatoufang.entity.Table;
 import com.yatoufang.templet.Application;
+import com.yatoufang.templet.Expression;
 import com.yatoufang.templet.MethodCallExpression;
 import com.yatoufang.templet.ProjectKeys;
 import org.jetbrains.annotations.NotNull;
@@ -61,7 +62,12 @@ public class DataUtil implements MethodCallExpression {
 
     public static String getWorkSpace(String canonicalPath, String key) {
         String[] split = canonicalPath.split(key);
-        return split[0] + key + "/src/main/java/cn/daxiang/lyltd/";
+        if (split.length == 1 || split.length == 2) {
+            return split[0] + Expression.FORMAT_FLAG + "/src/main/java/cn/daxiang/lyltd/" + Expression.FORMAT_FLAG;
+        } else if (split.length == 3) {
+            return split[0] + Expression.FORMAT_FLAG + split[1] + Expression.FORMAT_FLAG;
+        }
+        return canonicalPath;
     }
 
 

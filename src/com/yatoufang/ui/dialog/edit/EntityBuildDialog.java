@@ -80,11 +80,8 @@ public class EntityBuildDialog extends DialogWrapper {
         if (workPath == null || moduleName == null) {
             return;
         }
-        if (NodeType.COULD_WRITE.contains(classNode.getNodeData().getNodeType())) {
-            String filePath = StringUtil.buildPath(workPath, ProjectKeys.MODULE, moduleName, ProjectKeys.MODEL, classNode.getNodeData().getMetaData().getName() + ProjectKeys.JAVA);
-            FileWrite.write(classNode.getNodeData().getContent(), filePath, true, false);
-            doCancelAction();
-        }
+        FileWrite.write(classNode.getNodeData().getContent(), classNode.getWorkPath(), true, false);
+        doCancelAction();
     }
 
 
