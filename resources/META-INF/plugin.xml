@@ -107,11 +107,13 @@
         <toolWindow id="PackagingToTest" factoryClass="com.yatoufang.config.PackagingToolWindow" icon="/icons/send.svg" anchor="right"/>
 
         <defaultLiveTemplates file="/liveTemplate/notion.xml"/>
+        <defaultLiveTemplates file="/liveTemplate/notionPlus.xml"/>
         <liveTemplateMacro implementation="com.yatoufang.template.ValueOfMacro"/>
         <liveTemplateMacro implementation="com.yatoufang.template.ValueTMacro"/>
         <liveTemplateMacro implementation="com.yatoufang.template.CheckMeMacro"/>
         <liveTemplateMacro implementation="com.yatoufang.template.ReturnResultMacro"/>
         <liveTemplateContext implementation="com.yatoufang.template.MyTemplateContext"/>
+        <liveTemplateContext implementation="com.yatoufang.template.EluneTemplateContext"/>
 
 
         <postStartupActivity implementation="com.yatoufang.action.StartUpAction"/>

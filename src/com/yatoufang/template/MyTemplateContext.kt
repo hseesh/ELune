@@ -2,9 +2,7 @@ package com.yatoufang.template
 
 import com.intellij.codeInsight.template.TemplateActionContext
 import com.intellij.codeInsight.template.TemplateContextType
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiJavaFile
-import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.*
 
 /**
  * @author GongHuang（hse）
@@ -19,15 +17,7 @@ class MyTemplateContext : TemplateContextType("ELUNE", "Elune") {
         val file = templateActionContext.file
         val startOffset = templateActionContext.startOffset
         val element: PsiElement? = file.findElementAt(startOffset)
-        val flag = element is PsiWhiteSpace
-        if (flag.not()){
-            if (element != null) {
-                if(element.text.endsWith("zzz")){
-                    return true
-                }
-            }
-            return false
-        }
-        return flag
+        val parent = element?.parent
+        return parent is PsiJavaCodeReferenceElement || parent is PsiParameterList
     }
 }
