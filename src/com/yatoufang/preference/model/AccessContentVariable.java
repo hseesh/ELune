@@ -12,6 +12,8 @@ public class AccessContentVariable {
 
     private String alias;
 
+    private String type;
+
     private String key;
 
     private String value;
@@ -21,7 +23,6 @@ public class AccessContentVariable {
     public static AccessContentVariable valueOf(String name) {
         AccessContentVariable model = new AccessContentVariable();
         model.name = name;
-        model.alias = StringUtil.toUpper(name);
         return model;
     }
 
@@ -63,5 +64,13 @@ public class AccessContentVariable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

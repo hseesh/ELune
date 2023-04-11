@@ -486,8 +486,7 @@ public class StringUtil {
                 continue;
             }
             if (c == GRATE_THEN) {
-                flag = true;
-                continue;
+               break;
             }
             if (flag) {
                 builder.append(c);
@@ -547,6 +546,7 @@ public class StringUtil {
 
 
     public static void main(String[] args) {
+        System.out.println(getMetaType("Collection<String> list"));
         System.out.println(Override.class.getSimpleName());
         System.out.println(toCamelCaseFromUpperSnake("ENDLESS_MAGIC_TOWER_RANK_MAP"));
     }

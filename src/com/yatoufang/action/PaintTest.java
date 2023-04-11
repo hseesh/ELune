@@ -112,10 +112,6 @@ public class PaintTest extends AnAction {
         if (classes.length == 0)
             return;
         PsiClass aClass = classes[0];
-        TranslateService instance = TranslateService.getInstance();
-        String text = "仙草\n板凳\n椅子".replace(StringUtil.NEW_LINE,StringUtil.EQUAL);
-        String action = instance.action(text);
-        System.out.println(action);
         String Sencho = "Lingcao";
         new EnumTemplateDialog("","","").show();
     }

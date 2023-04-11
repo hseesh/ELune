@@ -13,15 +13,13 @@ import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
 import com.intellij.ui.components.JBList;
 import com.yatoufang.preference.AccessPreferenceService;
+import com.yatoufang.preference.impl.access.CollectionAccessHandler;
 import com.yatoufang.preference.model.AccessContentVariable;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.ui.component.TextCellRender;
 import com.yatoufang.ui.dialog.TextChooseDialog;
-import com.yatoufang.utils.BuildUtil;
-import com.yatoufang.utils.PSIUtil;
-import com.yatoufang.utils.StringUtil;
-import com.yatoufang.utils.SwingUtils;
+import com.yatoufang.utils.*;
 import org.apache.commons.compress.utils.Sets;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,16 +38,10 @@ public class CreateAccessAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        PsiJavaFile file = (PsiJavaFile) event.getData(LangDataKeys.PSI_FILE);
-        if (file == null) {
+        PsiClass aClass = DataUtil.getClass(event);
+        if (aClass == null) {
             return;
         }
-        Application.project = file.getProject();
-        PsiClass[] classes = file.getClasses();
-        if (classes.length == 0)
-            return;
-        PsiClass aClass = classes[0];
-
         PsiFieldMember[] members = PSIUtil.buildFieldMember(aClass);
         List<PsiFieldMember> psiFieldMembers = SwingUtils.showFieldsDialog(members, true, true);
         List<PsiField> fields = Lists.newArrayList();
@@ -65,6 +57,7 @@ public class CreateAccessAction extends AnAction {
                 collection.addAll(action);
             }
         }
+        CollectionAccessHandler collectionAccessHandler = new CollectionAccessHandler();
         Map<String, AccessContentVariable> variableMap = Maps.newHashMap();
         for (PsiField field : fields) {
             AccessContentVariable variable = AccessContentVariable.valueOf(field.getName());
@@ -72,12 +65,29 @@ public class CreateAccessAction extends AnAction {
             description = StringUtil.collectChineseCharacter(description);
             variable.setDescription(description);
             variableMap.put(field.getName(), variable);
-            if (field.getType().getPresentableText().startsWith(Map.class.getSimpleName())) {
+            if (field.getType().getPresentableText().contains(Map.class.getSimpleName())) {
                 String text = field.getType().getPresentableText().replace(String.valueOf(StringUtil.SPACE), StringUtil.EMPTY);
-                String key = StringUtil.subString(text, String.valueOf(StringUtil.LESS_THEN), String.valueOf(StringUtil.COMMA));
                 String value = StringUtil.subString(text, String.valueOf(StringUtil.COMMA), String.valueOf(StringUtil.GRATE_THEN));
+                String key = StringUtil.subString(text, String.valueOf(StringUtil.LESS_THEN), String.valueOf(StringUtil.COMMA)).trim();
+                if (Long.class.getSimpleName().equals(key)) {
+                    key = long.class.getSimpleName();
+                } else if (Integer.class.getSimpleName().equals(key)) {
+                    key = int.class.getSimpleName();
+                }
                 variable.setKey(key);
                 variable.setValue(value);
+            }
+            String alias = field.getName().replace(Map.class.getSimpleName(), StringUtil.EMPTY).replace(List.class.getSimpleName(), StringUtil.EMPTY);
+            variable.setAlias(StringUtil.toUpperCaseForFirstCharacter(alias));
+            variable.setType(field.getType().getPresentableText());
+            if (collectionAccessHandler.check(field)) {
+                String metaType = StringUtil.getMetaType(field.getType().getPresentableText()).trim();
+                if (Long.class.getSimpleName().equals(metaType)) {
+                    metaType = long.class.getSimpleName();
+                } else if (Integer.class.getSimpleName().equals(metaType)) {
+                    metaType = int.class.getSimpleName();
+                }
+                variable.setType(metaType);
             }
         }
         if (variableMap.isEmpty()) {
