@@ -10,9 +10,9 @@
   {
     "type": 2,
     "templates": [
-      "/**\n     *  添加${table.description}\n     */\n    public void add${table.name}(${table.type} id) {\n        ${table.name}.add(id);\n    }\n",
-      "/**\n     *  尝试添加${table.description}\n     */\n    public boolean tryAdd${table.name}(${table.type} id) {\n        if (${table.name}.contains(id)) {\n            return false;\n        }\n        return ${table.name}.add(id);\n    }\n",
-      "/**\n     *  删除${table.description}\n     */\n    public void drop${table.name}(${table.type} id) {\n        ${table.name}.remove(id);\n    }\n"
+      "/**\n     *  添加${table.description}\n     */\n    public void add${table.alias}(${table.type} id) {\n        ${table.name}.add(id);\n    }\n",
+      "/**\n     *  尝试添加${table.description}\n     */\n    public boolean tryAdd${table.alias}(${table.type} id) {\n        if (${table.name}.contains(id)) {\n            return false;\n        }\n        return ${table.name}.add(id);\n    }\n",
+      "/**\n     *  删除${table.description}\n     */\n    public void drop${table.alias}(${table.type} id) {\n        ${table.name}.remove(id);\n    }\n"
     ]
   },
   {
