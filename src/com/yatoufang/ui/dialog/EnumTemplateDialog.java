@@ -15,6 +15,7 @@ import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.thread.ELuneScheduledThreadPoolExecutor;
+import com.yatoufang.utils.FileWrite;
 import com.yatoufang.utils.StringUtil;
 import com.yatoufang.utils.SwingUtils;
 import org.jetbrains.annotations.Nullable;
@@ -54,17 +55,11 @@ public class EnumTemplateDialog extends DialogWrapper {
         super(Application.project, true);
         this.rootPath = rootPath;
         this.workSpace = workSpace;
-        editor = SwingUtils.createEditor(content);
+        editor = SwingUtils.createEditor(StringUtil.EMPTY);
         editor.setFont(new Font(null, Font.PLAIN, 14));
         velocityService = VelocityService.getInstance();
         init();
-        String fileName = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
-        if (fileName == null || fileName.isEmpty()) {
-            dispose();
-            return;
-        }
-        enumClass.setName("Test");
-        this.fileName = fileName;
+        showInputDialog();
     }
 
     public EnumTemplateDialog(Model model, Point clickedPoint) {
@@ -74,7 +69,13 @@ public class EnumTemplateDialog extends DialogWrapper {
         editor = SwingUtils.createEditor(StringUtil.EMPTY);
         editor.setFont(new Font(null, Font.PLAIN, 14));
         velocityService = VelocityService.getInstance();
+        this.clickedPoint = clickedPoint;
+        this.model = model;
         init();
+        showInputDialog();
+    }
+
+    public void showInputDialog() {
         String fileName = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
         ELuneScheduledThreadPoolExecutor instance = ELuneScheduledThreadPoolExecutor.getInstance();
         if (fileName == null || fileName.isEmpty()) {
@@ -83,8 +84,6 @@ public class EnumTemplateDialog extends DialogWrapper {
             }, Calendar.FEBRUARY, TimeUnit.SECONDS);
             return;
         }
-        this.model = model;
-        this.clickedPoint = clickedPoint;
         instance.execute(() -> {
             String translate = TranslateService.translate(fileName);
             enumClass.setDescription(fileName);
@@ -145,6 +144,10 @@ public class EnumTemplateDialog extends DialogWrapper {
         slider.setMajorTickSpacing(1);
         slider.setPaintLabels(true);
         slider.setPaintTicks(true);
+        execute.addActionListener(e -> {
+            String filePath = StringUtil.buildPath(rootPath, ProjectKeys.MODULE, enumClass.getName(), ProjectKeys.MODEL, fileName + ProjectKeys.JAVA);
+            FileWrite.write(editor.getText(), filePath, true, false);
+        });
         slider.addChangeListener(event -> {
             if (event.getSource() instanceof JSlider) {
                 JSlider source = (JSlider) event.getSource();

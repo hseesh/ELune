@@ -25,7 +25,7 @@ public class CostHandler extends ConfigPreferenceHandler {
 
     @Override
     public boolean check(String variable) {
-        return !variable.endsWith(StringUtil.toUpper(getKey()));
+        return !variable.toLowerCase().contains(getKey());
     }
 
     @Override
