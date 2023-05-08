@@ -106,6 +106,9 @@
 
         <toolWindow id="PackagingToTest" factoryClass="com.yatoufang.config.PackagingToolWindow" icon="/icons/send.svg" anchor="right"/>
 
+        <codeInsight.template.postfixTemplateProvider language="JAVA" implementationClass="com.yatoufang.template.postfix.ELunePostfixTemplateProvider"/>
+
+
         <defaultLiveTemplates file="/liveTemplate/notion.xml"/>
         <defaultLiveTemplates file="/liveTemplate/notionPlus.xml"/>
         <liveTemplateMacro implementation="com.yatoufang.template.ValueOfMacro"/>
