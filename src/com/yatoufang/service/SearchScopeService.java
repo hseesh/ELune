@@ -1,6 +1,7 @@
 package com.yatoufang.service;
 
 import com.yatoufang.config.ProjectSearchScope;
+import org.w3c.dom.events.Event;
 
 /**
  * @author GongHuang（hse）
@@ -14,6 +15,7 @@ public class SearchScopeService {
         if(service == null){
             service = new ProjectSearchScope();
         }
+
         return service;
     }
 

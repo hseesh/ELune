@@ -31,6 +31,8 @@ public interface ProjectKeys {
 
     String MODEL = "model";
 
+    String REWARD_OBJECT = "RewardObject";
+
     String CORE = "core";
 
     String KEY = "Key";
@@ -93,6 +95,7 @@ public interface ProjectKeys {
     String UPDATE_TIME = "updateTime";
     String TABLE = "table";
     String CONFIG = "config";
+    String CONFIG_ALIAS = "Config";
 
     String JAVA = ".java";
 

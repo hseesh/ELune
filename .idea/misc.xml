@@ -9,8 +9,15 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <type id="NBMindMap" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="IntelliJ IDEA IU-221.5921.22" project-jdk-type="IDEA JDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="IntelliJ IDEA IU-211.7628.21" project-jdk-type="IDEA JDK">
     <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="SuppressABINotification">
+    <option name="modulesWithSuppressedNotConfigured">
+      <set>
+        <option value="ELune" />
+      </set>
+    </option>
   </component>
   <component name="SuppressionsComponent">
     <option name="suppComments" value="[]" />

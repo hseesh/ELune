@@ -3,19 +3,26 @@ package com.yatoufang.action;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.find.findInProject.FindInProjectManager;
 import com.intellij.icons.AllIcons;
+import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.*;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
+import com.intellij.psi.search.FileTypeIndex;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBList;
 import com.yatoufang.entity.Param;
+import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.service.TranslateService;
 import com.yatoufang.templet.Application;
@@ -38,8 +45,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PaintTest extends AnAction {
 
@@ -54,7 +61,61 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        new EnumTemplateDialog("","","").show();
+        Project project = e.getProject();
+        if (project == null) {
+            return;
+        }
+
+        Map<String, Integer> methodCalls = new HashMap<>();
+        Map<String, Integer> variables = new HashMap<>();
+        // 遍历工程中的每个Java文件
+        Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, "java", GlobalSearchScope.projectScope(project));
+        for (VirtualFile file : files) {
+            PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
+            if(psiFile instanceof PsiJavaFile){
+                PsiJavaFile psiJavaFile = (PsiJavaFile) psiFile;
+                for (PsiClass aClass : psiJavaFile.getClasses()) {
+                    aClass.accept(new JavaRecursiveElementWalkingVisitor() {
+                        @Override
+                        public void visitMethodCallExpression(PsiMethodCallExpression expression) {
+                            String methodName = expression.getMethodExpression().getReferenceName();
+                            if (methodName != null) {
+
+                                methodCalls.put(methodName, methodCalls.getOrDefault(methodName, 0) + 1);
+                            }
+                        }
+
+                        @Override
+                        public void visitVariable(PsiVariable variable) {
+                            String name = variable.getName();
+                            if (name != null) {
+                                variables.put(name, variables.getOrDefault(name, 0) + 1);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        Map<String, Integer> collect = methodCalls.entrySet().stream()
+            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+            .limit(100)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        // 打印Map对象，使用制表符分割
+        ConsoleService instance = ConsoleService.getInstance();
+        instance.printInfo("Key\tValue \n");
+        for (Map.Entry<String, Integer> entry : collect.entrySet()) {
+            instance.printInfo(entry.getKey() + "\t" + entry.getValue() + " \n");
+        }
+
+        collect = variables.entrySet().stream()
+            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+            .limit(100)
+            .collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
+        // 打印Map对象，使用制表符分割
+        instance.printInfo("Key\tValue \n");
+        for (Map.Entry<String, Integer> entry : collect.entrySet()) {
+            instance.printInfo(entry.getKey() + "\t" + entry.getValue() + " \n");
+        }
     }
 
     private void test() {

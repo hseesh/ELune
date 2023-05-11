@@ -3,7 +3,6 @@ package com.yatoufang.ui.dialog;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.EditorTextField;
-import com.intellij.ui.components.JBSlider;
 import com.intellij.util.ui.FormBuilder;
 import com.yatoufang.editor.Model;
 import com.yatoufang.editor.component.impl.EnumNode;
@@ -140,19 +139,9 @@ public class EnumTemplateDialog extends DialogWrapper {
             }
         });
         JButton execute = new JButton("Execute");
-        JBSlider slider = new JBSlider(0, 15, 0);
-        slider.setMajorTickSpacing(1);
-        slider.setPaintLabels(true);
-        slider.setPaintTicks(true);
         execute.addActionListener(e -> {
             String filePath = StringUtil.buildPath(rootPath, ProjectKeys.MODULE, enumClass.getName(), ProjectKeys.MODEL, fileName + ProjectKeys.JAVA);
             FileWrite.write(editor.getText(), filePath, true, false);
-        });
-        slider.addChangeListener(event -> {
-            if (event.getSource() instanceof JSlider) {
-                JSlider source = (JSlider) event.getSource();
-                int value = source.getValue();
-            }
         });
         JPanel empty = new JPanel();
         JPanel rightRootPanel = new JPanel(new BorderLayout());
@@ -162,7 +151,6 @@ public class EnumTemplateDialog extends DialogWrapper {
                 .addLabeledComponent(NotifyKeys.INPUT_VALUE, empty)
                 .addComponent(configData)
                 .addLabeledComponent(NotifyKeys.SELECT_VALUE, empty)
-                .addComponent(slider)
                 .addComponentFillVertically(empty, 1)
                 .addComponent(executeDimension).getPanel();
         rightRootPanel.add(editor);
