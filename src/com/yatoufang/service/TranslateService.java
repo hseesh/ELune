@@ -109,7 +109,7 @@ public class TranslateService {
 
     public static void main(String[] args) {
         long l = System.currentTimeMillis();
-        System.out.println(translate("牛魔王。龙神BOSS。五绝塔。天道四灵塔。弑神令。灵草。神晶。"));
+        System.out.println(translate("资源类型", true,true));
         System.out.println(System.currentTimeMillis() - l);
     }
 

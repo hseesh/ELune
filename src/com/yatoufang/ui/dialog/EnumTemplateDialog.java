@@ -84,7 +84,7 @@ public class EnumTemplateDialog extends DialogWrapper {
             return;
         }
         instance.execute(() -> {
-            String translate = TranslateService.translate(fileName);
+            String translate = TranslateService.translate(fileName, true, true);
             enumClass.setDescription(fileName);
             enumClass.setAlias(translate.replaceAll(String.valueOf(StringUtil.SPACE), StringUtil.EMPTY));
             enumClass.setName(enumClass.getAlias());
