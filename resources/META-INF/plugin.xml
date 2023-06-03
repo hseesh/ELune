@@ -81,6 +81,11 @@
         <action id="com.yatoufang.hse.paint.test" class="com.yatoufang.action.PaintTest" text="PaintTest">
             <add-to-group group-id="HelpMenu" anchor="last"/>
         </action>
+        <action id="com.yatoufang.action.CodeCompleteAction" class="com.yatoufang.action.CodeCompleteAction"
+                text="Code Complete Action">
+            <add-to-group group-id="ToolsMenu" anchor="first" />
+            <keyboard-shortcut keymap="$default" first-keystroke="alt M" />
+        </action>
     </actions>
 
 
@@ -96,6 +101,9 @@
 
         <applicationService serviceImplementation="com.yatoufang.config.service.AppSettingService"/>
         <applicationService serviceImplementation="com.yatoufang.config.service.PackagingSettingsService"/>
+
+
+<!--        <projectService serviceImplementation="com.yatoufang.complete.services.EluneDocumentListenerService"/>-->
 
         <toolWindow id="ELune"
                     anchor="bottom"
@@ -119,6 +127,8 @@
         <liveTemplateContext implementation="com.yatoufang.template.EluneTemplateContext"/>
 
 
+        <completion.contributor language="JAVA" implementationClass="com.yatoufang.complete.EluneCompletionContributor" order="first"/>
+
         <postStartupActivity implementation="com.yatoufang.action.StartUpAction"/>
 
         <fileEditorProvider implementation="com.yatoufang.designer.MindMapDocumentEditorProvider"/>
@@ -129,5 +139,13 @@
                   language="MindMap"
                   extensions="mm"/>
     </extensions>
+
+<!--    <applicationListeners>-->
+<!--        <listener class="com.yatoufang.complete.listeners.EluneDynamicPluginListener"-->
+<!--                  topic="com.intellij.ide.plugins.DynamicPluginListener"/>-->
+<!--        <listener class="com.yatoufang.complete.listeners.EluneProjectManagerListener"-->
+<!--                  topic="com.intellij.openapi.project.ProjectManagerListener"/>-->
+
+<!--    </applicationListeners>-->
 
 </idea-plugin>
