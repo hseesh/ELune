@@ -129,7 +129,7 @@ public class Model implements Serializable {
         undoable = new Stack<>();
         redouble = new Stack<>();
         for (AbstractNode node : nodeList) {
-            node.reload();
+            node.onReload();
         }
         for (LinkLine line : lines) {
             line.addTransientComponents();
@@ -467,7 +467,7 @@ public class Model implements Serializable {
             case IN_PUT:
                 RequestNode requestNode = new RequestNode(this, point);
                 manageConnection(requestNode.getOutPutConnector());
-                requestNode.sync(name, alias);
+                requestNode.onSynchronized(name, alias);
                 add(requestNode);
                 break;
             case OUT_PUT:
@@ -475,12 +475,12 @@ public class Model implements Serializable {
                 if (position == Position.ESE) {
                     ResponseNode responseNode = new ResponseNode(this, point);
                     manageConnection(responseNode.getInPutConnector());
-                    responseNode.sync(name, alias);
+                    responseNode.onSynchronized(name, alias);
                     add(responseNode);
                 } else {
                     PushNode pushNode = new PushNode(this, point);
                     manageConnection(pushNode.getInPutConnector());
-                    pushNode.sync(name, alias);
+                    pushNode.onSynchronized(name, alias);
                     add(pushNode);
                 }
                 break;

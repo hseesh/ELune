@@ -30,6 +30,7 @@ public interface NotifyKeys {
 
     String SELECT_FILE = "Select File";
 
+    String INCORRECT = "INCORRECT FORMAT";
     String REQUEST_ERROR = "Translate Service Access Frequency Was Limited";
     String SELECT_FIELDS = "Select The Fields To New File";
     String SELECT_VALUE_OF_FIELDS = "Select The Fields To New File";

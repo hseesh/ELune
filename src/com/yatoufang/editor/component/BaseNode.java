@@ -36,7 +36,7 @@ public class BaseNode extends AbstractNode implements NodeStyle {
         addListeners();
     }
 
-    private BaseNode(Model model, Rectangle bounds, NodeType nodeType) {
+    public BaseNode(Model model, Rectangle bounds, NodeType nodeType) {
         this(model, bounds.getLocation(), nodeType);
         setBounds(bounds);
         setConnectorLocation();
@@ -47,15 +47,7 @@ public class BaseNode extends AbstractNode implements NodeStyle {
         return ColorBox.LINE.getColor();
     }
 
-    @Override
-    public void sync(String name, String alias) {
 
-    }
-
-    @Override
-    public void onInitialize() {
-
-    }
 
     @Override
     public BaseNode copy() {

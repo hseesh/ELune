@@ -77,7 +77,7 @@ public class NodeMenu extends JPopupMenu {
 
     private void asyncCalcAlia(AbstractNode node) {
         for (AbstractNode abstractNode : node.getAllLinkNode()) {
-            abstractNode.sync(node.getNodeData().getName(), node.getNodeData().getExtra());
+            abstractNode.onSynchronized(node.getNodeData().getName(), node.getNodeData().getExtra());
         }
     }
 }

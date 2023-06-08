@@ -1,6 +1,5 @@
 package com.yatoufang.editor.component;
 
-
 import com.yatoufang.editor.Model;
 import com.yatoufang.editor.constant.ColorBox;
 import com.yatoufang.editor.constant.GlobalConstant;
@@ -22,7 +21,7 @@ import java.util.*;
  * @author hse
  * @since 2022/9/4 0004
  */
-public abstract class AbstractNode extends JPanel implements UndoRedo {
+public abstract class AbstractNode extends JPanel implements UndoRedo, LifeCycleEvent {
 
     private static final long serialVersionUID = 123456L;
     private final Map<Position, Connector> connectors = new HashMap<>();
@@ -34,8 +33,6 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
     protected NodeData nodeData;
     private Model model;
 
-    public abstract void onInitialize();
-
     public abstract AbstractNode copy();
 
     public abstract String getWorkPath();
@@ -44,13 +41,34 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
 
     public abstract void doCommand(KeyEvent e);
 
-    public abstract void sync(String name, String alias);
+    @Override
+    public void onCreate() {
+
+    }
+
+    @Override
+    public void onInitialize() {
+
+    }
+
+    @Override
+    public void onSynchronized(String name, String alias) {
+
+    }
+
+    @Override
+    public void onReload() {
+        contextMenu = new NodeMenu(this);
+        this.nodeData.reload();
+        this.onInitialize();
+        refreshBounds();
+    }
 
     public AbstractNode(NodeData nodeData, Model model) {
         this.nodeData = nodeData;
         this.model = model;
         setFocusable(true);
-        reload();
+        onReload();
     }
 
     public void addConnectors() {
@@ -74,13 +92,6 @@ public abstract class AbstractNode extends JPanel implements UndoRedo {
         return getConnectors().values();
     }
 
-
-    public void reload() {
-        contextMenu = new NodeMenu(this);
-        this.nodeData.reload();
-        this.onInitialize();
-        refreshBounds();
-    }
 
     public void addListeners() {
         addMouseListener(new NodeMouseListener(this));

@@ -36,7 +36,7 @@ public class RequestNode extends BaseNode {
     }
 
     @Override
-    public void sync(String name,String alias) {
+    public void onSynchronized(String name,String alias) {
         if (name == null || name.length() == 0) {
             return;
         }
