@@ -1,15 +1,12 @@
 package com.yatoufang.editor.menus;
 
-
 import com.intellij.icons.AllIcons;
-import com.intellij.javaee.J2EEBundle;
 import com.intellij.openapi.ui.Messages;
 import com.yatoufang.editor.component.RootCanvas;
 import com.yatoufang.editor.component.impl.DataBaseNode;
 import com.yatoufang.editor.component.impl.EntityNode;
 import com.yatoufang.editor.constant.CopyPasteHelper;
 import com.yatoufang.editor.constant.FileHelper;
-import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.ui.dialog.ConfigTemplateDialog;
 import com.yatoufang.ui.dialog.EnumTemplateDialog;
@@ -67,7 +64,12 @@ public class RootPanelMenu extends JPopupMenu {
 
         JMenuItem menuItemClearAll = new JMenuItem("Clear all", AllIcons.Actions.Cancel);
         menuItemClearAll.addActionListener(e -> {
-            if (Messages.showYesNoDialog(Application.project, "CLear all", J2EEBundle.message("action.name.delete"), null) == Messages.YES) {
+            int result = Messages.showYesNoDialog(
+                "Are you sure you want to CLear all?",
+                "Confirmation",
+                Messages.getQuestionIcon()
+            );
+            if (result == Messages.YES) {
                 rootCanvas.getModel().clear();
             }
         });
