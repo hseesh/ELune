@@ -1,12 +1,11 @@
 package com.yatoufang.editor.component;
 
-
 import com.intellij.ui.JBColor;
-import com.yatoufang.editor.model.NodeData;
-import com.yatoufang.editor.type.NodeType;
 import com.yatoufang.editor.Model;
 import com.yatoufang.editor.constant.ColorBox;
 import com.yatoufang.editor.constant.GlobalConstant;
+import com.yatoufang.editor.model.NodeData;
+import com.yatoufang.editor.type.NodeType;
 import com.yatoufang.entity.Param;
 import com.yatoufang.templet.Expression;
 import com.yatoufang.templet.ProjectKeys;
@@ -14,7 +13,6 @@ import com.yatoufang.utils.StringUtil;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Objects;
 
 /**
  * @author hse
@@ -152,18 +150,4 @@ public class BaseNode extends AbstractNode implements NodeStyle {
             g.drawString(dim, (getWidth() / 2) - (g.getFontMetrics().stringWidth(dim) / 2), getHeight() / 2 + 20);
         }
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof BaseNode)) return false;
-        BaseNode baseNode = (BaseNode) o;
-        return this.nodeData.equals(baseNode.nodeData);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nodeData);
-    }
-
 }

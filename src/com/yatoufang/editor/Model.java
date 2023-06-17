@@ -233,7 +233,7 @@ public class Model implements Serializable {
         Set<AbstractNode> copySelectedObjects = new HashSet<>(selectedNodes);
         for (AbstractNode node : copySelectedObjects) {
             cleanUpConnections(node);
-            nodeList.remove(node);
+            nodeList.removeIf(e -> Objects.equals(e.getNodeData().getName(), node.getNodeData().getName()) && node.getNodeData().getNodeType() == e.getNodeData().getNodeType());
             selectedNodes.remove(node);
             node.removeInternalComponents();
             rootCanvas.remove(node);

@@ -312,6 +312,19 @@ public abstract class AbstractNode extends JPanel implements UndoRedo, LifeCycle
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractNode)) return false;
+        AbstractNode baseNode = (AbstractNode) o;
+        return this.nodeData.equals(baseNode.nodeData);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeData);
+    }
+
+    @Override
     public String toString() {
         return nodeData.getName();
     }
