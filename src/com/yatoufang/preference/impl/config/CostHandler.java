@@ -30,7 +30,7 @@ public class CostHandler extends ConfigPreferenceHandler {
 
     @Override
     public ConfigParam getTemplate() {
-        ConfigParam param = ConfigParam.valueOf(getKey(), "消耗[[rewardType,id,num],[rewardType,id,num]] {@code RewardType}", String.class.getName());
+        ConfigParam param = ConfigParam.valueOf(getKey(), "消耗[[rewardType,id,num],[rewardType,id,num]] {@code RewardType}", String.class.getSimpleName());
         ConfigParam alias = ConfigParam.valueOf(getName(), "消耗列表", "Collection<RewardObject>");
         param.setAliaParam(alias);
         alias.setDefaultValue(" = Lists.newArrayList()");

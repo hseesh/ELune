@@ -1,7 +1,5 @@
 package com.yatoufang.preference.model;
 
-import com.yatoufang.utils.StringUtil;
-
 /**
  * @author GongHuang（hse）
  * @since 2022/10/18

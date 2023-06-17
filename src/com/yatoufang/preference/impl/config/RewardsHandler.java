@@ -31,7 +31,7 @@ public class RewardsHandler extends ConfigPreferenceHandler {
 
     @Override
     public ConfigParam getTemplate() {
-        ConfigParam param = ConfigParam.valueOf(getKey(), "奖励[[rewardType,id,num],[rewardType,id,num]] {@code RewardType}", String.class.getName());
+        ConfigParam param = ConfigParam.valueOf(getKey(), "奖励[[rewardType,id,num],[rewardType,id,num]] {@code RewardType}", String.class.getSimpleName());
         ConfigParam alias = ConfigParam.valueOf(getName(), "奖励列表", "Collection<RewardObject>");
         param.setAliaParam(alias);
         alias.setDefaultValue(" = Lists.newArrayList()");

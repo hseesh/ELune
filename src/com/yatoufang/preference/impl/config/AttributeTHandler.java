@@ -31,7 +31,7 @@ public class AttributeTHandler extends ConfigPreferenceHandler {
 
     @Override
     public ConfigParam getTemplate() {
-        ConfigParam param = ConfigParam.valueOf(getKey(), "加成属性（万分比）([[type,value],[type,value]]){@code SpriteAttributeType}", String.class.getName());
+        ConfigParam param = ConfigParam.valueOf(getKey(), "加成属性（万分比）([[type,value],[type,value]]){@code SpriteAttributeType}", String.class.getSimpleName());
         ConfigParam alias = ConfigParam.valueOf(getName(), "加成属性（万分比）", "Map<SpriteAttributeType, Integer>");
         param.setAliaParam(alias);
         alias.setDefaultValue(" = Maps.newHashMap()");
