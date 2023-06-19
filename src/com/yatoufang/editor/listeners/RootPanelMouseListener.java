@@ -4,6 +4,7 @@ package com.yatoufang.editor.listeners;
 import com.yatoufang.editor.component.RootCanvas;
 import com.yatoufang.editor.component.LinkLine;
 import com.yatoufang.editor.component.impl.ProtocolNode;
+import com.yatoufang.editor.constant.NodeHelp;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,7 +67,9 @@ public class RootPanelMouseListener implements MouseListener {
             rootCanvas.getModel().toggleConnectors();
         } else if (SwingUtilities.isLeftMouseButton(e)) {
             if (e.getClickCount() == 2) {
-                rootCanvas.getModel().add(new ProtocolNode(rootCanvas.getModel(), e.getPoint()));
+                ProtocolNode protocolNode = new ProtocolNode(rootCanvas.getModel(), e.getPoint());
+                NodeHelp.init(protocolNode);
+                rootCanvas.getModel().add(protocolNode);
             } else {
                 rootCanvas.getModel().tryCreate(e.getPoint());
             }

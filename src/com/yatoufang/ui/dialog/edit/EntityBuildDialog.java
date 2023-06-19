@@ -3,12 +3,14 @@ package com.yatoufang.ui.dialog.edit;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.EditorTextField;
+import com.yatoufang.editor.Model;
 import com.yatoufang.editor.component.AbstractNode;
+import com.yatoufang.editor.component.impl.EntityNode;
 import com.yatoufang.editor.constant.ContextHelp;
 import com.yatoufang.editor.model.MetaData;
 import com.yatoufang.editor.type.NodeType;
-import com.yatoufang.entity.FileNode;
 import com.yatoufang.entity.Param;
+import com.yatoufang.service.TranslateService;
 import com.yatoufang.service.VelocityService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
@@ -56,6 +58,16 @@ public class EntityBuildDialog extends DialogWrapper {
         }
     }
 
+    public EntityBuildDialog(Model model, Point clickedPoint) {
+        super(Application.project, true);
+        this.classNode = new EntityNode(model, clickedPoint);
+        model.add(this.classNode);
+        initData(classNode);
+        init();
+        onEdit();
+    }
+
+
     private void initData(AbstractNode classNode) {
         this.classNode = classNode;
         velocityService = VelocityService.getInstance();
@@ -84,7 +96,6 @@ public class EntityBuildDialog extends DialogWrapper {
         doCancelAction();
     }
 
-
     @Override
     public void doCancelAction() {
         super.doCancelAction();
@@ -94,7 +105,6 @@ public class EntityBuildDialog extends DialogWrapper {
         classNode.refresh(editor.getText());
     }
 
-
     @Override
     protected @Nullable JComponent createCenterPanel() {
         JPanel panel = new JPanel(new BorderLayout());
@@ -102,7 +112,6 @@ public class EntityBuildDialog extends DialogWrapper {
         panel.add(editor);
         return panel;
     }
-
 
     @Override
     protected @NotNull JPanel createButtonsPanel(@NotNull List<? extends JButton> buttons) {
@@ -132,13 +141,24 @@ public class EntityBuildDialog extends DialogWrapper {
         MetaData metaData = new MetaData();
         metaData.setDescription(classNode.getNodeData().getName());
         metaData.setAlias(classNode.getNodeData().getAlias());
-        if (classNode.getNodeData().getName() == null) {
+        if (classNode.getNodeData().getName().isEmpty()) {
             String name = Messages.showInputDialog(NotifyKeys.INPUT, NotifyKeys.INPUT_TITLE, null);
             if (name == null || name.isEmpty()) {
                 return;
             }
-            classNode.getNodeData().setName(name);
-            metaData.setName(name);
+            String character = StringUtil.collectChineseCharacter(name);
+            if (character.isEmpty()) {
+                this.classNode.getNodeData().setName(character);
+                metaData.setAlias(name);
+            }else {
+                String translate = TranslateService.translate(name, true, true);
+                String[] split = translate.split(String.valueOf(StringUtil.SPACE));
+                String cameCase = StringUtil.toUpper(split);
+                metaData.setDescription(name);
+                metaData.setAlias(cameCase);
+                this.classNode.getNodeData().setName(name);
+                this.classNode.getNodeData().setAlias(cameCase);
+            }
         }
         metaData.setName(classNode.getModel().getModuleName());
         metaData.addFields(classNode.getNodeData().getMetaData().getPramList());

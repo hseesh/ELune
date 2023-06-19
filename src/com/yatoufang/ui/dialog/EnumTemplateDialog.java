@@ -86,7 +86,7 @@ public class EnumTemplateDialog extends DialogWrapper {
         instance.execute(() -> {
             String translate = TranslateService.translate(fileName, true, true);
             enumClass.setDescription(fileName);
-            enumClass.setAlias(translate.replaceAll(String.valueOf(StringUtil.SPACE), StringUtil.EMPTY));
+            enumClass.setAlias(translate.replaceAll(String.valueOf(StringUtil.SPACE), StringUtil.EMPTY).replaceAll("THE", StringUtil.EMPTY));
             enumClass.setName(enumClass.getAlias());
             String execute = velocityService.execute(ProjectKeys.ENUM_TEMPLATE, enumClass);
             SwingUtilities.invokeLater(() -> {
