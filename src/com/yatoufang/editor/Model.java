@@ -49,7 +49,7 @@ public class Model implements Serializable {
     private final Set<LinkLine> lines = new HashSet<>();
     private final Connector[] connectors = new Connector[2];
     private boolean connectorsVisible = true;
-    private boolean gridVisible = true;
+    private boolean gridVisible = false;
     private boolean dragging = false;
 
     public Model(RootCanvas rootCanvas) {
