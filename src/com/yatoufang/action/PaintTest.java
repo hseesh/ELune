@@ -1,30 +1,34 @@
 package com.yatoufang.action;
 
+import com.google.common.collect.Maps;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.find.findInProject.FindInProjectManager;
 import com.intellij.icons.AllIcons;
-import com.intellij.ide.highlighter.JavaFileType;
 import com.intellij.ide.util.PackageChooserDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.LangDataKeys;
 import com.intellij.openapi.actionSystem.impl.SimpleDataContext;
 import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.*;
+import com.intellij.openapi.ui.popup.IconButton;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.codeStyle.JavaCodeStyleManager;
-import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBList;
+import com.yatoufang.complete.handler.CodeCompleteHandler;
+import com.yatoufang.complete.model.context.CodeCompleteTrigger;
+import com.yatoufang.entity.Method;
 import com.yatoufang.entity.Param;
 import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.NotifyService;
-import com.yatoufang.service.TranslateService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
 import com.yatoufang.templet.ProjectKeys;
@@ -32,10 +36,9 @@ import com.yatoufang.ui.component.TextCellRender;
 import com.yatoufang.ui.dialog.EntityTemplateDialog;
 import com.yatoufang.ui.dialog.EnumTemplateDialog;
 import com.yatoufang.ui.dialog.TextChooseDialog;
-import com.yatoufang.ui.dialog.edit.EntityBuildDialog;
 import com.yatoufang.utils.BuildUtil;
+import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.PSIUtil;
-
 import com.yatoufang.utils.StringUtil;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.compress.utils.Sets;
@@ -45,11 +48,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class PaintTest extends AnAction {
-
 
     private int age = 10;
 
@@ -61,18 +64,184 @@ public class PaintTest extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        Project project = e.getProject();
-        if (project == null) {
+        ConsoleService instance = ConsoleService.getInstance();
+        PsiClass aClass = DataUtil.getClass(e);
+        if (aClass == null) {
+            return;
+        }
+        Editor editor = e.getData(LangDataKeys.EDITOR);
+        if (editor == null) {
             return;
         }
 
+        Document document = editor.getDocument();
+        int offset = editor.getCaretModel().getOffset();
+        PsiFile psiFile = PsiDocumentManager.getInstance(Application.project).getPsiFile(document);
+        if (psiFile != null) {
+            PsiElement element = psiFile.findElementAt(offset);
+            if (element == null) {
+                return;
+            }
+        }
+
+    }
+
+
+    private void test(PsiElement element){
+        ConsoleService instance = ConsoleService.getInstance();
+        PsiElement scope = element.getParent();
+        while (scope != null) {
+            if (scope instanceof PsiMethod) {
+                break;
+            }
+            scope = scope.getParent();
+        }
+        if (scope == null) {
+            return;
+        }
+        CodeCompleteTrigger trigger = new CodeCompleteTrigger();
+        scope.accept(new JavaRecursiveElementWalkingVisitor() {
+            @Override
+            public void visitVariable(PsiVariable psiVariable) {
+                instance.printInfo(psiVariable.getName() + " " + psiVariable.getType());
+                trigger.addVariables(psiVariable);
+            }
+
+            @Override
+            public void visitParameterList(PsiParameterList list) {
+                PsiParameter[] parameters = list.getParameters();
+                trigger.setArguments(parameters);
+            }
+
+            @Override
+            public void visitMethodCallExpression(PsiMethodCallExpression expression) {
+                PsiExpressionList argumentList = expression.getArgumentList();
+                PsiExpression[] expressions = argumentList.getExpressions();
+                for (PsiExpression psiExpression : expressions) {
+                    trigger.addExpressions(psiExpression);
+                }
+            }
+        });
+        trigger.setMethod(PSIUtil.getMethod(scope));
+
+        scope = scope.getParent();
+        while (scope != null) {
+            if (scope instanceof PsiClass) {
+                break;
+            }
+            scope = scope.getParent();
+        }
+        PsiClass psiClass = (PsiClass) scope;
+        if (psiClass == null) {
+            return;
+        }
+        for (PsiField field : psiClass.getFields()) {
+            String fieldName = field.getName().toLowerCase(Locale.ROOT);
+            PsiClass fieldClass = PSIUtil.findClass(field.getType().getCanonicalText());
+            if (fieldClass == null) {
+                continue;
+            }
+            String className = fieldClass.getName();
+            if (className == null) {
+                continue;
+            }
+            if (fieldName.endsWith(ProjectKeys.DAO)) {
+                PsiMethod[] methods = fieldClass.getMethods();
+                for (PsiMethod method : methods) {
+                    PsiType returnType = method.getReturnType();
+                    if (returnType == null) {
+                        continue;
+                    }
+                    String metaType = StringUtil.getMetaType(returnType.getPresentableText());
+                    if (className.contains(metaType) && method.getName().contains(ProjectKeys.GET)) {
+                        Method dataBase = PSIUtil.parser(method);
+                        if (returnType.getCanonicalText().endsWith(String.valueOf(StringUtil.GRATE_THEN))) {
+                            CodeCompleteHandler.CONTEXT.setDataBaseList(dataBase);
+                        }else{
+                            CodeCompleteHandler.CONTEXT.setDataBase(dataBase);
+                        }
+                    }
+                }
+                continue;
+            }
+            if (fieldName.endsWith(ProjectKeys.FACADE)) {
+                continue;
+            }
+            List<Param> classAllFields = PSIUtil.getClassAllFields(fieldClass);
+            for (Param param : classAllFields) {
+                param.setRequired(false);
+                String getString = param.getGetString();
+                param.setGetString(field.getName() + StringUtil.POINT + getString);
+                CodeCompleteHandler.CONTEXT.update(param.getName(), param);
+            }
+        }
+
+        instance.printInfo(trigger.toString());
+        instance.printError(CodeCompleteHandler.CONTEXT.toString());
+    }
+
+    //        for (PsiMethod allMethod : aClass.getAllMethods()) {
+    //            if (allMethod.getName().contains("getRewardList")) {
+    //                Collection<PsiReference> references = ReferencesSearch.search(allMethod).findAll();
+    //                for (PsiReference reference : references) {
+    //                    PsiElement element = reference.getElement();
+    //                    if (element instanceof PsiJavaCodeReferenceElement) {
+    //                        PsiJavaCodeReferenceElement ref = (PsiJavaCodeReferenceElement) element;
+    //                        instance.print(String.format("Reference found in %s at line %s",
+    //                                ref.getContainingFile().getName(), ref.getText()));
+    //                    }
+    //                }
+    //            }
+    //        }
+
+
+    private PsiElement getPsiElement(Editor editor) {
+        Document document = editor.getDocument();
+        int offset = editor.getCaretModel().getOffset();
+        PsiFile psiFile = PsiDocumentManager.getInstance(Application.project).getPsiFile(document);
+        if (psiFile != null) {
+            PsiElement element = psiFile.findElementAt(offset);
+            while (element != null && !(element instanceof PsiVariable)) {
+                element = element.getParent();
+            }
+            return element;
+        }
+        return null;
+
+    }
+
+    private void counterConfig() {
+        PackageChooserDialog selector = new PackageChooserDialog("Select a Package", Application.project);
+        selector.show();
+        Map<Param, Integer> counter = Maps.newHashMap();
+        PsiPackage selectedPackage = selector.getSelectedPackage();
+        if (selectedPackage != null) {
+            PsiClass[] classes = selectedPackage.getClasses();
+            for (PsiClass aClass : classes) {
+                List<Param> allFields = PSIUtil.getClassAllFields(aClass);
+                for (Param field : allFields) {
+                    counter.put(field, counter.getOrDefault(field, 0) + 1);
+                }
+            }
+        }
+        List<Param> top100 =
+            counter.entrySet().stream().sorted(Map.Entry.comparingByValue(Comparator.reverseOrder())).limit(100).map(Map.Entry::getKey).collect(Collectors.toList());
+        ConsoleService instance = ConsoleService.getInstance();
+        instance.printInfo("Key\tValue \n");
+        for (Param param : top100) {
+            Integer value = counter.get(param);
+            instance.printInfo(param.getName() + "\t" + value + " \n");
+        }
+    }
+
+    private void counter(Project project) {
         Map<String, Integer> methodCalls = new HashMap<>();
         Map<String, Integer> variables = new HashMap<>();
         // 遍历工程中的每个Java文件
         Collection<VirtualFile> files = FilenameIndex.getAllFilesByExt(project, "java", GlobalSearchScope.projectScope(project));
         for (VirtualFile file : files) {
             PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
-            if(psiFile instanceof PsiJavaFile){
+            if (psiFile instanceof PsiJavaFile) {
                 PsiJavaFile psiJavaFile = (PsiJavaFile) psiFile;
                 for (PsiClass aClass : psiJavaFile.getClasses()) {
                     aClass.accept(new JavaRecursiveElementWalkingVisitor() {
@@ -96,9 +265,7 @@ public class PaintTest extends AnAction {
                 }
             }
         }
-        Map<String, Integer> collect = methodCalls.entrySet().stream()
-            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-            .limit(100)
+        Map<String, Integer> collect = methodCalls.entrySet().stream().sorted(Map.Entry.<String, Integer>comparingByValue().reversed()).limit(100)
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         // 打印Map对象，使用制表符分割
         ConsoleService instance = ConsoleService.getInstance();
@@ -107,10 +274,8 @@ public class PaintTest extends AnAction {
             instance.printInfo(entry.getKey() + "\t" + entry.getValue() + " \n");
         }
 
-        collect = variables.entrySet().stream()
-            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-            .limit(100)
-            .collect(Collectors.toMap(Map.Entry::getKey,Map.Entry::getValue));
+        collect = variables.entrySet().stream().sorted(Map.Entry.<String, Integer>comparingByValue().reversed()).limit(100)
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         // 打印Map对象，使用制表符分割
         instance.printInfo("Key\tValue \n");
         for (Map.Entry<String, Integer> entry : collect.entrySet()) {
@@ -125,12 +290,11 @@ public class PaintTest extends AnAction {
 
     }
 
-
-    public void  testA(){
-        final String[] DATA = { "    /**\n" + "     *  获取对象信息\n" + "     */\n" + "    public LordGodEntity getEntity(int configId) {\n"
-            + "        return entityMap.computeIfAbsent(configId, k -> LordGodEntity.valueOf(configId));\n" + "    }", "    /**\n" + "     *  添加记录\n" + "     */\n"
-            + "    public void addActivateRecord(int id) {\n" + "        activateList.add(id);\n" + "    }", "    public void addExp(int addExp){\n"
-            + "        this.exp += addExp;\n" + "    }" };
+    public void testA() {
+        final String[] DATA = {"    /**\n" + "     *  获取对象信息\n" + "     */\n" + "    public LordGodEntity getEntity(int configId) {\n"
+            + "        return entityMap.computeIfAbsent(configId, k -> LordGodEntity.valueOf(configId));\n" + "    }",
+            "    /**\n" + "     *  添加记录\n" + "     */\n" + "    public void addActivateRecord(int id) {\n" + "        activateList.add(id);\n" + "    }",
+            "    public void addExp(int addExp){\n" + "        this.exp += addExp;\n" + "    }"};
         DefaultListModel<String> listModel = new DefaultListModel<>();
         JBList<String> list = new JBList<>(listModel);
         list.setCellRenderer(new TextCellRender());
@@ -146,22 +310,12 @@ public class PaintTest extends AnAction {
         });
 
         JBPopupFactory instance = JBPopupFactory.getInstance();
-        instance.createComponentPopupBuilder(list,null)
-            .setTitle("My Table")
-            .setMovable(true)
-            .setResizable(true)
-            .setCancelOnClickOutside(false)
-            .setOkHandler(() -> {System.out.println("hello");})
-            .setCancelButton(new IconButton("Close", AllIcons.Actions.Cancel))
-            .setRequestFocus(true)
-            .setMinSize(new Dimension(300, 400))
-            .createPopup()
-            .showInFocusCenter();
+        instance.createComponentPopupBuilder(list, null).setTitle("My Table").setMovable(true).setResizable(true).setCancelOnClickOutside(false).setOkHandler(() -> {
+            System.out.println("hello");
+        }).setCancelButton(new IconButton("Close", AllIcons.Actions.Cancel)).setRequestFocus(true).setMinSize(new Dimension(300, 400)).createPopup().showInFocusCenter();
     }
 
-
-    private void createMethod(AnActionEvent e){
-
+    private void createMethod(AnActionEvent e) {
 
         PsiJavaFile file = (PsiJavaFile) e.getData(LangDataKeys.PSI_FILE);
         if (file == null) {
@@ -174,16 +328,15 @@ public class PaintTest extends AnAction {
             return;
         PsiClass aClass = classes[0];
         String Sencho = "Lingcao";
-        new EnumTemplateDialog("","","").show();
+        new EnumTemplateDialog("", "", "").show();
     }
 
+    public void test_1() {
 
-    public void test_1(){
-
-        final String[] DATA = { "    /**\n" + "     *  获取对象信息\n" + "     */\n" + "    public LordGodEntity getEntity(int configId) {\n"
-                + "        return entityMap.computeIfAbsent(configId, k -> LordGodEntity.valueOf(configId));\n" + "    }", "    /**\n" + "     *  添加记录\n" + "     */\n"
-                + "    public void addActivateRecord(int id) {\n" + "        activateList.add(id);\n" + "    }", "    public void addExp(int addExp){\n"
-                + "        this.exp += addExp;\n" + "    }" };
+        final String[] DATA = {"    /**\n" + "     *  获取对象信息\n" + "     */\n" + "    public LordGodEntity getEntity(int configId) {\n"
+            + "        return entityMap.computeIfAbsent(configId, k -> LordGodEntity.valueOf(configId));\n" + "    }",
+            "    /**\n" + "     *  添加记录\n" + "     */\n" + "    public void addActivateRecord(int id) {\n" + "        activateList.add(id);\n" + "    }",
+            "    public void addExp(int addExp){\n" + "        this.exp += addExp;\n" + "    }"};
         DefaultListModel<String> listModel = new DefaultListModel<>();
         JBList<String> list = new JBList<>(listModel);
         list.setCellRenderer(new TextCellRender());
@@ -191,15 +344,13 @@ public class PaintTest extends AnAction {
             listModel.addElement(datum);
         }
 
-
         ArrayList<String> arrayList = Lists.newArrayList();
         for (int i = 0; i < 3; i++) {
-            TextChooseDialog dialog = new TextChooseDialog(list, null, listModel,"");
+            TextChooseDialog dialog = new TextChooseDialog(list, null, listModel, "");
             dialog.show();
 
         }
         System.out.println(arrayList);
-
 
     }
 

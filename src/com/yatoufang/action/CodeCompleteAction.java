@@ -8,80 +8,101 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.yatoufang.complete.EluneCompletionContributor;
-import com.yatoufang.entity.Param;
+import com.yatoufang.complete.handler.CodeCompleteHandler;
+import com.yatoufang.complete.listeners.ELuneFileEditorMangerListener;
+import com.yatoufang.complete.model.context.CodeCompleteTrigger;
+import com.yatoufang.complete.services.CodeCompleteService;
+import com.yatoufang.entity.Method;
+import com.yatoufang.service.ConsoleService;
+import com.yatoufang.service.NotifyService;
+import com.yatoufang.templet.Application;
+import com.yatoufang.templet.NotifyKeys;
+import com.yatoufang.utils.DataUtil;
 import com.yatoufang.utils.PSIUtil;
-import com.yatoufang.utils.StringUtil;
-import org.apache.commons.compress.utils.Sets;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
 
 public class CodeCompleteAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         Project project = event.getProject();
-        if (project == null) return;
-
+        if (project == null)
+            return;
         Editor editor = FileEditorManager.getInstance(event.getProject()).getSelectedTextEditor();
-        if (editor == null) return;
-
+        if (editor == null)
+            return;
         Document document = editor.getDocument();
         CaretModel caretModel = editor.getCaretModel();
         int offset = caretModel.getOffset();
-        PsiFile file = PsiDocumentManager.getInstance(project).getPsiFile(document);
-        if (file == null) {
-            return;
-        }
-        PsiElement element = file.findElementAt(offset);
-        var psiMethod = PsiTreeUtil.getParentOfType(element, PsiMethod.class);
-        if (psiMethod == null) {
-            return;
-        }
-        PsiMethodCallExpression callExpression = PsiTreeUtil.getParentOfType(element, PsiMethodCallExpression.class);
-        if (callExpression == null) {
-            return;
-        }
-        PsiMethod callMethod = callExpression.resolveMethod();
-        if (callMethod == null) {
-            return;
-        }
-        Collection<Param> origin = PSIUtil.getParams(callMethod.getParameterList());
-        final Set<Param> elements = Sets.newHashSet();
-        psiMethod.accept(new JavaRecursiveElementWalkingVisitor() {
-            @Override
-            public void visitLocalVariable(PsiLocalVariable variable) {
-                Param param = new Param(variable.getName());
-                param.setType(variable.getType());
-                elements.add(param);
-                // todo actorId, idolConfig.getCostList(), OperationType.IDOL_LEVEL_UP
+        long star = System.currentTimeMillis();
+        CodeCompleteTrigger trigger = new CodeCompleteTrigger();
+        Method dataBase = CodeCompleteHandler.CONTEXT.getDataBase();
+        CodeCompleteService service = CodeCompleteService.getInstance();
+        if (dataBase == null) {
+            PsiClass aClass = DataUtil.getClass(event);
+            if (aClass == null) {
+                NotifyService.notifyWarning(NotifyKeys.NO_FILE_SELECTED);
+                return;
             }
-        });
-        elements.addAll(PSIUtil.getParams(psiMethod.getParameterList()));
-        Set<Param> superParam = PSIUtil.loadSuperFields(elements);
-        StringBuilder builder = new StringBuilder();
-        int index = 0;
-        for (Param param : origin) {
-            if (index != 0) {
-                builder.append(StringUtil.COMMA).append(StringUtil.SPACE);
+            new ELuneFileEditorMangerListener().parser(aClass);
+        }
+        PsiFile psiFile = PsiDocumentManager.getInstance(Application.project).getPsiFile(document);
+        if (psiFile != null) {
+            PsiElement element = psiFile.findElementAt(offset);
+            if (element == null) {
+                return;
             }
-            if (elements.contains(param)) {
-                builder.append(param.getName());
-            }else{
-                Optional<Param> optional = superParam.stream().filter(e -> e.getTypeAlias().equals(param.getTypeAlias())).findFirst();
-                if (optional.isPresent()) {
-                    builder.append(param.getName());
+            trigger.setElement(element);
+            PsiElement scope = element.getParent();
+            while (scope != null) {
+                if (scope instanceof PsiMethod) {
+                    break;
                 }
+                scope = scope.getParent();
             }
-            ++ index;
+            if (scope == null) {
+                return;
+            }
+            scope.accept(new JavaRecursiveElementWalkingVisitor() {
+                @Override
+                public void visitParameterList(PsiParameterList list) {
+                    PsiParameter[] parameters = list.getParameters();
+                    trigger.setArguments(parameters);
+                }
+
+                @Override
+                public void visitVariable(PsiVariable variable) {
+                    if (variable.getTextOffset() >= offset) {
+                        stopWalking();
+                        return;
+                    }
+                    trigger.addVariables(variable);
+
+                  PSIUtil.searchClassFields(variable.getName(), variable.getType(), trigger.getReferenceVariables(variable.getType().getPresentableText()));
+                }
+
+                @Override
+                public void visitMethodCallExpression(PsiMethodCallExpression expression) {
+                    if (expression.getTextOffset() >= offset) {
+                        stopWalking();
+                        return;
+                    }
+                    PsiExpressionList argumentList = expression.getArgumentList();
+                    PsiExpression[] expressions = argumentList.getExpressions();
+                    for (PsiExpression psiExpression : expressions) {
+                        trigger.addExpressions(psiExpression);
+                    }
+                }
+            });
+            trigger.setMethod(PSIUtil.getMethod(scope));
         }
-        if (builder.length() == 0) {
+        String result = service.action(trigger);
+        trigger.clearCache();
+        if (result == null || result.isEmpty()) {
             return;
         }
-        EluneCompletionContributor.suggestCompletion(project, editor, document, builder.toString(), offset, null);
+        ConsoleService.getInstance().printError(String.valueOf(System.currentTimeMillis() - star));
+        EluneCompletionContributor.suggestCompletion(project, editor, document, result, offset, null);
     }
 }

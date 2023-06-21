@@ -141,4 +141,5 @@ public interface ProjectKeys {
 
     String PATH_CONFIG_FIELDS = "/config/config_fields.json";
     String PATH_CONFIG_ACCESS_BUILD = "/config/access_build.json";
+    String PATH_AUTO_COMPLETE = "/config/code_complete.json";
 }

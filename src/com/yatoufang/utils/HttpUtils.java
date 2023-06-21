@@ -24,8 +24,6 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -178,10 +176,10 @@ public class HttpUtils {
         }
         return "";
     }
-
-    public static String sendPost(String url, String params) {
-        return sendPost(url, params, null, Collections.emptyMap());
+    public static String sendPost(String url, String jsonObject) {
+        return sendPost(url, jsonObject, "application/json", Collections.emptyMap());
     }
+
 
     public static String sendPostJson(String url, String params, Map<String, String> headerMap) {
         return sendPost(url, params, "application/json", headerMap);

@@ -7,6 +7,7 @@ import com.yatoufang.templet.ProjectKeys;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -454,7 +455,6 @@ public class StringUtil {
         return builder.toString();
     }
 
-
     public static void translateIfNecessary(Config config, List<String> param) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < param.size(); i++) {
@@ -486,7 +486,7 @@ public class StringUtil {
                 continue;
             }
             if (c == GRATE_THEN) {
-               break;
+                break;
             }
             if (flag) {
                 builder.append(c);
@@ -498,6 +498,26 @@ public class StringUtil {
         return builder.toString();
     }
 
+    public static String[] parser(String type) {
+        String[] result = new String[] {EMPTY, EMPTY};
+        StringBuilder builder = new StringBuilder();
+        for (char c : type.toCharArray()) {
+            if (c == LESS_THEN) {
+                result[0] = builder.toString();
+                builder.setLength(0);
+                continue;
+            }
+            if (c == GRATE_THEN ) {
+                result[1] = builder.toString();
+                break;
+            }
+            builder.append(c);
+        }
+        if (builder.length() == 0) {
+            result[0] = builder.toString();
+        }
+        return result;
+    }
 
     public static boolean getAllCharacter(String content, List<String> result) {
         char[] chars = content.toCharArray();
@@ -517,7 +537,7 @@ public class StringUtil {
                     i++;
                 }
                 result.add(builder.toString());
-                ++ j;
+                ++j;
                 if (j > 1) {
                     l = 0;
                     j = 0;
@@ -544,10 +564,11 @@ public class StringUtil {
         return result.toString().trim();
     }
 
-
     public static void main(String[] args) {
         System.out.println(getMetaType("Collection<String> list"));
         System.out.println(Override.class.getSimpleName());
         System.out.println(toCamelCaseFromUpperSnake("ENDLESS_MAGIC_TOWER_RANK_MAP"));
+        System.out.println(toCameCaseFormTranslate("personal information"));
+        System.out.println(Arrays.toString(parser("Collection<Collection<String>")));
     }
 }

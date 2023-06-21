@@ -1,14 +1,14 @@
 package com.yatoufang.action;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.yatoufang.complete.model.CodeCompleteConfig;
 import com.yatoufang.entity.Param;
-import com.yatoufang.templet.ProjectKeys;
-import com.yatoufang.utils.DataUtil;
 
 import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 class Test {
 
@@ -45,8 +45,13 @@ class Test {
     }
 
     public static void main(String[] args) {
-        String test = "D:/main/server/trunk/lyltd-%s/src/main/java/cn/daxiang/lyltd/%s";
-        System.out.println(String.format(test, ProjectKeys.GAME_SERVER));
+        CodeCompleteConfig config = new CodeCompleteConfig();
+        config.setId(1);
+        config.setModelType(1);
+        Map<String, String> maps = Maps.newHashMap();
+        maps.put("id","122");
+        config.setTemplateMaps(maps);
+        System.out.println(new Gson().toJson(config));
     }
 
 

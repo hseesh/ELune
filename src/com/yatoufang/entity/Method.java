@@ -1,6 +1,9 @@
 package com.yatoufang.entity;
 
 
+import com.yatoufang.templet.ProjectKeys;
+import com.yatoufang.utils.StringUtil;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,6 +23,8 @@ public class Method {
     private String requestExample;
     private String responseExample;
     private List<Param> params;
+    private transient String argumentList;
+    private transient String recommendName;
 
 
     public String getResponseExample() {
@@ -148,6 +153,13 @@ public class Method {
 
     public void setName(String name) {
         this.name = name;
+        if (returnType != null) {
+            String result = this.name.replace(ProjectKeys.GET, StringUtil.EMPTY);
+            recommendName = StringUtil.toLowerCaseForFirstChar(result);
+            if (returnType.contains(ProjectKeys.RESULT_OF)) {
+                recommendName += ProjectKeys.RESULT_OF;
+            }
+        }
     }
 
     public String getRequestExample() {
@@ -168,6 +180,22 @@ public class Method {
         return "| " + returnValue + " | " + returnType + " | " + returnDescription + " |";
     }
 
+    public String getRecommendName() {
+        return recommendName;
+    }
+
+    public void setRecommendName(String recommendName) {
+        this.recommendName = recommendName;
+    }
+
+    public String getArgumentList() {
+        return argumentList;
+    }
+
+    public void setArgumentList(String argumentList) {
+        this.argumentList = argumentList;
+    }
+
     @Override
     public String toString() {
         return "Method{" +
@@ -179,7 +207,7 @@ public class Method {
                 ", returnDescription='" + returnDescription + '\'' +
                 ", name='" + name + '\'' +
                 ", requestExample='" + requestExample + '\'' +
-                ", params=" + params.toString() +
+                ", params=" + (params == null ? "" : params.toString()) +
                 '}';
     }
 

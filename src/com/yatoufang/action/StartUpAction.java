@@ -1,7 +1,9 @@
 package com.yatoufang.action;
 
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupActivity;
+import com.yatoufang.complete.listeners.ELuneFileEditorMangerListener;
 import com.yatoufang.templet.Application;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,6 +16,7 @@ public class StartUpAction implements StartupActivity {
     @Override
     public void runActivity(@NotNull Project project) {
         Application.project = project;
+        FileEditorManager.getInstance(project).addFileEditorManagerListener(new ELuneFileEditorMangerListener());
     }
 
 }

@@ -1,6 +1,7 @@
 package com.yatoufang.entity;
 
 import com.intellij.psi.PsiType;
+import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.StringUtil;
 
 import java.util.Objects;
@@ -152,6 +153,25 @@ public class Param {
 
     public String getPrimaryInfo() {
         return typeAlias + StringUtil.SPACE + StringUtil.SPACE + name + StringUtil.SPACE + StringUtil.SPACE + description;
+    }
+
+    public void setSetString(String setString) {
+        this.setString = setString;
+    }
+
+    public void setGetString(String getString) {
+        this.getString = getString;
+    }
+
+    public boolean hasPrefix() {
+        if (typeAlias == null) {
+            return false;
+        }
+        return typeAlias.contains(ProjectKeys.RESULT_OF);
+    }
+
+    public String getPrefix(){
+        return StringUtil.getPrefix(typeAlias, String.valueOf(StringUtil.LESS_THEN));
     }
 
     @Override

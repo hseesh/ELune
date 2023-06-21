@@ -1,36 +1,31 @@
 package com.yatoufang.utils;
 
+import com.intellij.codeInsight.completion.proc.VariablesProcessor;
 import com.intellij.codeInsight.generation.PsiFieldMember;
-import com.intellij.codeInsight.template.Expression;
-import com.intellij.codeInsight.template.ExpressionContext;
-import com.intellij.codeInsight.template.Result;
 import com.intellij.codeInsight.template.macro.MacroUtil;
-import com.intellij.codeInsight.template.macro.VariableTypeCalculator;
 import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.javadoc.PsiDocComment;
 import com.intellij.psi.javadoc.PsiDocTag;
 import com.intellij.psi.javadoc.PsiDocTagValue;
+import com.intellij.psi.scope.util.PsiScopesUtil;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.util.PsiUtil;
-import com.intellij.psi.util.PsiUtilCore;
 import com.intellij.psi.util.TypeConversionUtil;
-import com.intellij.util.containers.ContainerUtil;
+import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.entity.Field;
+import com.yatoufang.entity.Method;
 import com.yatoufang.entity.Param;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.service.SearchScopeService;
-import com.yatoufang.templet.Application;
-import com.yatoufang.config.ProjectSearchScope;
 import com.yatoufang.templet.Annotations;
+import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.commons.compress.utils.Sets;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -246,7 +241,8 @@ public class PSIUtil {
     }
 
     public static void getClassFields(PsiClass psiClass, List<Param> result, List<Param> superResult, boolean isSuperClass, PsiType originType) {
-        if (psiClass == null) return;
+        if (psiClass == null)
+            return;
         PsiField[] fields = psiClass.getFields();
         for (PsiField field : fields) {
             if (ProjectKeys.SERIAL_UID.equals(field.getName())) {
@@ -272,13 +268,15 @@ public class PSIUtil {
 
         }
         PsiClass superClass = psiClass.getSuperClass();
-        if (superClass == null) return;
+        if (superClass == null)
+            return;
         PsiClass aClass = findClass(superClass.getQualifiedName());
         getClassFields(aClass, result, superResult, true, null);
     }
 
     public static void getClassFields(PsiClass psiClass, Collection<Param> result, PsiType originType) {
-        if (psiClass == null) return;
+        if (psiClass == null)
+            return;
         if (psiClass.isEnum()) {
             Param param = new Param(psiClass.getName());
             param.setType(originType);
@@ -311,7 +309,8 @@ public class PSIUtil {
     }
 
     public static void getClassFields(PsiClass psiClass, Collection<Param> result) {
-        if (psiClass == null) return;
+        if (psiClass == null)
+            return;
         if (Application.isBasicType(psiClass.getName())) {
             return;
         }
@@ -334,7 +333,8 @@ public class PSIUtil {
     }
 
     public static void getClassAllFields(PsiClass psiClass, Collection<Param> result) {
-        if (psiClass == null) return;
+        if (psiClass == null)
+            return;
         PsiField[] fields = psiClass.getFields();
         for (PsiField field : fields) {
             PsiType type = field.getType();
@@ -374,7 +374,8 @@ public class PSIUtil {
     }
 
     public static boolean isLocalClass(PsiClass psiClass) {
-        if (psiClass == null) return false;
+        if (psiClass == null)
+            return false;
         String qualifiedName = psiClass.getQualifiedName();
         if (qualifiedName != null) {
             return qualifiedName.startsWith(Application.basePackage);
@@ -383,9 +384,11 @@ public class PSIUtil {
     }
 
     public static boolean isNativeClass(PsiClass psiClass) {
-        if (psiClass == null) return false;
+        if (psiClass == null)
+            return false;
         String qualifiedName = psiClass.getQualifiedName();
-        if (qualifiedName == null) return false;
+        if (qualifiedName == null)
+            return false;
         qualifiedName = qualifiedName.substring(0, qualifiedName.lastIndexOf("."));
         PsiPackage aPackage = JavaPsiFacade.getInstance(Application.project).findPackage(qualifiedName);
         return aPackage != null;
@@ -425,7 +428,7 @@ public class PSIUtil {
         return PsiShortNamesCache.getInstance(Application.project).getClassesByName(name, searchScope);
     }
 
-    public static PsiClass loadClassWithShortName(String name){
+    public static PsiClass loadClassWithShortName(String name) {
         PsiClass[] classes = findClassWithShortName(name);
         if (classes.length == 0) {
             return null;
@@ -628,7 +631,8 @@ public class PSIUtil {
     }
 
     public static String getFiledValue(PsiElement element) {
-        if (element == null) return null;
+        if (element == null)
+            return null;
         if (element instanceof PsiJavaToken) {
             if (StringUtil.EQUAL == element.getText().charAt(0)) {
                 PsiElement nextSibling = element.getNextSibling();
@@ -729,7 +733,8 @@ public class PSIUtil {
         String comment = " * ";
         String commentEnd = " */\n";
         for (Param param : fieldsList) {
-            builder.append(commentStart).append(comment).append(param.getDescription()).append(StringUtil.NEW_LINE).append(commentEnd).append(param.getTypeAlias()).append(StringUtil.SPACE).append(param.getName()).append(StringUtil.NEW_LINE);
+            builder.append(commentStart).append(comment).append(param.getDescription()).append(StringUtil.NEW_LINE).append(commentEnd).append(param.getTypeAlias())
+                .append(StringUtil.SPACE).append(param.getName()).append(StringUtil.NEW_LINE);
         }
         return builder.toString();
     }
@@ -765,7 +770,8 @@ public class PSIUtil {
     }
 
     public static void getClassField(PsiClass psiClass, Collection<Field> result) {
-        if (psiClass == null) return;
+        if (psiClass == null)
+            return;
         if (Application.isBasicType(psiClass.getName())) {
             return;
         }
@@ -786,7 +792,6 @@ public class PSIUtil {
         getClassField(aClass, list);
         return list;
     }
-
 
     public static PsiFieldMember buildFieldMember(final PsiField field, final PsiClass clazz) {
         return new PsiFieldMember(field, TypeConversionUtil.getSuperClassSubstitutor(clazz, clazz, PsiSubstitutor.EMPTY));
@@ -827,8 +832,7 @@ public class PSIUtil {
         return superParams;
     }
 
-
-    public static Field getFirstFields(String  targetClass){
+    public static Field getFirstFields(String targetClass) {
         PsiClass[] classes = findClassWithShortName(targetClass.trim());
         for (PsiClass aClass : classes) {
             if (aClass.getFields().length > 0) {
@@ -844,5 +848,73 @@ public class PSIUtil {
             }
         }
         return null;
+    }
+
+    public static PsiVariable[] getVariables(@NotNull PsiElement element) {
+        return getVariables(element, StringUtil.EMPTY);
+    }
+
+    public static PsiVariable[] getVariables(@NotNull PsiElement element, String prefix) {
+        PsiElement scope = element.getParent();
+        while (scope != null) {
+            if (scope instanceof PsiMethod) {
+                break;
+            }
+            scope = scope.getParent();
+        }
+        List<PsiVariable> list = Lists.newArrayList();
+        VariablesProcessor processor = new MacroUtil.VisibleVariablesProcessor(element, prefix, list);
+        PsiScopesUtil.treeWalkUp(processor, element, scope);
+        return processor.getResultsAsArray();
+    }
+
+    public static Method getMethod(PsiElement scope) {
+        if (scope == null) {
+            return null;
+        }
+        PsiMethod psiMethod = (PsiMethod) scope;
+        Method method = new Method();
+        PsiType returnType = psiMethod.getReturnType();
+        if (returnType != null) {
+            method.setReturnType(returnType.getPresentableText());
+        }
+        method.setName(psiMethod.getName());
+        method.setDescription(getDescription(psiMethod.getDocComment()));
+        return method;
+    }
+
+    public static Method parser(@NotNull PsiMethod method) {
+        Method result = new Method();
+        PsiType returnType = method.getReturnType();
+        if (returnType != null) {
+            result.setReturnType(returnType.getPresentableText());
+        }
+        result.setDescription(getDescription(method.getDocComment()));
+        result.setName(method.getName());
+        List<Param> params = Lists.newArrayList();
+        for (PsiParameter parameter : method.getParameterList().getParameters()) {
+            params.add(new Param(parameter.getName(), parameter.getType()));
+        }
+        result.setParams(params);
+        return result;
+    }
+
+    public static void searchClassFields(String name, PsiType psiType, Collection<Param> params) {
+        if (Application.isBasicType(psiType.getPresentableText())) {
+            return;
+        }
+        PsiClass aClass = findClass(psiType.getCanonicalText());
+        if (aClass == null) {
+            return;
+        }
+        PsiField[] fields = aClass.getFields();
+        for (PsiField field : fields) {
+            Field param = new Field(field.getName());
+            param.setType(field.getType());
+            param.setAlias(field.getName());
+            param.setTypeAlias(field.getType().getPresentableText());
+            param.setName(name + StringUtil.POINT + param.getGetString());
+            params.add(param);
+        }
     }
 }

@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "modelType": 1,
+        "templateMaps": {
+            "int": "if (${table.name} < 0 || ${table.name} > GameConfig.getClientCountLimit()) {\n           return ${table.alias}.valueOf(INVALID_PARAM);        \n}"
+        }
+    },
+    {
+        "id": 2,
+        "modelType": 1,
+        "templateMaps": {
+            "": "${table.returnType} ${table.recommendName} = ${table.name}(${table.argumentList});\n",
+            "Collection": "${table.returnType} ${table.recommendName} = ${table.name}(${table.argumentList});\n"
+        }
+    },
+    {
+        "id": 3,
+        "modelType": 2,
+        "templateMaps": {
+             "result": "${table.alias} ${table.defaultValue} = ${table.name}.item;\n",
+             "Result": "if (${table.name}.isFail()) {\n           return ${table.typeAlias}.valueOf(${table.name}.statusCode);\n        }\n"
+        }
+    }
+
+]
