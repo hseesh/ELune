@@ -2,11 +2,13 @@ package com.yatoufang.complete.listeners;
 
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent;
 import com.intellij.openapi.fileEditor.FileEditorManagerListener;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.yatoufang.complete.handler.CodeCompleteHandler;
 import com.yatoufang.entity.Method;
 import com.yatoufang.entity.Param;
+import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.PSIUtil;
 import com.yatoufang.utils.StringUtil;
@@ -21,8 +23,16 @@ import java.util.Locale;
  */
 public class ELuneFileEditorMangerListener implements FileEditorManagerListener {
 
+    public static long LAST_CHANGE_TIME;
+
     @Override
     public void selectionChanged(@NotNull FileEditorManagerEvent event) {
+        if (DumbService.isDumb(event.getManager().getProject())) {
+            return;
+        }
+        if (System.currentTimeMillis() - LAST_CHANGE_TIME < 100) {
+            return;
+        }
         VirtualFile file = event.getNewFile();
         if (file != null) {
             if (file.getName().endsWith(ProjectKeys.JAVA)) {
@@ -35,12 +45,17 @@ public class ELuneFileEditorMangerListener implements FileEditorManagerListener 
                 if (classes.length == 0) {
                     return;
                 }
+                Application.project = psiFile.getProject();
                 CodeCompleteHandler.CONTEXT.clearCache();
                 for (PsiClass aClass : classes) {
+                    if (aClass.isEnum() || aClass.isInterface()) {
+                        continue;
+                    }
                     parser(aClass);
                 }
             }
         }
+        LAST_CHANGE_TIME = System.currentTimeMillis();
     }
 
     public void parser(PsiClass psiClass) {
@@ -96,7 +111,11 @@ public class ELuneFileEditorMangerListener implements FileEditorManagerListener 
             String metaType = StringUtil.getMetaType(returnType.getPresentableText());
             if (className.contains(metaType)) {
                 Method dataBase = PSIUtil.parser(method);
-                String dataBaseReturnType = CodeCompleteHandler.CONTEXT.getDataBase().getReturnType();
+                Method contextDataBase = CodeCompleteHandler.CONTEXT.getDataBase();
+                if (contextDataBase == null) {
+                    continue;
+                }
+                String dataBaseReturnType = contextDataBase.getReturnType();
                 if (dataBaseReturnType.contains(metaType) && !dataBaseReturnType.endsWith(List.class.getSimpleName())) {
                     CodeCompleteHandler.CONTEXT.setDataBase(dataBase);
                 }
