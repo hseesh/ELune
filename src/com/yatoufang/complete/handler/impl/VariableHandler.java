@@ -8,6 +8,8 @@ import com.yatoufang.complete.model.type.ModelType;
 import com.yatoufang.entity.Param;
 import com.yatoufang.utils.StringUtil;
 
+import java.util.Locale;
+
 /**
  * @author GongHuang(hse)
  * @since 2023/6/3
@@ -56,6 +58,9 @@ public class VariableHandler extends CodeCompleteHandler {
             String key = triggerContext.getPrepareKey(prepareParam.getName());
             String template = config.getTemplate(key);
             String metaType = StringUtil.getMetaType(prepareParam.getTypeAlias());
+            if (metaType.toLowerCase(Locale.ROOT).equals(key)) {
+                return StringUtil.EMPTY;
+            }
             Param param = new Param(prepareParam.getName(), metaType, triggerContext.getMethod().getReturnType());
             param.setDefaultValue(StringUtil.toLowerCaseForFirstChar(metaType));
             return velocityService.execute(template, param, null);

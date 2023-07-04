@@ -22,7 +22,7 @@ public class DBCreateHandler extends CodeCompleteHandler {
 
     @Override
     public boolean trigger(CodeCompleteTrigger triggerContext) {
-        return triggerContext.shouldCreateDB();
+        return triggerContext.shouldCreateDB(CONTEXT.getDataBase());
     }
 
     @Override

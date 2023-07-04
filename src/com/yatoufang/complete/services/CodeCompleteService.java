@@ -31,8 +31,8 @@ public class CodeCompleteService {
     private CodeCompleteService() {
         handlers.add(new FillArgumentHandler());
         handlers.add(new ParamCheckHandler());
-        handlers.add(new DBCreateHandler());
         handlers.add(new VariableHandler());
+        handlers.add(new DBCreateHandler());
         CodeCompleteHandler.initialize();
     }
 
@@ -40,7 +40,11 @@ public class CodeCompleteService {
     public String action(CodeCompleteTrigger triggerContext){
         for (CodeCompleteHandler handler : handlers) {
             if (handler.trigger(triggerContext)) {
-                return handler.getResult(triggerContext);
+                String result = handler.getResult(triggerContext);
+                if (result == null || result.isEmpty()) {
+                    continue;
+                }
+                return result;
             }
         }
         return StringUtil.EMPTY;

@@ -27,8 +27,16 @@ public class CodeCompleteTrigger {
     private final List<String> expressionList = Lists.newArrayList();
     private final Map<String, Collection<Param>> referenceVariables = Maps.newHashMap();
 
-    public boolean shouldCreateDB() {
-        return variables.size() == arguments.length;
+    public boolean shouldCreateDB(Method dataBase) {
+        if (dataBase == null) {
+            return false;
+        }
+        for (PsiVariable variable : variables) {
+            if (variable.getType().getPresentableText().contains(dataBase.getReturnValue())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean shouldFillArgument() {
@@ -63,7 +71,7 @@ public class CodeCompleteTrigger {
                     }
                     return result;
                 }
-            }else if(parent instanceof PsiNewExpression){
+            } else if (parent instanceof PsiNewExpression) {
                 PsiJavaCodeReferenceElement classReference = ((PsiNewExpression) parent).getClassReference();
                 if (classReference == null) {
                     continue;
@@ -188,7 +196,7 @@ public class CodeCompleteTrigger {
         Param result = null;
         for (Param param : params) {
             double levenshtein = DataUtil.calculateLevenshtein(param.getAlias(), name);
-            if (levenshtein > 0  && levenshtein >= similarValue) {
+            if (levenshtein > 0 && levenshtein >= similarValue) {
                 result = param;
                 similarValue = levenshtein;
             }

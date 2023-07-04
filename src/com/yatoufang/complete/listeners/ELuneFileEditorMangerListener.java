@@ -8,6 +8,7 @@ import com.intellij.psi.*;
 import com.yatoufang.complete.handler.CodeCompleteHandler;
 import com.yatoufang.entity.Method;
 import com.yatoufang.entity.Param;
+import com.yatoufang.service.ConsoleService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.ProjectKeys;
 import com.yatoufang.utils.PSIUtil;
@@ -126,6 +127,7 @@ public class ELuneFileEditorMangerListener implements FileEditorManagerListener 
             Method dataBase = PSIUtil.parser(method);
             CodeCompleteHandler.CONTEXT.update(method.getName(), dataBase);
         }
+        ConsoleService.getInstance().printInfo(CodeCompleteHandler.CONTEXT.toString());
     }
 
 }

@@ -888,6 +888,7 @@ public class PSIUtil {
         PsiType returnType = method.getReturnType();
         if (returnType != null) {
             result.setReturnType(returnType.getPresentableText());
+            result.setReturnValue(StringUtil.getMetaType(result.getReturnType()));
         }
         result.setDescription(getDescription(method.getDocComment()));
         result.setName(method.getName());

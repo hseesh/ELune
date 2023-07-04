@@ -14,7 +14,6 @@ import com.yatoufang.complete.listeners.ELuneFileEditorMangerListener;
 import com.yatoufang.complete.model.context.CodeCompleteTrigger;
 import com.yatoufang.complete.services.CodeCompleteService;
 import com.yatoufang.entity.Method;
-import com.yatoufang.service.ConsoleService;
 import com.yatoufang.service.NotifyService;
 import com.yatoufang.templet.Application;
 import com.yatoufang.templet.NotifyKeys;
@@ -35,7 +34,6 @@ public class CodeCompleteAction extends AnAction {
         Document document = editor.getDocument();
         CaretModel caretModel = editor.getCaretModel();
         int offset = caretModel.getOffset();
-        long star = System.currentTimeMillis();
         CodeCompleteTrigger trigger = new CodeCompleteTrigger();
         Method dataBase = CodeCompleteHandler.CONTEXT.getDataBase();
         CodeCompleteService service = CodeCompleteService.getInstance();
@@ -102,7 +100,6 @@ public class CodeCompleteAction extends AnAction {
         if (result == null || result.isEmpty()) {
             return;
         }
-        ConsoleService.getInstance().printError(String.valueOf(System.currentTimeMillis() - star));
         EluneCompletionContributor.suggestCompletion(project, editor, document, result, offset, null);
     }
 }
